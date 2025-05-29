@@ -13,22 +13,43 @@ const getRoutesList = async () => {
 }
 getRoutesList()
 let tableColumns = ref([
-  {prop:'name', label: '路由名称', align: 'left'},
-  {prop:'path', label: '路由路径'},
-  {prop:'view', label: '组件路径'},
-  {prop:'parentId', label: '父路由'},
-  {prop:'level', label: '排序'},
-  {prop:'isShow', label: '是否显示'},
+  { prop: 'name', label: '路由名称', align: 'left' },
+  { prop: 'router', label: '路由路径' },
+  { prop: 'view', label: '组件路径' },
+  { prop: 'parentRouter', label: '父路由' },
+  { prop: 'level', label: '排序' },
+  { prop: 'isShow', label: '是否显示' },
 ])
 const chack = (row) => {
   console.log(row);
+}
+
+// 选中的行数据
+const multipleSelection = ref([])
+const handleSelectionChange = (val) => {
+  multipleSelection.value = val
+}
+
+import { deleteRoutes } from '@/api/routes';
+const deleteSelect = async () => {
+  console.log(multipleSelection.value);
+  await deleteRoutes({ ids: multipleSelection.value.map(item => item.id) }).then(res => {
+    getRoutesList()
+  })
+}
+
+const deleteOne = async (row) => {
+  console.log(row);
+  await deleteRoutes({ ids: row.id }).then(res => {
+    getRoutesList()
+  })
 }
 
 let dialogVisible = ref(false)
 let dialogTitle = ref('')
 let routeForm = ref({
   name: '',
-  path: '',
+  router: '',
   view: '',
   parentId: '',
   level: '',
@@ -38,7 +59,7 @@ const rules = ref({
   name: [
     { required: true, message: '请输入路由名称', trigger: 'blur' },
   ],
-  path: [
+  router: [
     { required: true, message: '请输入路由路径', trigger: 'blur' },
   ],
   view: [
@@ -52,9 +73,9 @@ const rules = ref({
   ]
 })
 const openDialog = (openType) => {
-  if(openType == 'add'){
+  if (openType == 'add') {
     dialogTitle.value = '添加路由'
-  }else if(openType == 'edit'){
+  } else if (openType == 'edit') {
     dialogTitle.value = '编辑路由'
   }
   console.log(openType);
@@ -63,9 +84,10 @@ const openDialog = (openType) => {
 
 const handleClose = () => {
   dialogVisible.value = false
-  routeForm = {
+  // 修正：应该修改 routeForm 的值，而不是重新赋值一个新对象
+  routeForm.value = {
     name: '',
-    path: '',
+    router: '',
     view: '',
     parentId: '',
     level: '',
@@ -76,7 +98,7 @@ const handleClose = () => {
 const ruleForm = ref(null)
 const submitForm = async (formEl) => {
   if (!formEl) return
-  await formEl.validate( async (valid, fields) => {
+  await formEl.validate(async (valid, fields) => {
     if (valid) {
       await addRoutes(routeForm.value)
       await getRoutesList()
@@ -90,20 +112,30 @@ const submitForm = async (formEl) => {
 <template>
   <div class="serchBox"></div>
   <div class="operateBox">
-    <el-button class="addButton" @click="openDialog('add')"><el-icon><component is="Plus" /></el-icon>添加</el-button>
-    <el-button class="deleteButton"><el-icon><component is="Delete" /></el-icon>删除</el-button>
+    <el-button class="addButton" @click="openDialog('add')"><el-icon>
+        <component is="Plus" />
+      </el-icon>添加</el-button>
+    <el-button class="deleteButton" @click="deleteSelect"><el-icon>
+        <component is="Delete" />
+      </el-icon>删除</el-button>
   </div>
   <div class="tableBox">
-    <el-table :data="tableData" border row-key="id">
+    <el-table :data="tableData" border row-key="id" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" :selectable="selectable" width="55" />
       <el-table-column type="index" label="序号" align="center" width="80" />
-      <el-table-column v-for="item in tableColumns" header-align="center" :align="item.align? item.align : 'center'" :prop="item.prop" :label="item.label"/>
+      <el-table-column v-for="item in tableColumns" header-align="center" :align="item.align ? item.align : 'center'"
+        :prop="item.prop" :label="item.label">
+        <template v-if="item.prop === 'isShow'" #default="scoped">
+          {{ scoped.row.isShow == '1' ? '是' : '否' }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="160">
         <template #default="scoped">
           <el-button link type="primary" size="small" @click="chack(scoped.row)">
             查看
           </el-button>
           <el-button link type="primary" size="small">编辑</el-button>
-          <el-button link type="primary" size="small">
+          <el-button link type="primary" size="small" @click="deleteOne(scoped.row)">
             删除
           </el-button>
         </template>
@@ -111,56 +143,50 @@ const submitForm = async (formEl) => {
     </el-table>
   </div>
 
-  <el-dialog
-    :title="dialogTitle"
-    v-model="dialogVisible"
-    show-close
-    width="50%"
-    custom-class="dialog"
-  >
-  <div class="formBody">
-    <el-form :model="routeForm" label-width="100px" :rules="rules" ref="ruleForm">
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="路由名称:" prop="name">
-            <el-input v-model="routeForm.name" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="路由路径:" prop="path">
-            <el-input v-model="routeForm.path" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="组件路径:" prop="view">
-            <el-input v-model="routeForm.view" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="是否显示:" prop="isShow">
-            <el-input v-model="routeForm.isShow" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="排序:" prop="level">
-            <el-input v-model="routeForm.level" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="父路由:" prop="parentId">
-            <el-select v-model="routeForm.parentId" placeholder="请选择父路由">
-              <el-option v-for="item in optionData" :key="item.id" :label="item.name" :value="item.id"/>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-  </div>
-  <template #footer>
+  <el-dialog :title="dialogTitle" v-model="dialogVisible" show-close width="50%" custom-class="dialog">
+    <div class="formBody">
+      <el-form :model="routeForm" label-width="100px" :rules="rules" ref="ruleForm">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="路由名称:" prop="name">
+              <el-input v-model="routeForm.name" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="路由路径:" prop="router">
+              <el-input v-model="routeForm.router" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="组件路径:" prop="view">
+              <el-input v-model="routeForm.view" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="是否显示:" prop="isShow">
+              <el-input v-model="routeForm.isShow" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="排序:" prop="level">
+              <el-input v-model="routeForm.level" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="父路由:" prop="parentId">
+              <el-select v-model="routeForm.parentId" placeholder="请选择父路由">
+                <el-option v-for="item in optionData" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+    <template #footer>
       <div class="dialog-footer">
         <el-button @click="handleClose">取消</el-button>
         <el-button type="primary" @click="submitForm(ruleForm)">

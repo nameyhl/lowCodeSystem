@@ -14,3 +14,11 @@ export const addRoutes = (data) => {
     data
   })
 }
+
+export const deleteRoutes = (data) => {
+  return request({
+    url: `/routes/deleteRoutes`,
+    method: 'post',
+    data
+  })
+}
