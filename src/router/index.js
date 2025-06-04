@@ -45,16 +45,45 @@ const router = createRouter({
   routes: constantRoutes
 })
 
+const sortRoutesByLevel = (routes) => {
+  // 先对子路由进行排序（如果有的话）
+  routes.forEach(route => {
+    if (route.children && route.children.length > 0) {
+      route.children = sortRoutesByLevel(route.children)
+    }
+  })
+
+  // 然后对当前层级的路由进行排序
+  return routes.sort((a, b) => {
+    // 将level转换为数字比较，因为有些是字符串有些是数字
+    const levelA = typeof a.level === 'string' ? parseInt(a.level) : a.level
+    const levelB = typeof b.level === 'string' ? parseInt(b.level) : b.level
+    return  levelB - levelA
+  })
+}
+const getFirstLevelRoute = (routes) => {
+  let res = {}
+  res = routes[0]
+  if(res.children && res.children.length == 0){
+    console.log(res);
+    return res
+  }
+  getFirstLevelRoute(res.children)
+
+}
+
 // 获取路由列表
 import { getRoutes } from '@/api/routes.js'
-import useRoutesStore from '@/stores/modules/routes.js'
-const routes = useRoutesStore()
 
 // 动态加载路由并添加到router实例
 const initializeRouter = async () => {
   try {
-    const res = await routes.fetchRoutes()
-    const dynamicRoutes = formatRoutes(res || [])
+    const res = await getRoutes()
+    // 先对子路由进行排序（如果有的话）
+    let routes = sortRoutesByLevel(res.data.tree)
+    // 找到最上层路由
+    router.push('/home')
+    const dynamicRoutes = formatRoutes(routes || [])
     // 添加动态路由
     dynamicRoutes.forEach(route => {
       router.addRoute('home',route)
