@@ -21,6 +21,33 @@ const deleteEmployee = async () => {
   addDialogVisible.value = true;
 }
 
+const closeDialog = () => {
+  addDialogVisible.value = false;
+  View.value = null
+}
+
+const submitDialog = async (data, form, type) => {
+  console.log(data)
+  if(!form) return
+  form.validate(async (valid) => {
+    if (valid) {
+      if(type === 'add') {
+        await addUser(data).then(res => {
+          ElMessage({
+            message: '新增成功',
+            type: 'success',
+          })
+          addDialogVisible.value = false;
+          View.value = null
+        })
+      }
+    }else{
+      console.log('error submit!!');
+    }
+  })
+
+
+}
 
 </script>
 <template>
@@ -32,7 +59,7 @@ const deleteEmployee = async () => {
    width="60%"
    :before-close="addDialogBeforeClose"
    >
-   <component :is="View"></component>
+   <component :is="View" @close="closeDialog" @submit="submitDialog"></component>
    </el-dialog>
 </template>
 <style lang="less" scoped></style>
