@@ -117,7 +117,7 @@ const submitForm = async (formEl) => {
     <Operate @add="openDialog('add')" @delete="deleteSelect" />
   </div>
   <div class="tableBox">
-    <el-table :data="tableData" border default-expand-all row-key="id" @selection-change="handleSelectionChange">
+    <el-table :data="tableData" border default-expand-all row-key="id" @selection-change="handleSelectionChange" style="margin-top: 10px;">
       <el-table-column type="selection" :selectable="selectable" width="55" />
       <el-table-column type="index" label="序号" align="center" width="80" />
       <el-table-column v-for="item in tableColumns" header-align="center" :align="item.align ? item.align : 'center'"

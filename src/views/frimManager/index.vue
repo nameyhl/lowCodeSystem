@@ -126,8 +126,8 @@ const chackFrim = (row) => {
 }
 </script>
 <template>
-  <Operate @add="addForm" />
-  <el-table v-loading="tableLoading"  :data="frimList" border style="width: 100%">
+  <Operate @add="addForm" :showDelete="false" />
+  <el-table v-loading="tableLoading"  :data="frimList" border style="width: 100%;margin-top: 10px;">
     <el-table-column type="index" align="center" label="序号" width="100"></el-table-column>
     <el-table-column prop="name" align="center" label="分公司名称"></el-table-column>
     <el-table-column prop="leader" align="center" label="分公司负责人">

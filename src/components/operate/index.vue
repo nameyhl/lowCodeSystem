@@ -1,6 +1,17 @@
 <script setup>
 import { defineEmits } from 'vue';
 
+const props = defineProps({
+  showAdd: {
+    type: Boolean,
+    default: true
+  },
+  showDelete: {
+    type: Boolean,
+    default: true
+  }
+})
+
 const emit = defineEmits(['add', 'delete']);
 
 const deleteObj = () => {
@@ -12,12 +23,12 @@ const addObj = () => {
 
 </script>
 <template>
-    <el-button class="addButton" @click="addObj">
+    <el-button class="addButton" @click="addObj" v-if="showAdd">
       <el-icon>
         <component is="Plus" />
       </el-icon>
       添加</el-button>
-    <el-button class="deleteButton" @click="deleteObj">
+    <el-button class="deleteButton" @click="deleteObj" v-if="showDelete">
       <el-icon>
         <component is="Delete" />
       </el-icon>

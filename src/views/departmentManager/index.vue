@@ -117,8 +117,8 @@ const closeDialog = () => {
 }
 </script>
 <template>
-  <Operate @add="openAdd" />
-  <el-table v-loading="tableLoading" :data="departmentList" :columns="columns" border style="width: 100%">
+  <Operate @add="openAdd" :showDelete="false" />
+  <el-table v-loading="tableLoading" :data="departmentList" :columns="columns" border style="width: 100%; margin-top: 10px;">
     <el-table-column type="index" align="center" label="序号" width="100"></el-table-column>
     <el-table-column v-for="item in columns" :prop="item.prop" :label="item.label">
       <template #default="scope">
