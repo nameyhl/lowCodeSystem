@@ -24,6 +24,8 @@ const chack = (row) => {
   console.log(row);
 }
 
+import Operate from '@/components/operate/index.vue'
+
 // 选中的行数据
 const multipleSelection = ref([])
 const handleSelectionChange = (val) => {
@@ -112,12 +114,7 @@ const submitForm = async (formEl) => {
 <template>
   <div class="serchBox"></div>
   <div class="operateBox">
-    <el-button class="addButton" @click="openDialog('add')"><el-icon>
-        <component is="Plus" />
-      </el-icon>添加</el-button>
-    <el-button class="deleteButton" @click="deleteSelect"><el-icon>
-        <component is="Delete" />
-      </el-icon>删除</el-button>
+    <Operate @add="openDialog('add')" @delete="deleteSelect" />
   </div>
   <div class="tableBox">
     <el-table :data="tableData" border default-expand-all row-key="id" @selection-change="handleSelectionChange">

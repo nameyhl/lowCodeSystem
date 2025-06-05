@@ -1,34 +1,24 @@
 <script setup>
-import { ref } from 'vue';
-import { addUser } from '@/api/user.js';
-
 import Operate from '@/components/operate/index.vue'
+import { ref } from 'vue';
 
 import AddFrom from './components/addFrom.vue';
 import DeleteForm from './components/deleteForm.vue';
 import UpdateForm from './components/updateForm.vue';
-const addDialogVisible = ref(false);
 
+let dialogVisible = ref(false);
 let View = ref(AddFrom)
-
-const addEmployee = async () => {
+let dialogTitle = ref('新增')
+const addDepartment = () => {
   View.value = AddFrom
-  addDialogVisible.value = true;
+  dialogVisible.value = true;
 }
-
-const deleteEmployee = async () => {
-  View.value = DeleteForm
-  addDialogVisible.value = true;
-}
-
-
 </script>
 <template>
-  <Operate @add="addEmployee" @delete="deleteEmployee"></Operate>
-  <!-- 新增弹框 -->
-   <el-dialog
-   v-model="addDialogVisible"
-   title="新增"
+  <Operate @add="addDepartment" />
+  <el-dialog
+   v-model="dialogVisible"
+   :title="dialogTitle"
    width="60%"
    :before-close="addDialogBeforeClose"
    >
