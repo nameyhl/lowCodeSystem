@@ -30,3 +30,19 @@ export function deleteUser(id){
     params: id,
   })
 }
+
+export function getUserByDepartmentId(id){
+  return request({
+    url: '/user/getUserByDepartmentId',
+    method: 'get',
+    params: id,
+  })
+}
+
+export function getUserByFrimId(id){
+  return request({
+    url: '/user/getUserByFrimId',
+    method: 'get',
+    params: id,
+  })
+}

@@ -8,18 +8,37 @@ const props = defineProps({
   }
 })
 
-let form = ref({
-  name: '',
-  leader: '',
-  msg: '',
-})
+let form = ref()
 
 form.value = props.frimInfo
+
+
 let emp = ref([
   { id: '1', name: '张三' },
   { id: '2', name: '李四' },
   { id: '3', name: '王五' },
 ])
+
+import { getUserByFrimId } from '@/api/user.js';
+
+let emps = ref([])
+const getEmps = async (frimId) => {
+  emps.value = []
+  await getUserByFrimId({frimId}).then(res => {
+    if(res.data.length > 0){
+      emps.value = res.data
+      form.value.leaderId = res.data[0].id
+    }else{
+      emps.value = [{
+        id: null,
+        name: '暂无人员'
+      }]
+      form.value.leaderId = null
+    }
+  })
+}
+
+getEmps(form.value.id)
 
 let rules = ref({
   name: [
@@ -31,11 +50,6 @@ import { defineEmits } from 'vue';
 const emit = defineEmits(['submit', 'close'])
 
 const close = () => {
-  form.value = {
-    name: '',
-    leader: '',
-    msg: '',
-  }
   emit('close')
 }
 
@@ -43,11 +57,6 @@ const formRef = ref(null)
 
 const submit = () => {
   emit('submit', form.value , formRef.value, 'update')
-  form.value = {
-    name: '',
-    leader: '',
-    msg: '',
-  }
 }
 </script>
 <template>
@@ -59,9 +68,9 @@ const submit = () => {
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item prop="leader" label="分公司负责人:">
-          <el-select v-model="form.leader" placeholder="请选择分公司负责人">
-            <el-option v-for="item in emp" :value="item.id" :label="item.name"></el-option>
+        <el-form-item prop="leaderId" label="分公司负责人:">
+          <el-select v-model="form.leaderId" placeholder="请选择分公司负责人">
+            <el-option v-for="item in emps" :value="item.id" :label="item.name"></el-option>
           </el-select>
         </el-form-item>
       </el-col>

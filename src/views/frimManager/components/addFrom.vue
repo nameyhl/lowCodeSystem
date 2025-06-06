@@ -1,11 +1,20 @@
 <script setup>
 import { ref } from 'vue';
 
-let form = ref({
-  name: '',
-  leader: '',
-  msg: '',
+const props = defineProps({
+  frimInfo: {
+    type: Object,
+    default: () => {
+      return {}
+    }
+  }
 })
+
+let form = ref(props.frimInfo)
+
+
+
+
 let emp = ref([
   { id: '1', name: '张三' },
   { id: '2', name: '李四' },
@@ -22,11 +31,6 @@ import { defineEmits } from 'vue';
 const emit = defineEmits(['submit', 'close'])
 
 const close = () => {
-  form.value = {
-    name: '',
-    leader: '',
-    msg: '',
-  }
   emit('close')
 }
 
@@ -34,11 +38,6 @@ const formRef = ref(null)
 
 const submit = () => {
   emit('submit', form.value , formRef.value, 'add')
-  form.value = {
-    name: '',
-    leader: '',
-    msg: '',
-  }
 }
 </script>
 <template>
@@ -50,9 +49,8 @@ const submit = () => {
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item prop="leader" label="分公司负责人:">
-          <el-select v-model="form.leader" placeholder="请选择分公司负责人">
-            <el-option v-for="item in emp" :value="item.id" :label="item.name"></el-option>
+        <el-form-item prop="leaderId" label="分公司负责人:">
+          <el-select v-model="form.leaderId" placeholder="请选择分公司负责人">
           </el-select>
         </el-form-item>
       </el-col>

@@ -25,7 +25,7 @@ const close = () => {
     </div>
     <div class="frimLeader">
       <span class="label">部门负责人：</span>
-      <span>{{ info.leader || '暂未分配负责人' }}</span>
+      <span>{{ info.leaderName || '暂未分配负责人' }}</span>
     </div>
     <div class="frimLeader">
       <span class="label">部门所属分公司：</span>

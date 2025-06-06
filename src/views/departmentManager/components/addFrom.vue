@@ -1,17 +1,33 @@
 <script setup>
 import { ref } from 'vue';
 
-let form = ref({
-  name: '',
-  leader: '',
-  frimId: '',
-  msg: '',
+let props = defineProps({
+  departmetInfo: {
+    type: Object,
+    default: () => ({})
+  }
 })
+
+let form = ref(props.departmetInfo)
 let rules = ref({
   name: [
     { required: true, message: '请输入部门名称', trigger: 'blur' },
   ],
 })
+
+import { getUserByFrimId } from '@/api/user.js';
+let emps = ref([])
+const getEmps = async (frimId) => {
+  emps.value = []
+  await getUserByFrimId({frimId}).then(res => {
+    form.value.leader = res.data[0].id
+    emps.value = res.data
+  })
+}
+
+const changeFrim = async () => {
+  getEmps(form.value.frimId)
+}
 
 let frimList = ref([])
 import { getFrimList } from '@/api/frim';
@@ -19,6 +35,7 @@ const getFrim = async () => {
   frimList.value = []
   await getFrimList().then(res => {
     form.value.frimId = res.data[0].id
+    getEmps(form.value.frimId)
     res.data.forEach(item => {
       frimList.value.push({
         label: item.name,
@@ -36,21 +53,9 @@ const emit = defineEmits(['submit', 'close'])
 const formRef = ref(null)
 const submit = () => {
   emit('submit', form.value, formRef.value, 'add')
-  form.value = {
-    name: '',
-    leader: '',
-    frimId: '',
-    msg: '',
-  }
 }
 
 const close = () => {
-  form.value = {
-    name: '',
-    leader: '',
-    frimId: '',
-    msg: '',
-  }
   emit('close')
 }
 </script>
@@ -64,14 +69,16 @@ const close = () => {
       </el-col>
       <el-col :span="12">
         <el-form-item prop="leader" label="部门负责人:">
-          <el-input v-model="form.leader" placeholder="请输入部门负责人"></el-input>
+          <el-select v-model="form.leader" placeholder="请选择部门所属公司">
+            <el-option v-for="item in emps" :key="item.value" :label="item.name" :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="12">
         <el-form-item prop="frimId" label="部门所属公司:">
-          <el-select v-model="form.frimId" placeholder="请选择部门所属公司">
+          <el-select v-model="form.frimId" placeholder="请选择部门所属公司" @change="changeFrim">
             <el-option v-for="item in frimList" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>

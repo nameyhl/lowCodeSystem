@@ -15,7 +15,7 @@ let dialogTitle = ref('')
 
 let frimInfo = ref({
   name: '',
-  leader: '',
+  leaderId: '',
   msg:'',
 })
 
@@ -25,7 +25,7 @@ const addForm = () => {
   dialogTitle.value = '新增'
   frimInfo.value = {
     name: '',
-    leader: '',
+    leaderId: '',
     msg:'',
   }
 }
@@ -70,6 +70,11 @@ const submitClose = async(formData, form, type) => {
     })
     getFrim()
     dialogVisible.value = false;
+    frimInfo.value = {
+      name: '',
+      leaderId: '',
+      msg:'',
+    }
     return
   }
   if(!form) return
@@ -84,6 +89,11 @@ const submitClose = async(formData, form, type) => {
             })
           }
           dialogVisible.value = false;
+          frimInfo.value = {
+            name: '',
+            leaderId: '',
+            msg:'',
+          }
         })
       }
       if(type === 'add') {
@@ -93,6 +103,11 @@ const submitClose = async(formData, form, type) => {
               message: '新增成功',
               type: 'success',
             })
+          }
+          frimInfo.value = {
+            name: '',
+            leaderId: '',
+            msg:'',
           }
           dialogVisible.value = false;
         })
@@ -132,7 +147,7 @@ const chackFrim = (row) => {
     <el-table-column prop="name" align="center" label="分公司名称"></el-table-column>
     <el-table-column prop="leader" align="center" label="分公司负责人">
       <template #default="scope">
-        <span v-if="scope.row.leader">{{ scope.row.leader }}</span>
+        <span v-if="scope.row.leaderName">{{ scope.row.leaderName }}</span>
         <span style="color: red;" v-else>暂未分配</span>
       </template>
     </el-table-column>

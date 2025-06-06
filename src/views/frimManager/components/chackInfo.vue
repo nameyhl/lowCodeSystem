@@ -28,7 +28,7 @@ defineExpose({
     </div>
     <div class="frimLeader">
       <span class="label">分公司负责人：</span>
-      <span>{{ dialogInfo.leader || '暂未分配负责人' }}</span>
+      <span>{{ dialogInfo.leaderName || '暂未分配负责人' }}</span>
     </div>
     <div class="frimMsg">
       <span class="label">分公司信息：</span>

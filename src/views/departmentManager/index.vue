@@ -36,17 +36,22 @@ let columns = [
     label: '所属分公司名称',
   }
 ]
-
+let departmentInfo = ref({})
 let dialogVisible = ref(false);
 let View = ref(AddFrom)
 let dialogTitle = ref('新增')
 const openAdd = () => {
   dialogTitle.value = '新增'
   View.value = AddFrom
+  departmentInfo.value = {
+    name: '',
+    leader: '',
+    frim: '',
+    msg: '',
+  }
   dialogVisible.value = true;
 }
 
-let departmentInfo = ref({})
 const chackDepartment = (data) => {
   dialogTitle.value = '查看'
   View.value = ChackInfo
@@ -76,6 +81,12 @@ const submitClose = async (data, form, type) => {
       })
       getDepartement()
       dialogVisible.value = false;
+      departmentInfo.value = {
+        name: '',
+        leader: '',
+        frim: '',
+        msg: '',
+      }
     })
     return
   }
@@ -103,6 +114,12 @@ const submitClose = async (data, form, type) => {
         })
       }
       dialogVisible.value = false;
+      departmentInfo.value = {
+        name: '',
+        leader: '',
+        frim: '',
+        msg: '',
+      }
       dialogTitle.value = '';
     }else{
       console.log('error submit!!');
@@ -114,6 +131,12 @@ const closeDialog = () => {
   dialogVisible.value = false;
   View.value = null;
   dialogTitle.value = '';
+  departmentInfo.value = {
+    name: '',
+    leader: '',
+    frim: '',
+    msg: '',
+  }
 }
 </script>
 <template>
