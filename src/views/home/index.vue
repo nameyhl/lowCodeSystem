@@ -47,7 +47,7 @@ const routerTo = (item) => {
 <template>
   <el-container class="container">
     <el-header class="header-bg">rouyiMineSystem</el-header>
-    <el-container>
+    <el-container style="height: calc(100vh - 60px);">
       <el-aside width="200px">
         <el-menu>
           <template v-for="item in routes" :key="item.path">
@@ -79,7 +79,7 @@ const routerTo = (item) => {
           </el-tag>
         </div>
         <div class="viewBody">
-          <RouterView />
+          <RouterView style="height: 100%;"/>
         </div>
       </el-main>
     </el-container>
@@ -107,7 +107,7 @@ const routerTo = (item) => {
     .viewBody{
       background-color: @white;
       padding: 10px;
-      height: calc(100% - 50px);
+      height: calc(100% - 30px);
     }
   }
 

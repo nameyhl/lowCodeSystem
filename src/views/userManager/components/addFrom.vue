@@ -3,6 +3,20 @@ import { ref } from 'vue';
 
 import { getDepartmentList } from '@/api/department';
 
+const props = defineProps({
+  userInfo: {
+    type: Object,
+    default: () => {
+      return {}
+    }
+  }
+})
+
+let form = ref(props.userInfo)
+
+console.log(form);
+
+
 let deprotments = ref([])
 const getDepartments = async () => {
   deprotments.value = []
@@ -20,17 +34,6 @@ const getDepartments = async () => {
 
 getDepartments()
 
-let form = ref({
-  username: '',
-  name:'',
-  nikename:'',
-  birth:'',
-  pthone: '',
-  email:'',
-  wechat:'',
-  departmentId: '',
-})
-
 const rules = ref({
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -41,7 +44,7 @@ const rules = ref({
   birth: [
     { required: true, message: '请选择生日', trigger: 'blur' },
   ],
-  pthone: [
+  phone: [
     { required: true, message: '请输入电话', trigger: 'blur' },
   ],
   email: [
@@ -60,30 +63,10 @@ const formRef = ref(null)
 
 const submit = () => {
   emit('submit', form.value, formRef.value, 'add')
-  form.value = {
-    username: '',
-    name:'',
-    nikename:'',
-    birth:'',
-    pthone: '',
-    email:'',
-    wechat:'',
-    departmentId: '',
-  }
 }
 
 const close = () => {
   emit('close')
-  form.value = {
-    username: '',
-    name:'',
-    nikename:'',
-    birth:'',
-    pthone: '',
-    email:'',
-    wechat:'',
-    departmentId: '',
-  }
 }
 
 </script>
@@ -109,7 +92,11 @@ const close = () => {
       </el-col>
       <el-col :span="12">
         <el-form-item prop="birth" label="生日">
-          <el-date-picker v-model="form.birth" type="date" placeholder="选择日期" style="width: 100%;"></el-date-picker>
+          <el-date-picker v-model="form.birth"
+          type="datetime"
+          format="YYYY-MM-DD"
+          placeholder="选择日期"
+          style="width: 100%;"></el-date-picker>
         </el-form-item>
       </el-col>
     </el-row>
@@ -120,8 +107,8 @@ const close = () => {
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item prop="pthone" label="电话">
-          <el-input v-model="form.pthone" placeholder="请输入电话"></el-input>
+        <el-form-item prop="phone" label="电话">
+          <el-input v-model="form.phone" placeholder="请输入电话"></el-input>
         </el-form-item>
       </el-col>
     </el-row>
