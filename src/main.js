@@ -4,7 +4,7 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-import router from './router/index.js'
+import { setupRouter } from './router/index.js'
 import './assets/base.less'
 
 import App from './App.vue'
@@ -19,6 +19,7 @@ app.use(ElementPlus,{
   locale: zhCn,
 })
 app.use(pinia)
-app.use(router)
+await setupRouter(app).then(() => {
+  app.mount('#app')
+})
 
-app.mount('#app')

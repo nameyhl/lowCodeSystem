@@ -1,3 +1,4 @@
+<!-- 部门管理页面 -->
 <script setup>
 import Operate from '@/components/operate/index.vue'
 import { ref } from 'vue';

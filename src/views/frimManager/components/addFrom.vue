@@ -12,15 +12,6 @@ const props = defineProps({
 
 let form = ref(props.frimInfo)
 
-
-
-
-let emp = ref([
-  { id: '1', name: '张三' },
-  { id: '2', name: '李四' },
-  { id: '3', name: '王五' },
-])
-
 let rules = ref({
   name: [
     { required: true, message: '请输入分公司名称', trigger: 'blur' },

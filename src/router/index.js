@@ -31,6 +31,10 @@ const constantRoutes = [
     component: () => import('@/views/login/index.vue')
   },
   {
+          path: '/:pathMatch(.*)',
+          redirect: '/404'
+  },
+  {
     path: '/home',
     name: 'home',
     component: () => import('@/views/home/index.vue'),
@@ -76,37 +80,57 @@ const getFirstLevelRoute = (routes) => {
 import { getRoutes } from '@/api/routes.js'
 
 // 动态加载路由并添加到router实例
-const initializeRouter = async () => {
-  try {
-    const res = await getRoutes()
-    // 先对子路由进行排序（如果有的话）
-    let routes = sortRoutesByLevel(res.data.tree)
-    // 找到最上层路由
-    router.push('/home')
-    const dynamicRoutes = formatRoutes(routes || [])
-    // 添加动态路由
-    dynamicRoutes.forEach(route => {
-      router.addRoute('home',route)
-      showRoutes.push(route)
-    })
+// const initializeRouter = async () => {
+//   try {
+//     const res = await getRoutes()
+//     // 先对子路由进行排序（如果有的话）
+//     let routes = sortRoutesByLevel(res.data.tree)
+//     // 找到最上层路由
+//     router.push('/home')
+//     const dynamicRoutes = formatRoutes(routes || [])
+//     // 添加动态路由
+//     dynamicRoutes.forEach(route => {
+//       // router.addRoute('home',route)
+//       showRoutes.push(route)
+//     })
 
-    // 最后添加404路由
-    router.addRoute({
-      path: '/:pathMatch(.*)',
-      redirect: '/404'
-    })
+//     // 最后添加404路由
+//     router.addRoute({
+//       path: '/:pathMatch(.*)',
+//       redirect: '/404'
+//     })
 
-    return true
-  } catch (error) {
-    console.error('路由加载失败:', error)
-    // 确保至少有404路由
-    router.addRoute({
-      path: '/:pathMatch(.*)',
-      redirect: '/404'
-    })
-    return false
-  }
+//     return true
+//   } catch (error) {
+//     console.error('路由加载失败:', error)
+//     // 确保至少有404路由
+//     router.addRoute({
+//       path: '/:pathMatch(.*)',
+//       redirect: '/404'
+//     })
+//     return false
+//   }
+// }
+
+const initializeRouter = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await getRoutes()
+      // 对子路由排序
+      let routes = sortRoutesByLevel(res.data.tree)
+      const dynamicRoutes = formatRoutes(routes || [])
+      dynamicRoutes.forEach(route => {
+        router.addRoute('home',route)
+        showRoutes.push(route)
+      })
+      resolve(showRoutes)
+    }catch (error) {
+      console.error('路由加载失败:', error)
+      reject(error)
+    }
+  })
 }
+
 
 // 格式化路由
 const formatRoutes = (routes) => {
@@ -127,6 +151,10 @@ const loadView = (view) => {
 }
 
 // 立即执行异步路由初始化
-initializeRouter()
+export const setupRouter = async (app) => {
+  await initializeRouter()
+  app.use(router)
+}
+
 export { showRoutes }
-export default router
+// export default router
