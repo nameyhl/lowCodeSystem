@@ -1,17 +1,16 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 const props = defineProps({
   frimInfo: {
     type: Object,
-    default: () => ({})
-  }
+    default: () => ({}),
+  },
 })
 
 let form = ref()
 
 form.value = props.frimInfo
-
 
 let emp = ref([
   { id: '1', name: '张三' },
@@ -19,20 +18,22 @@ let emp = ref([
   { id: '3', name: '王五' },
 ])
 
-import { getUserByFrimId } from '@/api/user.js';
+import { getUserByFrimId } from '@/api/user.js'
 
 let emps = ref([])
 const getEmps = async (frimId) => {
   emps.value = []
-  await getUserByFrimId({frimId}).then(res => {
-    if(res.data.length > 0){
+  await getUserByFrimId({ frimId }).then((res) => {
+    if (res.data.length > 0) {
       emps.value = res.data
       form.value.leaderId = res.data[0].id
-    }else{
-      emps.value = [{
-        id: null,
-        name: '暂无人员'
-      }]
+    } else {
+      emps.value = [
+        {
+          id: null,
+          name: '暂无人员',
+        },
+      ]
       form.value.leaderId = null
     }
   })
@@ -41,12 +42,10 @@ const getEmps = async (frimId) => {
 getEmps(form.value.id)
 
 let rules = ref({
-  name: [
-    { required: true, message: '请输入分公司名称', trigger: 'blur' },
-  ],
+  name: [{ required: true, message: '请输入分公司名称', trigger: 'blur' }],
 })
 
-import { defineEmits } from 'vue';
+import { defineEmits } from 'vue'
 const emit = defineEmits(['submit', 'close'])
 
 const close = () => {
@@ -56,7 +55,7 @@ const close = () => {
 const formRef = ref(null)
 
 const submit = () => {
-  emit('submit', form.value , formRef.value, 'update')
+  emit('submit', form.value, formRef.value, 'update')
 }
 </script>
 <template>
@@ -91,16 +90,16 @@ const submit = () => {
     </el-row>
   </el-form>
   <div class="foot">
-  <el-button style="padding: 8px 15px" type="primary" @click="submit">提交</el-button>
-  <el-button style="padding: 8px 15px" @click="close">取消</el-button>
+    <el-button style="padding: 8px 15px" type="primary" @click="submit">提交</el-button>
+    <el-button style="padding: 8px 15px" @click="close">取消</el-button>
   </div>
 </template>
 <style lang="less" scoped>
-.foot{
+.foot {
   text-align: center;
   margin-top: 20px;
 }
-.el-row{
+.el-row {
   margin-bottom: 20px;
 }
 </style>

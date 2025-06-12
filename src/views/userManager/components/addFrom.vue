@@ -1,33 +1,30 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
-import { getDepartmentList } from '@/api/department';
+import { getDepartmentList } from '@/api/department'
 
 const props = defineProps({
   userInfo: {
     type: Object,
     default: () => {
       return {}
-    }
-  }
+    },
+  },
 })
 
 let form = ref(props.userInfo)
 
-console.log(form);
-
+console.log(form)
 
 let deprotments = ref([])
 const getDepartments = async () => {
   deprotments.value = []
-  await getDepartmentList().then(res => {
-    res.data.forEach(item => {
-      deprotments.value.push(
-      {
+  await getDepartmentList().then((res) => {
+    res.data.forEach((item) => {
+      deprotments.value.push({
         label: `${item.name}(${item.frimName})`,
-        value: item.id
-      }
-    )
+        value: item.id,
+      })
     })
   })
 }
@@ -35,27 +32,13 @@ const getDepartments = async () => {
 getDepartments()
 
 const rules = ref({
-  username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
- ],
-  name: [
-    { required: true, message: '请输入姓名', trigger: 'blur' },
-  ],
-  birth: [
-    { required: true, message: '请选择生日', trigger: 'blur' },
-  ],
-  phone: [
-    { required: true, message: '请输入电话', trigger: 'blur' },
-  ],
-  email: [
-    { required: true, message: '请输入邮箱', trigger: 'blur' },
-  ],
-  wechat: [
-    { required: true, message: '请输入微信', trigger: 'blur' },
-  ],
-  departmentId: [
-    { required: true, message: '请选择部门', trigger: 'blur' },
-  ],
+  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+  birth: [{ required: true, message: '请选择生日', trigger: 'blur' }],
+  phone: [{ required: true, message: '请输入电话', trigger: 'blur' }],
+  email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
+  wechat: [{ required: true, message: '请输入微信', trigger: 'blur' }],
+  departmentId: [{ required: true, message: '请选择部门', trigger: 'blur' }],
 })
 
 const emit = defineEmits(['submit', 'close'])
@@ -68,10 +51,9 @@ const submit = () => {
 const close = () => {
   emit('close')
 }
-
 </script>
 <template>
-  <el-form :model="form" ref='formRef' :rules="rules" label-width="100px">
+  <el-form :model="form" ref="formRef" :rules="rules" label-width="100px">
     <el-row>
       <el-col :span="12">
         <el-form-item prop="username" label="用户名">
@@ -92,11 +74,13 @@ const close = () => {
       </el-col>
       <el-col :span="12">
         <el-form-item prop="birth" label="生日">
-          <el-date-picker v-model="form.birth"
-          type="datetime"
-          format="YYYY-MM-DD"
-          placeholder="选择日期"
-          style="width: 100%;"></el-date-picker>
+          <el-date-picker
+            v-model="form.birth"
+            type="datetime"
+            format="YYYY-MM-DD"
+            placeholder="选择日期"
+            style="width: 100%"
+          ></el-date-picker>
         </el-form-item>
       </el-col>
     </el-row>
@@ -121,7 +105,12 @@ const close = () => {
       <el-col :span="12">
         <el-form-item prop="departmentId" label="部门">
           <el-select v-model="form.departmentId" placeholder="请选择部门">
-            <el-option v-for="item in deprotments" :key="item.id" :value="item.value" :label="item.label"></el-option>
+            <el-option
+              v-for="item in deprotments"
+              :key="item.id"
+              :value="item.value"
+              :label="item.label"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -133,11 +122,11 @@ const close = () => {
   </div>
 </template>
 <style lang="less" scoped>
-.foot{
+.foot {
   text-align: center;
   margin-top: 20px;
 }
-.el-row{
+.el-row {
   margin-bottom: 20px;
 }
 </style>

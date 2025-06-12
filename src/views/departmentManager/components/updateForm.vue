@@ -1,27 +1,29 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 const props = defineProps({
   departmentInfo: {
     type: Object,
-    default: () => ({})
+    default: () => ({}),
   },
 })
 
-import { getUserByDepartmentId, getUserByFrimId } from '@/api/user.js';
+import { getUserByDepartmentId, getUserByFrimId } from '@/api/user.js'
 
 let emps = ref([])
 const getEmps = async (frimId) => {
   emps.value = []
-  await getUserByFrimId({frimId}).then(res => {
-    if(res.data.length > 0){
+  await getUserByFrimId({ frimId }).then((res) => {
+    if (res.data.length > 0) {
       emps.value = res.data
       form.value.leaderId = res.data[0].id
-    }else{
-      emps.value = [{
-        id: null,
-        name: '暂无人员'
-      }]
+    } else {
+      emps.value = [
+        {
+          id: null,
+          name: '暂无人员',
+        },
+      ]
       form.value.leaderId = null
     }
   })
@@ -29,25 +31,25 @@ const getEmps = async (frimId) => {
 
 const changeFrim = async () => {
   getEmps(form.value.frimId)
+  form.value.leaderId = null
 }
 
 const getEmp = async (id) => {
   emps.value = []
-  await getUserByDepartmentId(id).then(res => {
+  await getUserByDepartmentId(id).then((res) => {
     emps.value = res.data
     form.value.leaderId = res.data[0].id
-
   })
 }
-getEmp({departmentId: props.departmentInfo.id})
+getEmp({ departmentId: props.departmentInfo.id })
 
 let frimList = ref([])
-import { getFrimList } from '@/api/frim';
+import { getFrimList } from '@/api/frim'
 const getFrim = async () => {
   frimList.value = []
-  await getFrimList().then(res => {
+  await getFrimList().then((res) => {
     form.value.frimId = res.data[0].id
-    res.data.forEach(item => {
+    res.data.forEach((item) => {
       frimList.value.push({
         label: item.name,
         value: item.id,
@@ -57,7 +59,6 @@ const getFrim = async () => {
 }
 
 getFrim()
-
 
 let form = ref(props.departmentInfo)
 
@@ -73,7 +74,7 @@ const close = () => {
 }
 </script>
 <template>
- <el-form :model="form" ref="formRef" :rules="rules" label-width="100px">
+  <el-form :model="form" ref="formRef" :rules="rules" label-width="100px">
     <el-row>
       <el-col :span="12">
         <el-form-item prop="name" label="部门名称:">
@@ -81,9 +82,14 @@ const close = () => {
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item prop="leaderId" label="部门负责人:" >
+        <el-form-item prop="leaderId" label="部门负责人:">
           <el-select v-model="form.leaderId" placeholder="请选择部门负责人" @change="changeFrim">
-            <el-option v-for="item in emps" :key="item.value" :label="item.name" :value="item.id"></el-option>
+            <el-option
+              v-for="item in emps"
+              :key="item.value"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -92,7 +98,12 @@ const close = () => {
       <el-col :span="12">
         <el-form-item prop="frimId" label="部门所属公司:">
           <el-select v-model="form.frimId" placeholder="请选择部门所属公司" @change="changeFrim">
-            <el-option v-for="item in frimList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            <el-option
+              v-for="item in frimList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -116,11 +127,11 @@ const close = () => {
   </div>
 </template>
 <style lang="less" scoped>
-.foot{
+.foot {
   text-align: center;
   margin-top: 20px;
 }
-.el-row{
+.el-row {
   margin-bottom: 20px;
 }
 </style>

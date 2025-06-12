@@ -1,5 +1,5 @@
 // router/index.js
-import { createRouter, createWebHistory } from "vue-router"
+import { createRouter, createWebHistory } from 'vue-router'
 // import Layout from "@/views/Layout.vue"
 // import { getRouteList } from '@/api/route'
 
@@ -10,8 +10,8 @@ const showRoutes = [
     name: '路由管理',
     level: -1,
     component: () => import('@/views/addRoute/index.vue'),
-    children: []
-  }
+    children: [],
+  },
 ]
 
 // 基础路由
@@ -23,35 +23,35 @@ const constantRoutes = [
   {
     path: '/404',
     name: '404',
-    component: () => import('@/views/notFound/index.vue')
+    component: () => import('@/views/notFound/index.vue'),
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/login/index.vue')
+    component: () => import('@/views/login/index.vue'),
   },
   {
-          path: '/:pathMatch(.*)',
-          redirect: '/404'
+    path: '/:pathMatch(.*)',
+    redirect: '/404',
   },
   {
     path: '/home',
     name: 'home',
     component: () => import('@/views/home/index.vue'),
-    children: showRoutes
-  }
+    children: showRoutes,
+  },
   // 注意：这里不包含通配符404路由，将在动态路由加载后添加
 ]
 
 // 创建路由实例
 const router = createRouter({
   history: createWebHistory(),
-  routes: constantRoutes
+  routes: constantRoutes,
 })
 
 const sortRoutesByLevel = (routes) => {
   // 先对子路由进行排序（如果有的话）
-  routes.forEach(route => {
+  routes.forEach((route) => {
     if (route.children && route.children.length > 0) {
       route.children = sortRoutesByLevel(route.children)
     }
@@ -62,18 +62,17 @@ const sortRoutesByLevel = (routes) => {
     // 将level转换为数字比较，因为有些是字符串有些是数字
     const levelA = typeof a.level === 'string' ? parseInt(a.level) : a.level
     const levelB = typeof b.level === 'string' ? parseInt(b.level) : b.level
-    return  levelB - levelA
+    return levelB - levelA
   })
 }
 const getFirstLevelRoute = (routes) => {
   let res = {}
   res = routes[0]
-  if(res.children && res.children.length == 0){
-    console.log(res);
+  if (res.children && res.children.length == 0) {
+    console.log(res)
     return res
   }
   getFirstLevelRoute(res.children)
-
 }
 
 // 获取路由列表
@@ -84,7 +83,7 @@ import { getRoutes } from '@/api/routes.js'
 //   try {
 //     const res = await getRoutes()
 //     // 先对子路由进行排序（如果有的话）
-//     let routes = sortRoutesByLevel(res.data.tree)
+//     let routes = sortRoutesByLevel(res.tree)
 //     // 找到最上层路由
 //     router.push('/home')
 //     const dynamicRoutes = formatRoutes(routes || [])
@@ -119,28 +118,27 @@ const initializeRouter = () => {
       // 对子路由排序
       let routes = sortRoutesByLevel(res.data.tree)
       const dynamicRoutes = formatRoutes(routes || [])
-      dynamicRoutes.forEach(route => {
-        router.addRoute('home',route)
+      dynamicRoutes.forEach((route) => {
+        router.addRoute('home', route)
         showRoutes.push(route)
       })
       resolve(showRoutes)
-    }catch (error) {
+    } catch (error) {
       console.error('路由加载失败:', error)
       reject(error)
     }
   })
 }
 
-
 // 格式化路由
 const formatRoutes = (routes) => {
-  return routes.map(route => ({
+  return routes.map((route) => ({
     path: route.router,
     name: route.name,
     level: route.level,
     component: loadView(route.view),
     meta: route.meta || {},
-    children: route.children ? formatRoutes(route.children) : []
+    children: route.children ? formatRoutes(route.children) : [],
   }))
 }
 

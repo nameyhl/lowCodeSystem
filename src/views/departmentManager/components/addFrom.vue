@@ -1,25 +1,23 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 let props = defineProps({
   departmetInfo: {
     type: Object,
-    default: () => ({})
-  }
+    default: () => ({}),
+  },
 })
 
 let form = ref(props.departmetInfo)
 let rules = ref({
-  name: [
-    { required: true, message: '请输入部门名称', trigger: 'blur' },
-  ],
+  name: [{ required: true, message: '请输入部门名称', trigger: 'blur' }],
 })
 
-import { getUserByFrimId } from '@/api/user.js';
+import { getUserByFrimId } from '@/api/user.js'
 let emps = ref([])
 const getEmps = async (frimId) => {
   emps.value = []
-  await getUserByFrimId({frimId}).then(res => {
+  await getUserByFrimId({ frimId }).then((res) => {
     form.value.leader = res.data[0].id
     emps.value = res.data
   })
@@ -30,13 +28,13 @@ const changeFrim = async () => {
 }
 
 let frimList = ref([])
-import { getFrimList } from '@/api/frim';
+import { getFrimList } from '@/api/frim'
 const getFrim = async () => {
   frimList.value = []
-  await getFrimList().then(res => {
+  await getFrimList().then((res) => {
     form.value.frimId = res.data[0].id
     getEmps(form.value.frimId)
-    res.data.forEach(item => {
+    res.data.forEach((item) => {
       frimList.value.push({
         label: item.name,
         value: item.id,
@@ -47,7 +45,7 @@ const getFrim = async () => {
 
 getFrim()
 
-import { defineEmits } from 'vue';
+import { defineEmits } from 'vue'
 const emit = defineEmits(['submit', 'close'])
 
 const formRef = ref(null)
@@ -70,7 +68,12 @@ const close = () => {
       <el-col :span="12">
         <el-form-item prop="leader" label="部门负责人:">
           <el-select v-model="form.leader" placeholder="请选择部门所属公司">
-            <el-option v-for="item in emps" :key="item.value" :label="item.name" :value="item.id"></el-option>
+            <el-option
+              v-for="item in emps"
+              :key="item.value"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -79,7 +82,12 @@ const close = () => {
       <el-col :span="12">
         <el-form-item prop="frimId" label="部门所属公司:">
           <el-select v-model="form.frimId" placeholder="请选择部门所属公司" @change="changeFrim">
-            <el-option v-for="item in frimList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            <el-option
+              v-for="item in frimList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -103,11 +111,11 @@ const close = () => {
   </div>
 </template>
 <style lang="less" scoped>
-.foot{
+.foot {
   text-align: center;
   margin-top: 20px;
 }
-.el-row{
+.el-row {
   margin-bottom: 20px;
 }
 </style>

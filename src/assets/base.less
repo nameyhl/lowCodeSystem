@@ -1,8 +1,8 @@
 // 红色主色调
 @primary-red: #ff0000; // 纯红
-@dark-red: #cc0000;    // 暗红
-@light-red: #ff3333;   // 亮红
-@pale-red: #ffcccc;    // 浅粉红
+@dark-red: #cc0000; // 暗红
+@light-red: #ff3333; // 亮红
+@pale-red: #ffcccc; // 浅粉红
 
 // 辅助色
 @white: #ffffff;
@@ -11,10 +11,10 @@
 @gray-dark: #333333;
 
 // 其他红色变体
-@burgundy: #800020;    // 酒红
-@crimson: #dc143c;     // 深红
-@scarlet: #ff2400;     // 猩红
-@ruby: #e0115f;        // 宝石红
+@burgundy: #800020; // 酒红
+@crimson: #dc143c; // 深红
+@scarlet: #ff2400; // 猩红
+@ruby: #e0115f; // 宝石红
 
 // 应用颜色
 @body-bg: #ffe5e5;
@@ -40,7 +40,7 @@
 @font-size: 16px;
 @font-color: @gray-dark;
 
-.header-bg{
+.header-bg {
   background-color: @header-bg;
   color: @header-text;
   margin-bottom: 10px;
@@ -68,24 +68,18 @@
 
 // 五色阶渐变
 .red-white-5step-toRight {
-  background: linear-gradient(to right,
-    @primary-red,
-    #ff6666,
-    #ff9999,
-    #ffcccc,
-    @white);
+  background: linear-gradient(to right, @primary-red, #ff6666, #ff9999, #ffcccc, @white);
 }
 
 // 红色到透明 (看起来像淡出效果)
 .red-to-transparent {
-  background: linear-gradient(to right, @primary-red, rgba(255,255,255,0));
+  background: linear-gradient(to right, @primary-red, rgba(255, 255, 255, 0));
 }
 
 // 白色到透明覆盖在红色背景上
 .white-overlay-on-red {
   background:
-    linear-gradient(to right, rgba(255,255,255,0.8), rgba(255,255,255,0)),
-    @primary-red;
+    linear-gradient(to right, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)), @primary-red;
 }
 
 .red-white-radial {
@@ -96,48 +90,51 @@
   background: radial-gradient(circle at center, @white, @primary-red 70%);
 }
 
-#app{
+#app {
   background-color: @body-bg;
 }
 
-.addButton{
+.addButton {
   background-color: @addButton-bg;
   color: @white;
   border: none;
-  &:hover{
+  &:hover {
     background-color: @addButton-hover;
     color: @addButton-text-hover;
   }
 }
 
-.updateButton{
+.updateButton {
   background-color: @updateButton-bg;
   color: @white;
   border: none;
-  &:hover{
+  &:hover {
     background-color: @updateButton-hover;
     color: @updateButton-text-hover;
   }
 }
-.deleteButton{
+body {
+  margin: 0;
+  padding: 0;
+}
+.deleteButton {
   background-color: @deleteButton-bg;
   color: @white;
   border: none;
-  &:hover{
+  &:hover {
     background-color: @deleteButton-hover;
     color: @deleteButton-text-hover;
   }
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-.el-select-dropdown__item{
+.el-select-dropdown__item {
   padding: 0 32px 0 20px;
 }
 
-.el-table--fit{
-  height: calc(100% - 50px)
+.tableBox {
+  height: calc(100% - 100px);
+}
+
+.el-table--fit {
+  height: 100%;
 }

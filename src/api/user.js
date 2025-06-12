@@ -1,6 +1,6 @@
-import request from "@/utils/requset";
+import request from '@/utils/requset'
 
-export function addUser(data){
+export function addUser(data) {
   return request({
     url: '/user/addUser',
     method: 'post',
@@ -8,14 +8,15 @@ export function addUser(data){
   })
 }
 
-export function getUser(){
+export function getUser(params) {
   return request({
     url: '/user/getUser',
     method: 'get',
+    params: params,
   })
 }
 
-export function updateUser(data){
+export function updateUser(data) {
   return request({
     url: '/user/updateUser',
     method: 'post',
@@ -23,7 +24,7 @@ export function updateUser(data){
   })
 }
 
-export function deleteUser(id){
+export function deleteUser(id) {
   return request({
     url: '/user/deleteUser',
     method: 'delete',
@@ -31,7 +32,7 @@ export function deleteUser(id){
   })
 }
 
-export function getUserByDepartmentId(id){
+export function getUserByDepartmentId(id) {
   return request({
     url: '/user/getUserByDepartmentId',
     method: 'get',
@@ -39,7 +40,7 @@ export function getUserByDepartmentId(id){
   })
 }
 
-export function getUserByFrimId(id){
+export function getUserByFrimId(id) {
   return request({
     url: '/user/getUserByFrimId',
     method: 'get',
