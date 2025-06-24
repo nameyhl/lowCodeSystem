@@ -1,8 +1,9 @@
 import request from '@/utils/requset'
 
+const className = '/department'
 export function addDepartment(data) {
   return request({
-    url: '/department/addDepartment',
+    url: `${className}/addDepartment`,
     method: 'post',
     data,
   })
@@ -10,7 +11,7 @@ export function addDepartment(data) {
 
 export function getDepartmentList(params) {
   return request({
-    url: '/department/getDepartment',
+    url: `${className}/getDepartment`,
     method: 'get',
     params,
   })
@@ -18,7 +19,7 @@ export function getDepartmentList(params) {
 
 export function updateDepartment(data) {
   return request({
-    url: '/department/updateDepartment',
+    url: `${className}/updateDepartment`,
     method: 'post',
     data,
   })
@@ -26,7 +27,7 @@ export function updateDepartment(data) {
 
 export function deleteDepartment(id) {
   return request({
-    url: '/department/deleteDepartment',
+    url: `${className}/deleteDepartment`,
     method: 'delete',
     params: id,
   })

@@ -1,8 +1,9 @@
 import request from '@/utils/requset'
 
+const className = '/frim'
 export const addFrim = (data) => {
   return request({
-    url: '/frim/addFrim',
+    url: `${className}/addFrim`,
     method: 'post',
     data: data,
   })
@@ -10,7 +11,7 @@ export const addFrim = (data) => {
 
 export const getFrimList = (params) => {
   return request({
-    url: '/frim/getFrims',
+    url: `${className}/getFrims`,
     method: 'get',
     params,
   })
@@ -18,7 +19,7 @@ export const getFrimList = (params) => {
 
 export const updateFrim = (data) => {
   return request({
-    url: '/frim/updateFrim',
+    url: `${className}/updateFrim`,
     method: 'post',
     data: data,
   })
@@ -26,7 +27,7 @@ export const updateFrim = (data) => {
 
 export const deleteFrim = (data) => {
   return request({
-    url: '/frim/deleteFrim',
+    url: `${className}/deleteFrim`,
     method: 'post',
     data: data,
   })
