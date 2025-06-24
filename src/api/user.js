@@ -1,49 +1,65 @@
 import request from '@/utils/requset'
+let className = '/User'
 
+// 新增用户
 export function addUser(data) {
   return request({
-    url: '/user/addUser',
+    url: `${className}/addUser`,
     method: 'post',
     data: data,
   })
 }
 
+// 获取用户
 export function getUser(params) {
   return request({
-    url: '/user/getUser',
+    url: `${className}/getUser`,
     method: 'get',
     params: params,
   })
 }
 
+// 修改用户信息
 export function updateUser(data) {
   return request({
-    url: '/user/updateUser',
+    url: `${className}/updateUser`,
     method: 'post',
     data: data,
   })
 }
 
+// 删除用户
 export function deleteUser(id) {
   return request({
-    url: '/user/deleteUser',
+    url: `${className}/deleteUser`,
     method: 'delete',
     params: id,
   })
 }
 
+// 根据部门id获取用户
 export function getUserByDepartmentId(id) {
   return request({
-    url: '/user/getUserByDepartmentId',
+    url: `${className}/getUserByDepartmentId`,
     method: 'get',
     params: id,
   })
 }
 
+// 根据分公司id获取用户
 export function getUserByFrimId(id) {
   return request({
-    url: '/user/getUserByFrimId',
+    url: `${className}/getUserByFrimId`,
     method: 'get',
     params: id,
+  })
+}
+
+// 搜索用户
+export function searchUser(data) {
+  return request({
+    url: `${className}/searchUser`,
+    method: 'post',
+    data,
   })
 }

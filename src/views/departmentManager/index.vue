@@ -23,12 +23,18 @@ let page = ref(1)
 let size = ref(10)
 let totle = ref(0)
 
+let searchForm = ref({
+  name: '',
+  frimId: '',
+})
 let departmentList = ref([])
 const getDepartement = async () => {
   departmentList.value = []
   let params = {
     page: page.value,
     size: size.value,
+    name: searchForm.value.name,
+    frimId: searchForm.value.frimId,
   }
   await getDepartmentList(params).then((res) => {
     departmentList.value = res.data.data
@@ -164,9 +170,52 @@ const closeDialog = () => {
     msg: '',
   }
 }
+
+let frimList = ref([])
+import { getFrimList } from '@/api/frim'
+const getFrim = async () => {
+  frimList.value = []
+  await getFrimList().then((res) => {
+    res.data.forEach((item) => {
+      frimList.value.push({
+        label: item.name,
+        value: item.id,
+      })
+    })
+  })
+}
+
+getFrim()
+
+const search = () => {}
 </script>
 <template>
-  <Operate @add="openAdd" :showDelete="false" />
+  <Operate @add="openAdd" :showDelete="false">
+    <template #addName>添加部门</template>
+    <template #searchFrom>
+      <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+        <el-form-item label="部门名称" prop="name">
+          <el-input
+            v-model="searchForm.name"
+            placeholder="请输入部门名称"
+            style="width: 200px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="分公司名称" prop="frimId">
+          <el-select
+            v-model="searchForm.frimId"
+            placeholder="请选择分公司名称"
+            style="width: 200px"
+          >
+            <el-option v-for="item in frimList" :label="item.label" :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" size="mini" @click="getDepartement">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </template>
+  </Operate>
   <div class="tableBox">
     <el-table
       v-loading="tableLoading"

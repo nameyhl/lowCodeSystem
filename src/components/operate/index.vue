@@ -23,14 +23,16 @@ const addObj = () => {
 </script>
 <template>
   <div class="searchBody">
-    <slot name="searchFrom"></slot>
+    <div class="searchBox">
+      <slot name="searchFrom"></slot>
+    </div>
     <div class="operateBox">
       <el-button class="addButton" @click="addObj" v-if="showAdd">
         <el-icon>
           <component is="Plus" />
         </el-icon>
-        添加</el-button
-      >
+        <slot name="addName"></slot>
+      </el-button>
       <el-button class="deleteButton" @click="deleteObj" v-if="showDelete">
         <el-icon>
           <component is="Delete" />
@@ -44,5 +46,14 @@ const addObj = () => {
 .searchBody {
   display: flex;
   justify-content: space-between;
+
+  .searchBox {
+    width: 80%;
+  }
+  .operateBox {
+    width: 20%;
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 </style>

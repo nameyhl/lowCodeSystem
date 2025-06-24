@@ -161,7 +161,9 @@ const chackFrim = (row) => {
 }
 </script>
 <template>
-  <Operate @add="addForm" :showDelete="false" />
+  <Operate @add="addForm" :showDelete="false">
+    <template #addName>添加公司</template>
+  </Operate>
   <div class="tableBox">
     <el-table
       v-loading="tableLoading"

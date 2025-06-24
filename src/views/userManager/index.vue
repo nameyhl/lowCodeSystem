@@ -109,11 +109,19 @@ let page = ref(1)
 let size = ref(10)
 let total = ref(100)
 
+let searchForm = ref({
+  username: '',
+  name: '',
+  departmentId: '',
+})
 // 获取所有用户
 const getUserList = async () => {
   let params = {
     page: page.value,
     size: size.value,
+    name: searchForm.value.name,
+    username: searchForm.value.username,
+    departmentId: searchForm.value.departmentId,
   }
   await getUser(params).then((res) => {
     userList.value = res.data.data
@@ -124,7 +132,9 @@ getUserList()
 
 const handleSizeChange = (val) => {
   size.value = val
-  getUserList()
+  if (searchForm.value.departmentId || searchForm.value.username || searchForm.value.name) {
+    getUserList()
+  }
 }
 
 const handleCurrentChange = (val) => {
@@ -202,9 +212,67 @@ const submitDialog = async (data, form, type) => {
     }
   })
 }
+
+import { getDepartmentList } from '@/api/department'
+
+let departmentList = ref([{ label: '全部', value: '' }])
+const getDepartments = async () => {
+  await getDepartmentList().then((res) => {
+    res.data.forEach((item) => {
+      departmentList.value.push({
+        label: `${item.name}(${item.frimName})`,
+        value: item.id,
+      })
+    })
+  })
+}
+getDepartments()
+
+const search = async () => {
+  page.value = 1
+  size.value = 10
+  getUserList()
+}
 </script>
 <template>
-  <Operate @add="addEmployee" :showDelete="false"></Operate>
+  <Operate @add="addEmployee" :showDelete="false">
+    <template #addName>添加用户</template>
+    <template #searchFrom>
+      <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+        <el-form-item label="用户名">
+          <el-input
+            v-model="searchForm.username"
+            placeholder="请输入用户名"
+            style="width: 200px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="姓名">
+          <el-input
+            v-model="searchForm.name"
+            placeholder="请输入姓名"
+            style="width: 200px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="部门">
+          <el-select
+            v-model="searchForm.departmentId"
+            placeholder="请选择部门"
+            style="width: 200px"
+          >
+            <el-option
+              v-for="item in departmentList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="search" type="primary">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </template>
+  </Operate>
   <div class="tableBox">
     <el-table :data="userList" style="width: 100%" border>
       <el-table-column type="selection" width="55"> </el-table-column>

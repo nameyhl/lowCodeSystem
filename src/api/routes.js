@@ -1,24 +1,44 @@
-import request from "@/utils/requset";
+import request from '@/utils/requset'
+
+let className = '/routes'
 
 export const getRoutes = () => {
   return request({
-    url: '/routes/getRoutes',
-    method: 'get'
+    url: `${className}/getRoutes`,
+    method: 'get',
   })
 }
 
 export const addRoutes = (data) => {
   return request({
-    url: `/routes/addRoute`,
+    url: `${className}/addRoute`,
     method: 'post',
-    data
+    data,
   })
 }
 
 export const deleteRoutes = (data) => {
   return request({
-    url: `/routes/deleteRoutes`,
+    url: `${className}/deleteRoutes`,
     method: 'post',
-    data
+    data,
+  })
+}
+
+// 修改路由
+export const updateRoutes = (data) => {
+  return request({
+    url: `${className}/updateRoute`,
+    method: 'post',
+    data,
+  })
+}
+
+// 查询路由
+export const searchRoutes = (data) => {
+  return request({
+    url: `${className}/searchRoutes`,
+    method: 'post',
+    data,
   })
 }
