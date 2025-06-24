@@ -1,4 +1,4 @@
-import request from "@/utils/requset";
+import request from '@/utils/requset'
 
 export const addFrim = (data) => {
   return request({
@@ -8,10 +8,11 @@ export const addFrim = (data) => {
   })
 }
 
-export const getFrimList = () => {
+export const getFrimList = (params) => {
   return request({
     url: '/frim/getFrims',
     method: 'get',
+    params,
   })
 }
 

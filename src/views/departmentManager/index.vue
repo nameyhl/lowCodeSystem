@@ -18,15 +18,35 @@ import {
 
 let tableLoading = ref(true)
 
+// 分页
+let page = ref(1)
+let size = ref(10)
+let totle = ref(0)
+
 let departmentList = ref([])
 const getDepartement = async () => {
   departmentList.value = []
-  await getDepartmentList().then((res) => {
-    departmentList.value = res.data
+  let params = {
+    page: page.value,
+    size: size.value,
+  }
+  await getDepartmentList(params).then((res) => {
+    departmentList.value = res.data.data
     tableLoading.value = false
+    totle.value = res.data.total
   })
 }
 getDepartement()
+
+const handleSizeChange = (val) => {
+  size.value = val
+  getDepartement()
+}
+
+const handleCurrentChange = (val) => {
+  page.value = val
+  getDepartement()
+}
 
 let columns = [
   {
@@ -143,21 +163,6 @@ const closeDialog = () => {
     frim: '',
     msg: '',
   }
-}
-
-// 分页
-let page = ref(1)
-let size = ref(10)
-let totle = ref(0)
-
-const handleSizeChange = (val) => {
-  size.value = val
-  console.log('sizeChange')
-}
-
-const handleCurrentChange = (val) => {
-  page.value = val
-  console.log('pageChange')
 }
 </script>
 <template>

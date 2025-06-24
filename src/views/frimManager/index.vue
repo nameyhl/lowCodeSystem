@@ -52,13 +52,33 @@ import { ElMessage } from 'element-plus'
 let frimList = ref([])
 let tableLoading = ref(true)
 
+// 分页
+let page = ref(1)
+let size = ref(10)
+let total = ref(0)
+
 const getFrim = async () => {
-  await getFrimList().then((res) => {
-    frimList.value = res.data
+  let params = {
+    page: page.value,
+    size: size.value,
+  }
+  await getFrimList(params).then((res) => {
+    frimList.value = res.data.data
+    total.value = res.data.total
     tableLoading.value = false
   })
 }
 getFrim()
+
+const handleSizeChange = (val) => {
+  size.value = val
+  getFrim()
+}
+
+const handleCurrentChange = (val) => {
+  page.value = val
+  getFrim()
+}
 
 // 触发子组件提交事件，关闭弹窗，提交表单
 const submitClose = async (formData, form, type) => {
@@ -139,21 +159,6 @@ const chackFrim = (row) => {
     ViewRef.value.init(row)
   })
 }
-
-// 分页
-let page = ref(1)
-let size = ref(10)
-let totle = ref(0)
-
-const handleSizeChange = (val) => {
-  size.value = val
-  console.log('sizeChange')
-}
-
-const handleCurrentChange = (val) => {
-  page.value = val
-  console.log('pageChange')
-}
 </script>
 <template>
   <Operate @add="addForm" :showDelete="false" />
@@ -188,7 +193,7 @@ const handleCurrentChange = (val) => {
       v-model:page-size="size"
       :page-sizes="[10, 20, 30, 40]"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="totle"
+      :total="total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
