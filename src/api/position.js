@@ -14,7 +14,18 @@ export function addPosition(data) {
 export function getPositionList(data) {
   return request({
     url: `${className}/getPositionList`,
-    method: 'post',
-    data,
+    method: 'get',
+    params: data,
+  })
+}
+
+// 删除职位
+export function deletePosition(id) {
+  return request({
+    url: `${className}/deletePosition`,
+    method: 'delete',
+    params: {
+      id
+    }
   })
 }

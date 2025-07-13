@@ -4,10 +4,12 @@ import { ref } from 'vue'
 console.log(showRoutes)
 // 获取所有路由列表
 
+let openList = ref([])
 // 将路由重新排序
 const sortRoutesByLevel = (routes) => {
   // 先对子路由进行排序（如果有的话）
   routes.forEach((route) => {
+    openList.value.push(route.path)
     if (route.children && route.children.length > 0) {
       route.children = sortRoutesByLevel(route.children)
     }
@@ -48,7 +50,7 @@ const routerTo = (item) => {
     <el-header class="header-bg">rouyiMineSystem</el-header>
     <el-container style="height: calc(100vh - 60px)">
       <el-aside width="200px">
-        <el-menu>
+        <el-menu :default-openeds="openList">
           <template v-for="item in routes" :key="item.path">
             <el-sub-menu v-if="item.children.length != 0" :index="item.path">
               <template #title>
@@ -60,20 +62,12 @@ const routerTo = (item) => {
                     <span>{{ el.name }}</span>
                   </template>
                 </el-sub-menu>
-                <el-menu-item
-                  v-else
-                  @click="routerTo(el)"
-                  :class="chackMenu == el.path ? 'active' : ''"
-                >
+                <el-menu-item v-else @click="routerTo(el)" :class="chackMenu == el.path ? 'active' : ''">
                   {{ el.name }}
                 </el-menu-item>
               </template>
             </el-sub-menu>
-            <el-menu-item
-              v-else
-              @click="routerTo(item)"
-              :class="chackMenu == item.path ? 'active' : ''"
-            >
+            <el-menu-item v-else @click="routerTo(item)" :class="chackMenu == item.path ? 'active' : ''">
               {{ item.name }}
             </el-menu-item>
           </template>
@@ -81,18 +75,12 @@ const routerTo = (item) => {
       </el-aside>
       <el-main>
         <div class="breandcrumb">
-          <el-tag
-            closable
-            v-for="item in tagList"
-            @click="routerTo(item)"
-            :key="item.path"
-            @close="tagList.splice(tagList.indexOf(item), 1)"
-            type="danger"
-          >
+          <el-tag closable v-for="item in tagList" @click="routerTo(item)" :key="item.path"
+            @close="tagList.splice(tagList.indexOf(item), 1)" type="danger">
             {{ item.name }}
           </el-tag>
         </div>
-        <div class="viewBody">
+        <div :class="{ viewBody: tagList.length !== 0, viewBodyWithoutTag: tagList.length === 0 }">
           <RouterView style="height: 100%" />
         </div>
       </el-main>
@@ -107,11 +95,13 @@ const routerTo = (item) => {
   .el-main {
     padding: 0;
     height: calc(100vh - 60px);
+
     .breandcrumb {
       display: flex;
       font-size: @font-size;
       font-weight: 600;
       align-items: center;
+
       .el-tag {
         margin-right: 10px;
         padding-left: 5px;
@@ -120,10 +110,17 @@ const routerTo = (item) => {
         cursor: pointer;
       }
     }
+
     .viewBody {
       background-color: @white;
       padding: 10px;
       height: calc(100% - 50px);
+    }
+
+    .viewBodyWithoutTag {
+      background-color: @white;
+      padding: 10px;
+      height: calc(100% - 20px);
     }
   }
 
@@ -137,6 +134,7 @@ const routerTo = (item) => {
 
   .el-aside {
     height: calc(100vh - 60px);
+
     .el-menu {
       height: 100%;
       margin-right: 10px;
@@ -149,6 +147,7 @@ const routerTo = (item) => {
         color: @white;
         font-weight: 600;
       }
+
       .el-menu-item {
         font-size: @font-size;
       }

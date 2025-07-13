@@ -4,11 +4,17 @@ import { ref } from 'vue'
 const prop = defineProps({
   positionInfo: {
     type: Object,
-    default: () => {},
+    default: () => { },
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  }
 })
 
 let formData = ref(prop.positionInfo)
+let disabled = ref(prop.disabled)
+
 let rules = {
   name: [{ required: true, message: '请输入职位名称', trigger: 'blur' }],
   departmentId: [{ required: true, message: '请选择所属部门', trigger: 'blur' }],
@@ -59,7 +65,6 @@ const emit = defineEmits(['submit', 'close'])
 let formRef = ref(null)
 
 const submit = () => {
-  console.log(123)
   emit('submit', formData.value, formRef.value, 'add')
 }
 
@@ -73,23 +78,15 @@ const close = () => {
       <el-col :span="12">
         <!-- name -->
         <el-form-item prop="name" label="职位名称">
-          <el-input v-model="formData.name" placeholder="请输入职位名称"></el-input>
+          <el-input v-model="formData.name" placeholder="请输入职位名称" :disabled="disabled"></el-input>
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <!-- departmentId -->
         <el-form-item prop="departmentId" label="所属部门">
-          <el-select
-            v-model="formData.departmentId"
-            placeholder="请选择所属部门"
-            @change="departmentChange"
-          >
-            <el-option
-              v-for="item in deprotments"
-              :key="item.id"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
+          <el-select v-model="formData.departmentId" placeholder="请选择所属部门" :disabled="disabled"
+            @change="departmentChange">
+            <el-option v-for="item in deprotments" :key="item.id" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -98,13 +95,8 @@ const close = () => {
       <el-col :span="24">
         <!-- ledaerId -->
         <el-form-item prop="leaderId" label="负责人">
-          <el-select v-model="formData.leaderId" placeholder="请选择负责人">
-            <el-option
-              v-for="item in emps"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
+          <el-select v-model="formData.leaderId" placeholder="请选择负责人" :disabled="disabled">
+            <el-option v-for="item in emps" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -120,6 +112,7 @@ const close = () => {
   text-align: center;
   margin-top: 20px;
 }
+
 .el-row {
   margin-bottom: 20px;
 }
