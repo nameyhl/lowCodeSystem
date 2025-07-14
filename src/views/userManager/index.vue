@@ -16,10 +16,12 @@ let userInfo = ref({
   name: '',
   nikename: '',
   birth: '',
-  pthone: '',
+  phone: '',
   email: '',
   wechat: '',
-  departmentId: '',
+  departmentId: null,
+  frimId: null,
+  positionId: null,
 })
 
 const addEmployee = async () => {
@@ -29,10 +31,12 @@ const addEmployee = async () => {
     name: '',
     nikename: '',
     birth: '',
-    pthone: '',
+    phone: '',
     email: '',
     wechat: '',
-    departmentId: '',
+    departmentId: null,
+    frimId: null,
+    positionId: null,
   }
   addDialogVisible.value = true
 }
@@ -57,10 +61,12 @@ const closeDialog = () => {
     name: '',
     nikename: '',
     birth: '',
-    pthone: '',
+    phone: '',
     email: '',
     wechat: '',
-    departmentId: '',
+    departmentId: null,
+    frimId: null,
+    positionId: null,
   }
 }
 
@@ -112,7 +118,7 @@ let total = ref(100)
 let searchForm = ref({
   username: '',
   name: '',
-  departmentId: '',
+  departmentId: null,
 })
 // 获取所有用户
 const getUserList = async () => {
@@ -157,10 +163,12 @@ const submitDialog = async (data, form, type) => {
         name: '',
         nikename: '',
         birth: '',
-        pthone: '',
+        phone: '',
         email: '',
         wechat: '',
-        departmentId: '',
+        departmentId: null,
+        frimId: null,
+        positionId: null,
       }
     })
   }
@@ -179,10 +187,12 @@ const submitDialog = async (data, form, type) => {
             name: '',
             nikename: '',
             birth: '',
-            pthone: '',
+            phone: '',
             email: '',
             wechat: '',
-            departmentId: '',
+            departmentId: null,
+            frimId: null,
+            positionId: null,
           }
           View.value = null
         })
@@ -198,10 +208,12 @@ const submitDialog = async (data, form, type) => {
             name: '',
             nikename: '',
             birth: '',
-            pthone: '',
+            phone: '',
             email: '',
             wechat: '',
-            departmentId: '',
+            departmentId: null,
+            frimId: null,
+            positionId: null,
           }
           View.value = null
         })
@@ -312,12 +324,7 @@ const search = async () => {
   </div>
 
   <!-- 新增弹框 -->
-  <el-dialog
-    v-model="addDialogVisible"
-    title="新增"
-    width="60%"
-    :before-close="addDialogBeforeClose"
-  >
+  <el-dialog v-model="addDialogVisible" title="新增" width="60%" :before-close="closeDialog">
     <component
       :is="View"
       @close="closeDialog"

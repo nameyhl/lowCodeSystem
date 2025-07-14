@@ -14,22 +14,50 @@ const props = defineProps({
 
 let form = ref(props.userInfo)
 
-console.log(form)
+import { getFrimList } from '@/api/frim'
+let frimList = ref([])
+const getFrims = async () => {
+  frimList.value = []
+  await getFrimList().then((res) => {
+    res.data.forEach((item) => {
+      frimList.value.push({
+        label: `${item.name}`,
+        value: item.id,
+      })
+    })
+  })
+}
+getFrims()
+
+const frimChange = async (val) => {
+  getDepartments(val)
+}
 
 let deprotments = ref([])
-const getDepartments = async () => {
+const getDepartments = async (frimId) => {
   deprotments.value = []
-  await getDepartmentList().then((res) => {
+  await getDepartmentList({ frimId }).then((res) => {
     res.data.forEach((item) => {
       deprotments.value.push({
-        label: `${item.name}(${item.frimName})`,
+        label: `${item.name}`,
         value: item.id,
       })
     })
   })
 }
 
-getDepartments()
+const departmentChange = async (val) => {
+  getPositions(val)
+}
+
+import { getPositionList } from '@/api/position'
+
+let positionList = ref([])
+const getPositions = async (departmentId) => {
+  await getPositionList({ departmentId }).then((res) => {
+    positionList.value = res.data
+  })
+}
 
 const rules = ref({
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -38,7 +66,6 @@ const rules = ref({
   phone: [{ required: true, message: '请输入电话', trigger: 'blur' }],
   email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
   wechat: [{ required: true, message: '请输入微信', trigger: 'blur' }],
-  departmentId: [{ required: true, message: '请选择部门', trigger: 'blur' }],
 })
 
 const emit = defineEmits(['submit', 'close'])
@@ -103,10 +130,44 @@ const close = () => {
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item prop="departmentId" label="部门">
-          <el-select v-model="form.departmentId" placeholder="请选择部门">
+        <el-form-item prop="frimId" label="公司">
+          <el-select v-model="form.frimId" placeholder="请选择公司" @change="frimChange">
+            <el-option
+              v-for="item in frimList"
+              :key="item.id"
+              :value="item.value"
+              :label="item.label"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item prop="departmentId" label="部门" @change="departmentChange">
+          <el-select
+            v-model="form.departmentId"
+            placeholder="请选择部门"
+            :disabled="form.frimId === ''"
+          >
             <el-option
               v-for="item in deprotments"
+              :key="item.id"
+              :value="item.value"
+              :label="item.label"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item prop="positionId" label="职位">
+          <el-select
+            v-model="form.positionId"
+            placeholder="请选择职位"
+            :disabled="form.departmentId === ''"
+          >
+            <el-option
+              v-for="item in positionList"
               :key="item.id"
               :value="item.value"
               :label="item.label"
