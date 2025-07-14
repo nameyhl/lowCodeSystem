@@ -13,15 +13,6 @@ let rules = ref({
   name: [{ required: true, message: '请输入部门名称', trigger: 'blur' }],
 })
 
-import { getUserByFrimId } from '@/api/user.js'
-let emps = ref([])
-const getEmps = async (frimId) => {
-  emps.value = []
-  await getUserByFrimId({ frimId }).then((res) => {
-    emps.value = res.data
-  })
-}
-
 const changeFrim = async () => {
   getEmps(form.value.frimId)
 }
@@ -58,31 +49,36 @@ const close = () => {
 </script>
 <template>
   <el-form :model="form" ref="formRef" :rules="rules" label-width="100px">
-    <el-row>
+    <el-row :gutter="20">
       <el-col :span="12">
         <el-form-item prop="name" label="部门名称:">
           <el-input v-model="form.name" placeholder="请输入部门名称"></el-input>
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item prop="leader" label="部门负责人:">
-          <el-select v-model="form.leader" placeholder="请选择部门所属公司">
-            <el-option v-for="item in emps" :key="item.value" :label="item.name" :value="item.id"></el-option>
+        <el-form-item prop="frimId" label="部门所属公司:">
+          <el-select v-model="form.frimId" placeholder="请选择部门所属公司" @change="changeFrim">
+            <el-option
+              v-for="item in frimList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="12">
-        <el-form-item prop="frimId" label="部门所属公司:">
-          <el-select v-model="form.frimId" placeholder="请选择部门所属公司" @change="changeFrim">
-            <el-option v-for="item in frimList" :key="item.value" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
+      <el-col :span="24">
         <el-form-item prop="msg" label="部门描述:">
-          <el-input v-model="form.msg" maxlength="500" placeholder="请简述部门信息" :row="3" show-word-limit type="textarea" />
+          <el-input
+            v-model="form.msg"
+            maxlength="500"
+            placeholder="请简述部门信息"
+            :row="3"
+            show-word-limit
+            type="textarea"
+          />
         </el-form-item>
       </el-col>
     </el-row>
