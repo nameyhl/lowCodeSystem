@@ -18,12 +18,12 @@ let emp = ref([
   { id: '3', name: '王五' },
 ])
 
-import { getUserByFrimId } from '@/api/user.js'
+import { getAllUser } from '@/api/user.js'
 
 let emps = ref([])
 const getEmps = async (frimId) => {
   emps.value = []
-  await getUserByFrimId({ frimId }).then((res) => {
+  await getAllUser({ frimId }).then((res) => {
     if (res.data.length > 0) {
       emps.value = res.data
       form.value.leaderId = res.data[0].id

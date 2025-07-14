@@ -47,11 +47,11 @@ export function getUserByDepartmentId(id) {
 }
 
 // 根据分公司id获取用户
-export function getUserByFrimId(id) {
+export function getAllUser(data) {
   return request({
-    url: `${className}/getUserByFrimId`,
+    url: `${className}/getAllUser`,
     method: 'get',
-    params: id,
+    params: data,
   })
 }
 

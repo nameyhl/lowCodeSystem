@@ -1,24 +1,22 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 const props = defineProps({
   frimInfo: {
     type: Object,
     default: () => {
       return {}
-    }
-  }
+    },
+  },
 })
 
 let form = ref(props.frimInfo)
 
 let rules = ref({
-  name: [
-    { required: true, message: '请输入分公司名称', trigger: 'blur' },
-  ],
+  name: [{ required: true, message: '请输入分公司名称', trigger: 'blur' }],
 })
 
-import { defineEmits } from 'vue';
+import { defineEmits } from 'vue'
 const emit = defineEmits(['submit', 'close'])
 
 const close = () => {
@@ -28,7 +26,7 @@ const close = () => {
 const formRef = ref(null)
 
 const submit = () => {
-  emit('submit', form.value , formRef.value, 'add')
+  emit('submit', form.value, formRef.value, 'add')
 }
 </script>
 <template>
@@ -37,12 +35,6 @@ const submit = () => {
       <el-col :span="12">
         <el-form-item prop="name" label="分公司名称:">
           <el-input v-model="form.name" placeholder="请输入分公司名称"></el-input>
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <el-form-item prop="leaderId" label="分公司负责人:">
-          <el-select v-model="form.leaderId" placeholder="请选择分公司负责人">
-          </el-select>
         </el-form-item>
       </el-col>
     </el-row>
@@ -62,16 +54,16 @@ const submit = () => {
     </el-row>
   </el-form>
   <div class="foot">
-  <el-button style="padding: 8px 15px" type="primary" @click="submit">提交</el-button>
-  <el-button style="padding: 8px 15px" @click="close">取消</el-button>
+    <el-button style="padding: 8px 15px" type="primary" @click="submit">提交</el-button>
+    <el-button style="padding: 8px 15px" @click="close">取消</el-button>
   </div>
 </template>
 <style lang="less" scoped>
-.foot{
+.foot {
   text-align: center;
   margin-top: 20px;
 }
-.el-row{
+.el-row {
   margin-bottom: 20px;
 }
 </style>
