@@ -66,6 +66,9 @@ const rules = ref({
   phone: [{ required: true, message: '请输入电话', trigger: 'blur' }],
   email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
   wechat: [{ required: true, message: '请输入微信', trigger: 'blur' }],
+  frimId: [{ required: true, message: '请选择公司', trigger: 'change' }],
+  departmentId: [{ required: true, message: '请选择部门', trigger: 'change' }],
+  positionId: [{ required: true, message: '请选择职位', trigger: 'change' }],
 })
 
 const emit = defineEmits(['submit', 'close'])
@@ -101,13 +104,8 @@ const close = () => {
       </el-col>
       <el-col :span="12">
         <el-form-item prop="birth" label="生日">
-          <el-date-picker
-            v-model="form.birth"
-            type="datetime"
-            format="YYYY-MM-DD"
-            placeholder="选择日期"
-            style="width: 100%"
-          ></el-date-picker>
+          <el-date-picker v-model="form.birth" type="datetime" format="YYYY-MM-DD" placeholder="选择日期"
+            style="width: 100%"></el-date-picker>
         </el-form-item>
       </el-col>
     </el-row>
@@ -132,46 +130,24 @@ const close = () => {
       <el-col :span="12">
         <el-form-item prop="frimId" label="公司">
           <el-select v-model="form.frimId" placeholder="请选择公司" @change="frimChange">
-            <el-option
-              v-for="item in frimList"
-              :key="item.id"
-              :value="item.value"
-              :label="item.label"
-            ></el-option>
+            <el-option v-for="item in frimList" :key="item.id" :value="item.value" :label="item.label"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="12">
-        <el-form-item prop="departmentId" label="部门" @change="departmentChange">
-          <el-select
-            v-model="form.departmentId"
-            placeholder="请选择部门"
-            :disabled="form.frimId === ''"
-          >
-            <el-option
-              v-for="item in deprotments"
-              :key="item.id"
-              :value="item.value"
-              :label="item.label"
-            ></el-option>
+        <el-form-item prop="departmentId" label="部门">
+          <el-select v-model="form.departmentId" placeholder="请选择部门" @change="departmentChange"
+            :disabled="!form.frimId">
+            <el-option v-for="item in deprotments" :key="item.id" :value="item.value" :label="item.label"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item prop="positionId" label="职位">
-          <el-select
-            v-model="form.positionId"
-            placeholder="请选择职位"
-            :disabled="form.departmentId === ''"
-          >
-            <el-option
-              v-for="item in positionList"
-              :key="item.id"
-              :value="item.value"
-              :label="item.label"
-            ></el-option>
+          <el-select v-model="form.positionId" placeholder="请选择职位" :disabled="!form.departmentId">
+            <el-option v-for="item in positionList" :key="item.id" :value="item.id" :label="item.name"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -187,6 +163,7 @@ const close = () => {
   text-align: center;
   margin-top: 20px;
 }
+
 .el-row {
   margin-bottom: 20px;
 }

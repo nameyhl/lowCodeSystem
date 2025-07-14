@@ -15,27 +15,46 @@ const prop = defineProps({
 let formData = ref(prop.positionInfo)
 let disabled = ref(prop.disabled)
 
+console.log(formData.value);
+
+
 let rules = {
   name: [{ required: true, message: '请输入职位名称', trigger: 'blur' }],
+  frimId: [{ required: true, message: '请选择所属公司', trigger: 'blur' }],
   departmentId: [{ required: true, message: '请选择所属部门', trigger: 'blur' }],
-  leaderId: [{ required: true, message: '请选择负责人', trigger: 'blur' }],
+  msg: [{ required: true, message: '请输入备注', trigger: 'blur' }],
 }
 
 import { getDepartmentList } from '@/api/department'
+import { getFrimList } from '@/api/frim'
+let frimList = ref([])
+const getFrims = async () => {
+  await getFrimList().then((res) => {
+    frimList.value = res.data
+  })
+}
+getFrims()
+
+const frimChange = (val) => {
+  getDepartments(val)
+}
 
 let deprotments = ref([])
-const getDepartments = async () => {
+const getDepartments = async (frimId) => {
   deprotments.value = []
-  await getDepartmentList().then((res) => {
+  await getDepartmentList({ frimId }).then((res) => {
     res.data.forEach((item) => {
       deprotments.value.push({
-        label: `${item.name}(${item.frimName})`,
+        label: `${item.name}`,
         value: item.id,
       })
     })
   })
 }
-getDepartments()
+
+if (formData.value.frimId) {
+  getDepartments(formData.value.frimId)
+}
 
 import { getUserByDepartmentId } from '@/api/user.js'
 let emps = ref([])
@@ -54,11 +73,6 @@ const getEmp = async (id) => {
   })
 }
 
-const departmentChange = async (val) => {
-  formData.value.leaderId = null
-  emps.value = []
-  getEmp(val)
-}
 
 const emit = defineEmits(['submit', 'close'])
 
@@ -82,22 +96,29 @@ const close = () => {
         </el-form-item>
       </el-col>
       <el-col :span="12">
+        <!-- frimId -->
+        <el-form-item prop="frimId" label="所属分公司">
+          <el-select v-model="formData.frimId" placeholder="请选择所属分公司" :disabled="disabled" @change="frimChange">
+            <el-option v-for="item in frimList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+
+    </el-row>
+    <el-row>
+      <el-col :span="12">
         <!-- departmentId -->
         <el-form-item prop="departmentId" label="所属部门">
-          <el-select v-model="formData.departmentId" placeholder="请选择所属部门" :disabled="disabled"
-            @change="departmentChange">
+          <el-select v-model="formData.departmentId" placeholder="请选择所属部门" :disabled="disabled || !formData.frimId">
             <el-option v-for="item in deprotments" :key="item.id" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="24">
-        <!-- ledaerId -->
-        <el-form-item prop="leaderId" label="负责人">
-          <el-select v-model="formData.leaderId" placeholder="请选择负责人" :disabled="disabled">
-            <el-option v-for="item in emps" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
+      <el-col :span="12">
+        <!-- msg -->
+        <el-form-item prop="msg" label="备注">
+          <el-input v-model="formData.msg" type="textarea" maxlength="500" :row="3" show-word-limit placeholder="请输入备注"
+            :disabled="disabled"></el-input>
         </el-form-item>
       </el-col>
     </el-row>

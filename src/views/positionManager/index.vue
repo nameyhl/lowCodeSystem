@@ -64,12 +64,15 @@ const handleCurrentChange = (val) => {
 let positionInfo = ref({
   name: '',
   departmentId: '',
-  leaderId: '',
+  frimId: '',
+  msg: ''
 })
 
 let View = ref(null)
 let disabled = ref(false)
 const openAdd = (type, data) => {
+  console.log("data", data);
+
   if (type === 'edit') {
     positionInfo.value = data
     dialogTitle.value = '编辑职位'
@@ -81,11 +84,13 @@ const openAdd = (type, data) => {
       name: '',
       departmentId: '',
       leaderId: '',
+      msg: ''
     }
     disabled.value = false
   }
   if (type === 'chack') {
     positionInfo.value = data
+
     dialogTitle.value = '查看职位'
     disabled.value = true
   }
@@ -148,6 +153,7 @@ const closeDialog = () => {
     name: '',
     departmentId: '',
     leaderId: '',
+    msg: ''
   }
 }
 import { getDepartmentList } from '@/api/department'
@@ -223,7 +229,7 @@ const deleteOne = (data) => {
       layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
       @current-change="handleCurrentChange" />
   </div>
-  <el-dialog :title="dialogTitle" v-model="dialogVisible" width="30%" :before-close="closeDialog">
+  <el-dialog :title="dialogTitle" v-model="dialogVisible" width="50%" :before-close="closeDialog">
     <component :is="View" :positionInfo="positionInfo" @close="closeDialog" @submit="submitForm" :disabled="disabled">
     </component>
   </el-dialog>
