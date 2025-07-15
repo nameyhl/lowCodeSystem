@@ -176,7 +176,11 @@ const submitDialog = async (data, form, type) => {
   form.validate(async (valid) => {
     if (valid) {
       if (type === 'add') {
-        await addUser(data).then((res) => {
+        let formData = {
+          ...data,
+          isEmp: 1,
+        }
+        await addUser(formData).then((res) => {
           ElMessage({
             message: '新增成功',
             type: 'success',
