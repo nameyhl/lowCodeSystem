@@ -34,7 +34,6 @@ const handleSelectionChange = (val) => {
 
 import { deleteRoutes } from '@/api/routes'
 const deleteSelect = async () => {
-  console.log(multipleSelection.value)
   await deleteRoutes({ ids: multipleSelection.value.map((item) => item.id) }).then((res) => {
     getRoutesList()
   })
@@ -100,7 +99,6 @@ const openDialog = (openType) => {
   } else if (openType == 'edit') {
     dialogTitle.value = '编辑路由'
   }
-  console.log(openType)
   dialogVisible.value = true
 }
 

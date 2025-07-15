@@ -69,7 +69,6 @@ const getFirstLevelRoute = (routes) => {
   let res = {}
   res = routes[0]
   if (res.children && res.children.length == 0) {
-    console.log(res)
     return res
   }
   getFirstLevelRoute(res.children)

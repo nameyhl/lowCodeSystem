@@ -10,8 +10,6 @@ const prop = defineProps({
 
 let formData = ref(prop.positionInfo)
 
-console.log(formData.value)
-
 let rules = {
   name: [{ required: true, message: '请输入职位名称', trigger: 'blur' }],
   frimId: [{ required: true, message: '请选择所属公司', trigger: 'blur' }],

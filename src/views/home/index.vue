@@ -1,7 +1,6 @@
 <script setup>
 import { showRoutes } from '@/router'
 import { ref } from 'vue'
-console.log(showRoutes)
 // 获取所有路由列表
 
 let openList = ref([])
@@ -62,12 +61,20 @@ const routerTo = (item) => {
                     <span>{{ el.name }}</span>
                   </template>
                 </el-sub-menu>
-                <el-menu-item v-else @click="routerTo(el)" :class="chackMenu == el.path ? 'active' : ''">
+                <el-menu-item
+                  v-else
+                  @click="routerTo(el)"
+                  :class="chackMenu == el.path ? 'active' : ''"
+                >
                   {{ el.name }}
                 </el-menu-item>
               </template>
             </el-sub-menu>
-            <el-menu-item v-else @click="routerTo(item)" :class="chackMenu == item.path ? 'active' : ''">
+            <el-menu-item
+              v-else
+              @click="routerTo(item)"
+              :class="chackMenu == item.path ? 'active' : ''"
+            >
               {{ item.name }}
             </el-menu-item>
           </template>
@@ -75,8 +82,14 @@ const routerTo = (item) => {
       </el-aside>
       <el-main>
         <div class="breandcrumb">
-          <el-tag closable v-for="item in tagList" @click="routerTo(item)" :key="item.path"
-            @close="tagList.splice(tagList.indexOf(item), 1)" type="danger">
+          <el-tag
+            closable
+            v-for="item in tagList"
+            @click="routerTo(item)"
+            :key="item.path"
+            @close="tagList.splice(tagList.indexOf(item), 1)"
+            type="danger"
+          >
             {{ item.name }}
           </el-tag>
         </div>

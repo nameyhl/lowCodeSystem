@@ -15,8 +15,6 @@ const emits = defineEmits(['close'])
 const close = () => {
   emits('close')
 }
-
-console.log(positionInfo.value)
 </script>
 <template>
   <div>

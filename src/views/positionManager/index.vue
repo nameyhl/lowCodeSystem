@@ -73,7 +73,6 @@ let positionInfo = ref({
 let View = ref(null)
 let disabled = ref(false)
 const openAdd = (type, data) => {
-  console.log(type)
   dialogVisible.value = true
   if (type === 'edit') {
     positionInfo.value = { ...data }
@@ -101,8 +100,6 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 
 import { addPosition, updatePosition } from '@/api/position.js'
 const submitForm = (data, formRef, type) => {
-  console.log(data, formRef, type)
-
   if (!formRef) return
   formRef.validate(async (valid) => {
     if (valid) {

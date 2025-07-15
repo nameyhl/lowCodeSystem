@@ -75,7 +75,6 @@ let dialogTitle = ref('新增')
 const openAdd = () => {
   dialogTitle.value = '新增'
   View.value = AddFrom
-  console.log(departmentInfo.value)
   dialogVisible.value = true
 }
 
