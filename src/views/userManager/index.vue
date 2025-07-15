@@ -48,7 +48,7 @@ const deleteEmployee = async (row) => {
 }
 
 const updateEmployee = async (row) => {
-  userInfo.value = row
+  userInfo.value = { ...row }
   View.value = UpdateForm
   addDialogVisible.value = true
 }

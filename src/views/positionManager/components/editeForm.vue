@@ -50,11 +50,11 @@ if (formData.value.frimId) {
   getDepartments(formData.value.frimId)
 }
 
-import { getUserByDepartmentId } from '@/api/user.js'
+import { getAllUser } from '@/api/user.js'
 let emps = ref([])
 const getEmp = async (id) => {
   emps.value = []
-  await getUserByDepartmentId({ departmentId: id }).then((res) => {
+  await getAllUser({ positionId: id }).then((res) => {
     emps.value = res.data
     if (res.data.length == 0) {
       emps.value.push({
@@ -62,17 +62,17 @@ const getEmp = async (id) => {
         name: '暂无人员',
       })
     } else {
-      formData.value.leaderId = res.data[0].id
     }
   })
 }
 
+getEmp(formData.value.id)
 const emit = defineEmits(['submit', 'close'])
 
 let formRef = ref(null)
 
 const submit = () => {
-  emit('submit', formData.value, formRef.value, 'add')
+  emit('submit', formData.value, formRef.value, 'edit')
 }
 
 const close = () => {
@@ -91,7 +91,12 @@ const close = () => {
       <el-col :span="12">
         <!-- frimId -->
         <el-form-item prop="frimId" label="所属分公司">
-          <el-select v-model="formData.frimId" placeholder="请选择所属分公司" @change="frimChange">
+          <el-select
+            v-model="formData.frimId"
+            placeholder="请选择所属分公司"
+            disabled
+            @change="frimChange"
+          >
             <el-option
               v-for="item in frimList"
               :key="item.id"
@@ -106,11 +111,7 @@ const close = () => {
       <el-col :span="12">
         <!-- departmentId -->
         <el-form-item prop="departmentId" label="所属部门">
-          <el-select
-            v-model="formData.departmentId"
-            placeholder="请选择所属部门"
-            :disabled="!formData.frimId"
-          >
+          <el-select v-model="formData.departmentId" placeholder="请选择所属部门" disabled>
             <el-option
               v-for="item in deprotments"
               :key="item.id"
@@ -121,6 +122,21 @@ const close = () => {
         </el-form-item>
       </el-col>
       <el-col :span="12">
+        <!-- leaderId -->
+        <el-form-item prop="leaderId" label="负责人">
+          <el-select v-model="formData.leaderId" placeholder="请选择负责人" @change="getEmp">
+            <el-option
+              v-for="item in emps"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="24">
         <!-- msg -->
         <el-form-item prop="msg" label="备注">
           <el-input

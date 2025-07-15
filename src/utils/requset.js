@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 
 // 创建可一个新的axios对象
 const request = axios.create({
@@ -33,6 +34,10 @@ request.interceptors.response.use(
     return res
   },
   (error) => {
+    let data = error.response.data
+    if (data.status === 400) {
+      ElMessage.error(data.msg)
+    }
     console.error('response error: ' + error) // for debug
     return Promise.reject(error)
   },

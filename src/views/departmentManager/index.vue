@@ -75,8 +75,7 @@ let dialogTitle = ref('新增')
 const openAdd = () => {
   dialogTitle.value = '新增'
   View.value = AddFrom
-  console.log(departmentInfo.value);
-
+  console.log(departmentInfo.value)
   dialogVisible.value = true
 }
 
@@ -90,7 +89,7 @@ const chackDepartment = (data) => {
 const updateDepartmentDialog = (data) => {
   dialogTitle.value = '修改'
   View.value = UpdateForm
-  departmentInfo.value = data
+  departmentInfo.value = { ...data }
   dialogVisible.value = true
 }
 
@@ -183,7 +182,7 @@ const getFrim = async () => {
 
 getFrim()
 
-const search = () => { }
+const search = () => {}
 </script>
 <template>
   <Operate @add="openAdd" :showDelete="false">
@@ -191,10 +190,18 @@ const search = () => { }
     <template #searchFrom>
       <el-form :inline="true" :model="searchForm" class="demo-form-inline">
         <el-form-item label="部门名称" prop="name">
-          <el-input v-model="searchForm.name" placeholder="请输入部门名称" style="width: 200px"></el-input>
+          <el-input
+            v-model="searchForm.name"
+            placeholder="请输入部门名称"
+            style="width: 200px"
+          ></el-input>
         </el-form-item>
         <el-form-item label="分公司名称" prop="frimId">
-          <el-select v-model="searchForm.frimId" placeholder="请选择分公司名称" style="width: 200px">
+          <el-select
+            v-model="searchForm.frimId"
+            placeholder="请选择分公司名称"
+            style="width: 200px"
+          >
             <el-option v-for="item in frimList" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -205,8 +212,13 @@ const search = () => { }
     </template>
   </Operate>
   <div class="tableBox">
-    <el-table v-loading="tableLoading" :data="departmentList" :columns="columns" border
-      style="width: 100%; margin-top: 10px">
+    <el-table
+      v-loading="tableLoading"
+      :data="departmentList"
+      :columns="columns"
+      border
+      style="width: 100%; margin-top: 10px"
+    >
       <el-table-column type="index" align="center" label="序号" width="100"></el-table-column>
       <el-table-column v-for="item in columns" :prop="item.prop" :label="item.label">
         <template #default="scope">
@@ -216,22 +228,39 @@ const search = () => { }
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template #default="scope">
-          <el-button type="primary" size="mini" link @click="chackDepartment(scope.row)">查看</el-button>
-          <el-button type="primary" size="mini" link @click="updateDepartmentDialog(scope.row)">修改</el-button>
-          <el-button type="primary" size="mini" link @click="deleteDepartmentDialog(scope.row)">删除</el-button>
+          <el-button type="primary" size="mini" link @click="chackDepartment(scope.row)"
+            >查看</el-button
+          >
+          <el-button type="primary" size="mini" link @click="updateDepartmentDialog(scope.row)"
+            >修改</el-button
+          >
+          <el-button type="primary" size="mini" link @click="deleteDepartmentDialog(scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
   </div>
 
   <div>
-    <el-pagination v-model:current-page="page" v-model:page-size="size" :page-sizes="[10, 20, 30, 40]"
-      layout="total, sizes, prev, pager, next, jumper" :total="totle" @size-change="handleSizeChange"
-      @current-change="handleCurrentChange" />
+    <el-pagination
+      v-model:current-page="page"
+      v-model:page-size="size"
+      :page-sizes="[10, 20, 30, 40]"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="totle"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
   </div>
 
   <el-dialog v-model="dialogVisible" :title="dialogTitle" width="60%" :before-close="closeDialog">
-    <component :is="View" @close="closeDialog" @submit="submitClose" :departmentInfo="departmentInfo"></component>
+    <component
+      :is="View"
+      @close="closeDialog"
+      @submit="submitClose"
+      :departmentInfo="departmentInfo"
+    ></component>
   </el-dialog>
 </template>
 <style lang="less" scoped></style>

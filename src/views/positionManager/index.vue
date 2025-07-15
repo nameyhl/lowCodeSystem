@@ -4,6 +4,8 @@ import Operate from '@/components/operate/index.vue'
 import { ref } from 'vue'
 
 import AddFrom from './components/addFrom.vue'
+import EditeForm from './components/editeForm.vue'
+import Chack from './components/chack.vue'
 
 let dialogVisible = ref(false)
 let dialogTitle = ref('')
@@ -65,49 +67,47 @@ let positionInfo = ref({
   name: '',
   departmentId: '',
   frimId: '',
-  msg: ''
+  msg: '',
 })
 
 let View = ref(null)
 let disabled = ref(false)
 const openAdd = (type, data) => {
-  console.log("data", data);
-
+  console.log(type)
+  dialogVisible.value = true
   if (type === 'edit') {
-    positionInfo.value = data
+    positionInfo.value = { ...data }
     dialogTitle.value = '编辑职位'
-    disabled.value = false
+    View.value = EditeForm
   }
   if (type === 'add') {
     dialogTitle.value = '添加职位'
+    View.value = AddFrom
     positionInfo.value = {
       name: '',
       departmentId: '',
-      leaderId: '',
-      msg: ''
+      frimId: '',
+      msg: '',
     }
-    disabled.value = false
   }
   if (type === 'chack') {
     positionInfo.value = data
-
     dialogTitle.value = '查看职位'
-    disabled.value = true
+    View.value = Chack
   }
-  dialogVisible.value = true
-  View.value = AddFrom
 }
 
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-import { addPosition } from '@/api/position.js'
+import { addPosition, updatePosition } from '@/api/position.js'
 const submitForm = (data, formRef, type) => {
-  if (!formRef) return
+  console.log(data, formRef, type)
+
   if (!formRef) return
   formRef.validate(async (valid) => {
     if (valid) {
-      if (type === 'update') {
-        await updateFrim(formData).then((res) => {
+      if (type === 'edit') {
+        await updatePosition(data).then((res) => {
           if (res.code === 200) {
             ElMessage({
               message: '修改成功',
@@ -115,10 +115,10 @@ const submitForm = (data, formRef, type) => {
             })
           }
           dialogVisible.value = false
-          frimInfo.value = {
+          positionInfo.value = {
             name: '',
+            departmentId: '',
             leaderId: '',
-            msg: '',
           }
         })
       }
@@ -153,7 +153,7 @@ const closeDialog = () => {
     name: '',
     departmentId: '',
     leaderId: '',
-    msg: ''
+    msg: '',
   }
 }
 import { getDepartmentList } from '@/api/department'
@@ -177,31 +177,43 @@ const deleteOne = (data) => {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
-  }).then(async () => {
-    await deletePosition(data.id).then((res) => {
-      ElMessage({
-        type: 'success',
-        message: '删除成功!',
-      })
-      getJob()
-    })
-  }).catch(() => {
-
   })
+    .then(async () => {
+      await deletePosition(data.id).then((res) => {
+        ElMessage({
+          type: 'success',
+          message: '删除成功!',
+        })
+        getJob()
+      })
+    })
+    .catch(() => {})
 }
 </script>
 <template>
-  <Operate @add="openAdd" :showDelete="false">
+  <Operate @add="openAdd('add')" :showDelete="false">
     <template #addName> 添加职位 </template>
     <template #searchFrom>
       <el-form :inline="true" :model="searchFrom">
         <el-form-item label="职位名称">
-          <el-input v-model="searchFrom.name" placeholder="请输入职位名称" style="width: 200px"></el-input>
+          <el-input
+            v-model="searchFrom.name"
+            placeholder="请输入职位名称"
+            style="width: 200px"
+          ></el-input>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select v-model="searchFrom.departmentId" placeholder="请选择部门" style="width: 200px">
-            <el-option v-for="item in departmentList" :key="item.value" :label="item.label"
-              :value="item.value"></el-option>
+          <el-select
+            v-model="searchFrom.departmentId"
+            placeholder="请选择部门"
+            style="width: 200px"
+          >
+            <el-option
+              v-for="item in departmentList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -213,11 +225,20 @@ const deleteOne = (data) => {
   <div class="tableBox">
     <el-table :data="jobList" style="width: 100%" border>
       <el-table-column type="index" label="序号" align="center" width="80" />
-      <el-table-column v-for="item in columns" :prop="item.prop" :label="item.label" :key="item.prop"></el-table-column>
+      <el-table-column
+        v-for="item in columns"
+        :prop="item.prop"
+        :label="item.label"
+        :key="item.prop"
+      ></el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button type="primary" size="mini" link @click="openAdd('chack', scope.row)">查看</el-button>
-          <el-button type="primary" size="mini" link @click="openAdd('edit', scope.row)">编辑</el-button>
+          <el-button type="primary" size="mini" link @click="openAdd('chack', scope.row)"
+            >查看</el-button
+          >
+          <el-button type="primary" size="mini" link @click="openAdd('edit', scope.row)"
+            >编辑</el-button
+          >
           <el-button type="primary" size="mini" link @click="deleteOne(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -225,12 +246,24 @@ const deleteOne = (data) => {
   </div>
 
   <div>
-    <el-pagination v-model:current-page="page" v-model:page-size="size" :page-sizes="[10, 20, 30, 40]"
-      layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
-      @current-change="handleCurrentChange" />
+    <el-pagination
+      v-model:current-page="page"
+      v-model:page-size="size"
+      :page-sizes="[10, 20, 30, 40]"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
   </div>
   <el-dialog :title="dialogTitle" v-model="dialogVisible" width="50%" :before-close="closeDialog">
-    <component :is="View" :positionInfo="positionInfo" @close="closeDialog" @submit="submitForm" :disabled="disabled">
+    <component
+      :is="View"
+      :positionInfo="positionInfo"
+      @close="closeDialog"
+      @submit="submitForm"
+      :disabled="disabled"
+    >
     </component>
   </el-dialog>
 </template>

@@ -89,7 +89,7 @@ const chack = (row) => {
   isChack.value = true
 }
 const editRoute = (row) => {
-  routeForm.value = row
+  routeForm.value = { ...row }
   dialogVisible.value = true
   dialogTitle.value = '编辑路由'
   isEdit.value = true

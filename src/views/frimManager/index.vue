@@ -35,7 +35,7 @@ const updateForm = (row) => {
   View.value = UpdateForm
   dialogVisible.value = true
   dialogTitle.value = '修改'
-  frimInfo.value = row
+  frimInfo.value = { ...row }
 }
 
 const deleteForm = (row) => {

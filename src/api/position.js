@@ -25,7 +25,15 @@ export function deletePosition(id) {
     url: `${className}/deletePosition`,
     method: 'delete',
     params: {
-      id
-    }
+      id,
+    },
+  })
+}
+
+export function updatePosition(data) {
+  return request({
+    url: `${className}/updatePosition`,
+    method: 'put',
+    data,
   })
 }
