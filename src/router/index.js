@@ -77,39 +77,6 @@ const getFirstLevelRoute = (routes) => {
 // 获取路由列表
 import { getRoutes } from '@/api/routes.js'
 
-// 动态加载路由并添加到router实例
-// const initializeRouter = async () => {
-//   try {
-//     const res = await getRoutes()
-//     // 先对子路由进行排序（如果有的话）
-//     let routes = sortRoutesByLevel(res.tree)
-//     // 找到最上层路由
-//     router.push('/home')
-//     const dynamicRoutes = formatRoutes(routes || [])
-//     // 添加动态路由
-//     dynamicRoutes.forEach(route => {
-//       // router.addRoute('home',route)
-//       showRoutes.push(route)
-//     })
-
-//     // 最后添加404路由
-//     router.addRoute({
-//       path: '/:pathMatch(.*)',
-//       redirect: '/404'
-//     })
-
-//     return true
-//   } catch (error) {
-//     console.error('路由加载失败:', error)
-//     // 确保至少有404路由
-//     router.addRoute({
-//       path: '/:pathMatch(.*)',
-//       redirect: '/404'
-//     })
-//     return false
-//   }
-// }
-
 const initializeRouter = () => {
   return new Promise(async (resolve, reject) => {
     try {

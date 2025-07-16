@@ -1,11 +1,44 @@
 <script setup>
 import { ref } from 'vue'
 import { PhoneFilled, Lock } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 let loginForm = ref({
   phone: '',
   password: '',
 })
+
+let rules = {
+  phone: [
+    { required: true, message: '请输入电话', trigger: 'blur' },
+    { min: 11, max: 11, message: '长度为11个字符', trigger: 'blur' },
+  ],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+}
+
+let loginFormRef = ref(null)
+
+import { login } from '@/api/user'
+const submit = async () => {
+  loginFormRef.value.validate(async (valid) => {
+    if (valid) {
+      await login(loginForm.value).then((res) => {
+        let user = res.data
+        if (user.isEmp === 1) {
+          router.push('/home')
+        }
+      })
+      ElMessage({
+        message: '登录成功',
+        type: 'success',
+      })
+    } else {
+      return false
+    }
+  })
+}
 </script>
 <template>
   <div class="loginBody">
@@ -42,13 +75,28 @@ let loginForm = ref({
           </el-form>
         </div>
         <div class="formFooter">
-          <el-button type="primary" @click="login">登录</el-button>
+          <el-button type="primary" @click="submit">登录</el-button>
         </div>
       </div>
     </div>
   </div>
 </template>
 <style lang="less" scoped>
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+:deep(.el-form-item__error) {
+  color: #00ff00;
+  animation: blink 1s linear infinite;
+}
 .loginBody {
   background-image: url('@/assets/imgs/loginBg.png');
   background-size: cover;

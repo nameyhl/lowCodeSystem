@@ -6,20 +6,17 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    vueDevTools(),
-  ],
+  plugins: [vue(), vueDevTools()],
   css: {
     preprocessorOptions: {
       less: {
-        additionalData: `@import "@/assets/base.less";`  // 修改为正确的路径
-      }
-    }
+        additionalData: `@import "@/assets/base.less";`, // 修改为正确的路径
+      },
+    },
   },
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
   server: {
@@ -27,7 +24,8 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3000', // 替换为你的目标地址
         changeOrigin: true,
-      }
-    }
-  }
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 })

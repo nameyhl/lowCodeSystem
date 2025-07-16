@@ -3,7 +3,7 @@ import { ElMessage } from 'element-plus'
 
 // 创建可一个新的axios对象
 const request = axios.create({
-  baseURL: '/api', // 后端的接口地址  ip:port
+  baseURL: '/api/manager', // 后端的接口地址  ip:port
   timeout: 30000,
 })
 

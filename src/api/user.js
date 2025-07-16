@@ -63,3 +63,12 @@ export function searchUser(data) {
     data,
   })
 }
+
+// 登录
+export function login(data) {
+  return request({
+    url: `${className}/login`,
+    method: 'post',
+    data,
+  })
+}
