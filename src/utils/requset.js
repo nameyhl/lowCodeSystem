@@ -13,6 +13,7 @@ const request = axios.create({
 request.interceptors.request.use(
   (config) => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8'
+    config.headers['Authorization'] = 'Bearer ' + localStorage.getItem("token")
     return config
   },
   (error) => {

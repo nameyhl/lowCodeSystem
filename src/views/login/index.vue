@@ -21,11 +21,15 @@ let rules = {
 let loginFormRef = ref(null)
 
 import { login } from '@/api/user'
+
+import userStore from '@/stores/modules/user.js'
+const Store = userStore()
 const submit = async () => {
   loginFormRef.value.validate(async (valid) => {
     if (valid) {
       await login(loginForm.value).then((res) => {
         let user = res.data
+        Store.login(user)
         if (user.isEmp === 1) {
           router.push('/home')
         }
@@ -56,21 +60,10 @@ const submit = async () => {
         <div class="formBox">
           <el-form :model="loginForm" :rules="rules" ref="loginFormRef">
             <el-form-item prop="phone">
-              <el-input
-                v-model="loginForm.phone"
-                placeholder="请输入电话"
-                autocomplete="off"
-                :suffix-icon="PhoneFilled"
-              ></el-input>
+              <el-input v-model="loginForm.phone" placeholder="请输入电话" :suffix-icon="PhoneFilled"></el-input>
             </el-form-item>
             <el-form-item prop="password">
-              <el-input
-                v-model="loginForm.password"
-                type="password"
-                autocomplete="new-password"
-                :suffix-icon="Lock"
-                placeholder="请输入密码"
-              ></el-input>
+              <el-input v-model="loginForm.password" type="password" :suffix-icon="Lock" placeholder="请输入密码"></el-input>
             </el-form-item>
           </el-form>
         </div>
@@ -86,17 +79,21 @@ const submit = async () => {
   0% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
+
   100% {
     opacity: 1;
   }
 }
+
 :deep(.el-form-item__error) {
   color: #00ff00;
   animation: blink 1s linear infinite;
 }
+
 .loginBody {
   background-image: url('@/assets/imgs/loginBg.png');
   background-size: cover;
@@ -112,34 +109,43 @@ const submit = async () => {
     width: 590px;
     height: 250px;
     display: flex;
+
     .loginFont {
       width: 350px;
       height: 250px;
       margin-right: 10px;
       border-right: 1px solid #ccc;
+
       .loginTitle {
         font-size: 20px;
         margin-bottom: 10px;
         font-weight: bolder;
       }
+
       .loginMsg {
         font-size: 14px;
         margin-bottom: 5px;
+        color: #0f0f0f;
+        font-style: italic;
       }
     }
+
     .loginForm {
       width: 340px;
       height: 210px;
       padding: 20px;
       background-color: rgba(255, 255, 255, 0.4);
+
       .formTitle {
         font-size: 18px;
         font-weight: bold;
         margin-bottom: 50px;
       }
+
       .formBox {
         margin-bottom: 20px;
       }
+
       .formFooter {
         display: flex;
         justify-content: center;

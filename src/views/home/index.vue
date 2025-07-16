@@ -43,10 +43,32 @@ const routerTo = (item) => {
   tagList.value.push(item)
   router.push(item.path)
 }
+
+import userStore from '@/stores/modules/user'
+const user = userStore().user
 </script>
 <template>
   <el-container class="container">
-    <el-header class="header-bg">rouyiMineSystem</el-header>
+    <el-header class="header-bg">
+      <div class="headerTitle">貔貅与金蟾公司OA系统</div>
+      <el-dropdown>
+        <div class="userInfo">
+          <span class="el-dropdown-link">
+            {{ user.name }}
+            <el-icon class="el-icon--right">
+              <arrow-down />
+            </el-icon>
+          </span>
+        </div>
+
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item>退出登录</el-dropdown-item>
+            <el-dropdown-item>个人主页</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </el-header>
     <el-container style="height: calc(100vh - 60px)">
       <el-aside width="200px">
         <el-menu :default-openeds="openList">
@@ -61,20 +83,12 @@ const routerTo = (item) => {
                     <span>{{ el.name }}</span>
                   </template>
                 </el-sub-menu>
-                <el-menu-item
-                  v-else
-                  @click="routerTo(el)"
-                  :class="chackMenu == el.path ? 'active' : ''"
-                >
+                <el-menu-item v-else @click="routerTo(el)" :class="chackMenu == el.path ? 'active' : ''">
                   {{ el.name }}
                 </el-menu-item>
               </template>
             </el-sub-menu>
-            <el-menu-item
-              v-else
-              @click="routerTo(item)"
-              :class="chackMenu == item.path ? 'active' : ''"
-            >
+            <el-menu-item v-else @click="routerTo(item)" :class="chackMenu == item.path ? 'active' : ''">
               {{ item.name }}
             </el-menu-item>
           </template>
@@ -82,14 +96,8 @@ const routerTo = (item) => {
       </el-aside>
       <el-main>
         <div class="breandcrumb">
-          <el-tag
-            closable
-            v-for="item in tagList"
-            @click="routerTo(item)"
-            :key="item.path"
-            @close="tagList.splice(tagList.indexOf(item), 1)"
-            type="danger"
-          >
+          <el-tag closable v-for="item in tagList" @click="routerTo(item)" :key="item.path"
+            @close="tagList.splice(tagList.indexOf(item), 1)" type="danger">
             {{ item.name }}
           </el-tag>
         </div>
@@ -137,12 +145,24 @@ const routerTo = (item) => {
     }
   }
 
-  .el-header {
-    text-align: center;
+  .header-bg {
+    display: flex;
+    justify-content: space-between;
     height: 50px;
     line-height: 50px;
-    font-size: 20px;
-    font-weight: 900;
+
+    .headerTitle {
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .userInfo {
+      height: 50px;
+      line-height: 50px;
+      color: @white;
+      cursor: pointer;
+    }
+
   }
 
   .el-aside {
@@ -165,6 +185,13 @@ const routerTo = (item) => {
         font-size: @font-size;
       }
     }
+  }
+}
+
+:deep(.el-dropdown-menu__item) {
+  &:hover {
+    background-color: @primary-red;
+    color: @white;
   }
 }
 </style>

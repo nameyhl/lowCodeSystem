@@ -120,5 +120,15 @@ export const setupRouter = async (app) => {
   app.use(router)
 }
 
+// 路由拦截器
+router.beforeEach((to, from, next) => {
+  if (localStorage.getItem("token") || to.path === '/login') {
+    next()
+  } else {
+    next('/login')
+  }
+
+})
+
 export { showRoutes }
 // export default router
