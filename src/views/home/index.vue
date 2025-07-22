@@ -1,5 +1,4 @@
 <script setup>
-import { showRoutes } from '@/router'
 import { ref } from 'vue'
 // 获取所有路由列表
 
@@ -23,29 +22,61 @@ const sortRoutesByLevel = (routes) => {
   })
 }
 
-let routes = sortRoutesByLevel(showRoutes)
+
+let showRoutes = ref([])
+
+import { getRoutes } from '@/api/routes.js'
+
+
+let routes = ref([])
+const getShowRoutes = async () => {
+  let data = {
+    name: '系统管理'
+  }
+  await getRoutes(data).then(res => {
+    let route = sortRoutesByLevel(res.data)
+    routes.value = [
+      ...route,
+      {
+        router: 'addRoute',
+        name: '新增路由',
+        children: []
+      }
+    ]
+  })
+
+}
+
+getShowRoutes()
+
+console.log(routes);
 
 // 路由跳转
 import { useRouter, useRoute, RouterView } from 'vue-router'
 const router = useRouter()
 const route = useRoute()
 
-let chackMenu = ref(route.path)
+let chackMenu = ref(route.router)
 
 let tagList = ref([])
 const routerTo = (item) => {
-  chackMenu.value = item.path
+  chackMenu.value = item.router
   for (let i = 0; i < tagList.value.length; i++) {
-    if (tagList.value[i].path == item.path) {
+    if (tagList.value[i].router == item.router) {
       tagList.value.splice(i, 1)
     }
   }
   tagList.value.push(item)
-  router.push(item.path)
+  router.push(item.router)
 }
 
 import userStore from '@/stores/modules/user'
 const user = userStore().user
+
+const logout = () => {
+  userStore().logout()
+  router.push('/login')
+}
 </script>
 <template>
   <el-container class="container">
@@ -63,7 +94,7 @@ const user = userStore().user
 
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>退出登录</el-dropdown-item>
+            <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
             <el-dropdown-item>个人主页</el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -72,23 +103,23 @@ const user = userStore().user
     <el-container style="height: calc(100vh - 60px)">
       <el-aside width="200px">
         <el-menu :default-openeds="openList">
-          <template v-for="item in routes" :key="item.path">
-            <el-sub-menu v-if="item.children.length != 0" :index="item.path">
+          <template v-for="item in routes" :key="item.router">
+            <el-sub-menu v-if="item.children.length !== 0" :index="item.router">
               <template #title>
                 <span>{{ item.name }}</span>
               </template>
-              <template v-for="el in item.children" :key="item.path">
-                <el-sub-menu v-if="el.children.length != 0" :index="el.path">
+              <template v-for="el in item.children" :key="el.router">
+                <el-sub-menu v-if="el.children" :index="el.router">
                   <template #title>
                     <span>{{ el.name }}</span>
                   </template>
                 </el-sub-menu>
-                <el-menu-item v-else @click="routerTo(el)" :class="chackMenu == el.path ? 'active' : ''">
+                <el-menu-item v-else @click="routerTo(el)" :class="chackMenu == el.router ? 'active' : ''">
                   {{ el.name }}
                 </el-menu-item>
               </template>
             </el-sub-menu>
-            <el-menu-item v-else @click="routerTo(item)" :class="chackMenu == item.path ? 'active' : ''">
+            <el-menu-item v-else @click="routerTo(item)" :class="chackMenu == item.router ? 'active' : ''">
               {{ item.name }}
             </el-menu-item>
           </template>

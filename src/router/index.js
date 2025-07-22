@@ -34,6 +34,7 @@ const constantRoutes = [
     path: '/:pathMatch(.*)',
     redirect: '/404',
   },
+
   {
     path: '/home',
     name: 'home',
@@ -105,6 +106,7 @@ const formatRoutes = (routes) => {
     component: loadView(route.view),
     meta: route.meta || {},
     children: route.children ? formatRoutes(route.children) : [],
+    showChildren: route.showChildren,
   }))
 }
 
@@ -129,6 +131,3 @@ router.beforeEach((to, from, next) => {
   }
 
 })
-
-export { showRoutes }
-// export default router

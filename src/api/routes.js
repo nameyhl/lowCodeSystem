@@ -2,10 +2,11 @@ import request from '@/utils/requset'
 
 let className = '/routes'
 
-export const getRoutes = () => {
+export const getRoutes = (data) => {
   return request({
     url: `${className}/getRoutes`,
     method: 'get',
+    params: data
   })
 }
 
