@@ -13,6 +13,7 @@ const showRoutes = [
     children: [],
   },
 ]
+const outeRoutes = []
 
 // 基础路由
 const constantRoutes = [
@@ -34,7 +35,12 @@ const constantRoutes = [
     path: '/:pathMatch(.*)',
     redirect: '/404',
   },
-
+  {
+    path: '/outHome',
+    name: 'outHome',
+    component: () => import('@/views/outHome/index.vue'),
+    children: outeRoutes
+  },
   {
     path: '/home',
     name: 'home',
@@ -85,8 +91,14 @@ const initializeRouter = () => {
       // 对子路由排序
       let routes = sortRoutesByLevel(res.data.tree)
       const dynamicRoutes = formatRoutes(routes || [])
+      dynamicRoutes.forEach(route => {
+        if (route.name === '系统管理') {
+          router.addRoute('home', route)
+        } else if (route.name === '系统页面') {
+          router.addRoute('outHome', route)
+        }
+      })
       dynamicRoutes.forEach((route) => {
-        router.addRoute('home', route)
         showRoutes.push(route)
       })
       resolve(showRoutes)

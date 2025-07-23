@@ -23,8 +23,6 @@ const sortRoutesByLevel = (routes) => {
 }
 
 
-let showRoutes = ref([])
-
 import { getRoutes } from '@/api/routes.js'
 
 
@@ -40,7 +38,6 @@ const getShowRoutes = async () => {
       {
         router: 'addRoute',
         name: '新增路由',
-        children: []
       }
     ]
   })
@@ -104,7 +101,7 @@ const logout = () => {
       <el-aside width="200px">
         <el-menu :default-openeds="openList">
           <template v-for="item in routes" :key="item.router">
-            <el-sub-menu v-if="item.children.length !== 0" :index="item.router">
+            <el-sub-menu v-if="item.children" :index="item.router">
               <template #title>
                 <span>{{ item.name }}</span>
               </template>
