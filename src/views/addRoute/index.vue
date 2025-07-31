@@ -173,32 +173,15 @@ const search = async () => {
       <template #searchFrom>
         <el-form :inline="true" :model="searchForm">
           <el-form-item label="路由名称:" prop="name">
-            <el-input
-              v-model="searchForm.name"
-              placeholder="请输入路由名称"
-              style="width: 200px"
-            ></el-input>
+            <el-input v-model="searchForm.name" placeholder="请输入路由名称" style="width: 200px"></el-input>
           </el-form-item>
           <el-form-item label="父路由:" prop="parentId">
-            <el-select
-              v-model="searchForm.parentId"
-              placeholder="请选择父路由"
-              style="width: 200px"
-            >
-              <el-option
-                v-for="item in optionData"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
+            <el-select v-model="searchForm.parentId" placeholder="请选择父路由" style="width: 200px">
+              <el-option v-for="item in optionData" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="路由地址:" prop="router">
-            <el-input
-              v-model="searchForm.router"
-              placeholder="请输入路由地址"
-              style="width: 200px"
-            ></el-input>
+            <el-input v-model="searchForm.router" placeholder="请输入路由地址" style="width: 200px"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button @click="search" :loading="searchButtonLoading" type="primary">
@@ -210,24 +193,12 @@ const search = async () => {
     </Operate>
   </div>
   <div class="tableBox">
-    <el-table
-      :data="tableData"
-      border
-      default-expand-all
-      row-key="id"
-      @selection-change="handleSelectionChange"
-      style="margin-top: 10px"
-      v-loading="tableLoading"
-    >
+    <el-table :data="tableData" border default-expand-all row-key="id" @selection-change="handleSelectionChange"
+      style="margin-top: 10px" v-loading="tableLoading">
       <el-table-column type="selection" :selectable="selectable" width="55" />
       <el-table-column type="index" label="序号" align="center" width="80" />
-      <el-table-column
-        v-for="item in tableColumns"
-        header-align="center"
-        :align="item.align ? item.align : 'center'"
-        :prop="item.prop"
-        :label="item.label"
-      >
+      <el-table-column v-for="item in tableColumns" header-align="center" :align="item.align ? item.align : 'center'"
+        :prop="item.prop" :label="item.label">
         <template v-if="item.prop === 'isShow'" #default="scoped">
           {{ scoped.row.isShow == '1' ? '是' : '否' }}
         </template>
@@ -235,9 +206,7 @@ const search = async () => {
       <el-table-column label="操作" width="160">
         <template #default="scoped">
           <el-button link type="primary" size="small" @click="chack(scoped.row)"> 查看 </el-button>
-          <el-button link type="primary" size="small" @click="editRoute(scoped.row)"
-            >编辑</el-button
-          >
+          <el-button link type="primary" size="small" @click="editRoute(scoped.row)">编辑</el-button>
           <el-button link type="primary" size="small" @click="deleteOne(scoped.row)">
             删除
           </el-button>
@@ -246,14 +215,8 @@ const search = async () => {
     </el-table>
   </div>
 
-  <el-dialog
-    :title="dialogTitle"
-    v-model="dialogVisible"
-    show-close
-    width="50%"
-    custom-class="dialog"
-    @close="handleClose"
-  >
+  <el-dialog :title="dialogTitle" v-model="dialogVisible" show-close width="50%" custom-class="dialog"
+    @close="handleClose">
     <div class="formBody">
       <el-form :model="routeForm" label-width="100px" :rules="rules" ref="ruleForm">
         <el-row>
@@ -288,17 +251,9 @@ const search = async () => {
           </el-col>
           <el-col :span="12">
             <el-form-item label="父路由:" prop="parentId">
-              <el-select
-                v-model="routeForm.parentId"
-                placeholder="请选择父路由"
-                :disabled="isChack"
-              >
-                <el-option
-                  v-for="item in optionData"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
+              <el-select v-model="routeForm.parentId" placeholder="请选择父路由" :disabled="isChack">
+                <el-option v-for="item in optionData" :key="item.id" :label="item.name" :value="item.id"
+                  :disabled="item.id === routeForm.id" />
               </el-select>
             </el-form-item>
           </el-col>

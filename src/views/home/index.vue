@@ -46,8 +46,6 @@ const getShowRoutes = async () => {
 
 getShowRoutes()
 
-console.log(routes);
-
 // 路由跳转
 import { useRouter, useRoute, RouterView } from 'vue-router'
 const router = useRouter()

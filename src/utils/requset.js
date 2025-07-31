@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 // 创建可一个新的axios对象
 const request = axios.create({
   baseURL: '/api/manager', // 后端的接口地址  ip:port
@@ -38,6 +39,9 @@ request.interceptors.response.use(
     let data = error.response.data
     if (data.status === 400) {
       ElMessage.error(data.msg)
+    } else if (data.code === 401) {
+      ElMessage.error('请先登录')
+      router.push('/login')
     }
     console.error('response error: ' + error) // for debug
     return Promise.reject(error)
