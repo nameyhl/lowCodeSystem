@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 // 创建可一个新的axios对象
 const request = axios.create({
-  baseURL: '/api/manager', // 后端的接口地址  ip:port
+  baseURL: '/api', // 后端的接口地址  ip:port
   timeout: 30000,
 })
 
@@ -14,7 +14,7 @@ const request = axios.create({
 request.interceptors.request.use(
   (config) => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8'
-    config.headers['Authorization'] = 'Bearer ' + localStorage.getItem("token")
+    config.headers['Authorization'] = 'Bearer ' + localStorage.getItem('token')
     return config
   },
   (error) => {

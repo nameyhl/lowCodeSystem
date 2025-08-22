@@ -1,6 +1,6 @@
 import request from '@/utils/requset'
 
-const className = '/position'
+const className = 'manager/position'
 // 新增职位
 export function addPosition(data) {
   return request({

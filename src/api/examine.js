@@ -2,7 +2,7 @@ import request from '@/utils/requset'
 
 import { ElMessage } from 'element-plus'
 
-const ClassName = `examine`
+const ClassName = `manager/examine`
 
 export function getExamine(data) {
   /**
@@ -16,7 +16,7 @@ export function getExamine(data) {
   return request({
     url: `${ClassName}/getExamine`,
     method: 'get',
-    params: data
+    params: data,
   })
 }
 
@@ -33,13 +33,13 @@ export function addExamine(data) {
   } else if (type == 5) {
     url = `${ClassName}/addReimbursementExamine`
   } else {
-    ElMessage.error("审核类型错误")
-    throw new Error("审核类型错误")
+    ElMessage.error('审核类型错误')
+    throw new Error('审核类型错误')
   }
   return request({
     url: url,
     method: 'post',
-    data
+    data,
   })
 }
 
@@ -56,13 +56,13 @@ export function updateExamine(data) {
   } else if (type == 5) {
     url = `${ClassName}/addReimbursementExamine`
   } else {
-    ElMessage.error("审核类型错误")
-    throw new Error("审核类型错误")
+    ElMessage.error('审核类型错误')
+    throw new Error('审核类型错误')
   }
   return request({
     url: url,
     method: 'post',
-    data
+    data,
   })
 }
 
@@ -79,12 +79,12 @@ export function deleteExamine(data) {
   } else if (type == 5) {
     url = `${ClassName}/addReimbursementExamine`
   } else {
-    ElMessage.error("审核类型错误")
-    throw new Error("审核类型错误")
+    ElMessage.error('审核类型错误')
+    throw new Error('审核类型错误')
   }
   return request({
     url: url,
     method: 'delete',
-    params: data
+    params: data,
   })
 }

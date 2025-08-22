@@ -1,6 +1,6 @@
 import request from '@/utils/requset'
 
-const className = '/department'
+const className = 'manager/department'
 export function addDepartment(data) {
   return request({
     url: `${className}/addDepartment`,

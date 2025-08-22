@@ -1,12 +1,12 @@
 import request from '@/utils/requset'
 
-let className = '/routes'
+let className = 'manager/routes'
 
 export const getRoutes = (data) => {
   return request({
     url: `${className}/getRoutes`,
     method: 'get',
-    params: data
+    params: data,
   })
 }
 

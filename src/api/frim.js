@@ -1,6 +1,6 @@
 import request from '@/utils/requset'
 
-const className = '/frim'
+const className = 'manager/frim'
 export const addFrim = (data) => {
   return request({
     url: `${className}/addFrim`,

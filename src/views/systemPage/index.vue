@@ -15,7 +15,7 @@ let routes = ref([])
 
 const getRoutesList = async () => {
   let data = {
-    name: routeName
+    name: routeName,
   }
   let res = await getRoutes(data)
   routes.value = res.data[0].children
@@ -30,32 +30,37 @@ const router = useRouter()
 
 let routePath = ref(route.path)
 // 监听路由地址
-watch(() => route.path, (newVal, oldVal) => {
-  console.log(newVal, oldVal)
-  routePath.value = newVal
-})
+watch(
+  () => route.path,
+  (newVal, oldVal) => {
+    console.log(newVal, oldVal)
+    routePath.value = newVal
+  },
+)
 
 const clickChildren = (path) => {
-  router.push(path)
+  window.open(path)
 }
-
 </script>
 <template>
   <div class="pageBody" v-if="routePath == '/systemPage'">
     <div class="carouselBox">
       <el-carousel height="400px">
         <el-carousel-item v-for="item in imgList" :key="item">
-          <img :src="item" alt="" style="width: 100%; height: 400px;">
+          <img :src="item" alt="" style="width: 100%; height: 400px" />
         </el-carousel-item>
       </el-carousel>
     </div>
     <div class="children">
-      <div class="childrenItem" v-for="item in routes" :key="item.id" @click="clickChildren(item.router)">
+      <div
+        class="childrenItem"
+        v-for="item in routes"
+        :key="item.id"
+        @click="clickChildren(item.router)"
+      >
         {{ item.name }}
       </div>
-      <div class="childrenItem">
-        更多功能开发中...
-      </div>
+      <div class="childrenItem">更多功能开发中...</div>
     </div>
   </div>
   <div class="childBody" v-else>
@@ -76,13 +81,17 @@ const clickChildren = (path) => {
     .childrenItem {
       width: 20%;
       text-align: center;
+      cursor: pointer;
+      &:hover {
+        color: #409eff;
+      }
     }
   }
 }
 
 .childBody {
   width: 50%;
-  height: 500px;
+  height: calc(100% - 20px);
   margin: 0 auto;
   background-color: #fff;
   padding: 10px;

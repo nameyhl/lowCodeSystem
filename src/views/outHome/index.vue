@@ -39,7 +39,7 @@ const logout = () => {
     </el-header>
     <el-container style="height: calc(100vh - 60px)">
       <el-main>
-        <RouterView style="height: 100%" />
+        <RouterView />
       </el-main>
     </el-container>
   </el-container>
@@ -71,7 +71,6 @@ const logout = () => {
       color: @white;
       cursor: pointer;
     }
-
   }
 }
 </style>

@@ -1,5 +1,5 @@
 import request from '@/utils/requset'
-let className = '/user'
+let className = 'manager/user'
 
 // 新增用户
 export function addUser(data) {
