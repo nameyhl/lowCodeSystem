@@ -1,37 +1,30 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { View } from '@element-plus/icons-vue'
 
 import userStore from '@/stores/modules/user'
 const user = userStore().user
 
-const props = defineProps({
-  projectType: {
-    type: String,
-    default: '1',
-  },
-})
-
 import { getProjectListByLeaderId } from '@/api/project.js'
 
 const projectList = ref([])
+const projectType = ref(1)
 
-watch(
-  () => props.projectType,
-  (newVal) => {
-    if (newVal === 1) {
-    }
-    if (newVal === 2) {
-    }
-    if (newVal === 3) {
-      getProjectListByLeaderId({
-        leaderId: user.id,
-      }).then((res) => {
-        projectList.value = res.data
-      })
-    }
-  },
-)
+const getProjectList = () => {
+  console.log(123)
+  console.log(projectType.value)
+  if (projectType.value === 3) {
+    getProjectListByLeaderId({
+      leaderId: user.id,
+    }).then((res) => {
+      projectList.value = res.data
+    })
+  }
+}
+
+watch(projectType, () => {
+  projectList.value = []
+  getProjectList()
+})
 
 let getProcess = (status) => {
   if (status === 0) {
@@ -61,11 +54,24 @@ let getProcess = (status) => {
   return '未知状态'
 }
 const emit = defineEmits(['changeView'])
-const openDetail = (item) => {
-  emit('changeView', item)
+const openDetail = () => {
+  emit('changeView', 2)
 }
 </script>
 <template>
+  <div class="headBar">
+    <el-tabs v-model="projectType" class="demo-tabs" @tab-click="handleClick">
+      <el-tab-pane label="我的项目" :name="1"> </el-tab-pane>
+      <el-tab-pane label="我负责的项目" :name="2"> </el-tab-pane>
+      <el-tab-pane label="我创建的项目" :name="3"> </el-tab-pane>
+    </el-tabs>
+    <component
+      :is="View"
+      :projectType="projectType"
+      :projectInfo="projectInfo"
+      @changeView="changeView"
+    ></component>
+  </div>
   <div class="projectList">
     <div class="projectItem" v-for="item in projectList" @click="openDetail(item)">
       <div class="projectName">{{ item.name }}</div>
@@ -91,14 +97,17 @@ const openDetail = (item) => {
   </div>
 </template>
 <style lang="less" scoped>
+.headBar {
+  height: 50px;
+}
 .projectList {
-  height: calc(100% - 40px);
+  height: calc(100% - 90px);
   display: flex;
   flex-wrap: wrap;
   overflow: auto;
 
   .projectItem {
-    width: calc(25% - 30px);
+    width: 15rem;
     height: 106px;
     font-size: 14px;
     border: 2px solid #ff0f00;

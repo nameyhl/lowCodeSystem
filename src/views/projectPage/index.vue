@@ -81,9 +81,17 @@ const handleExceed = () => {
 }
 
 let projectInfo = ref({})
-const changeView = (item) => {
-  View.value = projectPage
-  projectInfo = item
+const changeView = (type) => {
+  if (type === 1) {
+    View.value = projectList
+  } else {
+    View.value = projectPage
+  }
+}
+
+const handleBeforeUpload = (file) => {
+  console.log('Uploading file:', file)
+  return true
 }
 </script>
 <template>
@@ -92,20 +100,12 @@ const changeView = (item) => {
       <template #addName>创建项目</template>
     </Operate>
   </div>
-  <div class="headBar">
-    <el-tabs v-model="projectType" class="demo-tabs" @tab-click="handleClick">
-      <el-tab-pane label="我的项目" :name="1"> </el-tab-pane>
-      <el-tab-pane label="我负责的项目" :name="2"> </el-tab-pane>
-      <el-tab-pane label="我创建的项目" :name="3"> </el-tab-pane>
-    </el-tabs>
-    <component
-      :is="View"
-      :projectType="projectType"
-      :projectInfo="projectInfo"
-      @changeView="changeView"
-    ></component>
-  </div>
-
+  <component
+    :is="View"
+    :projectType="projectType"
+    :projectInfo="projectInfo"
+    @changeView="changeView"
+  ></component>
   <el-dialog v-model="createDialog" title="创建项目" width="500" :before-close="handleClose">
     <el-form :model="createForm" :rules="rules" ref="formRef" label-width="120px">
       <el-form-item label="项目名称" prop="name">
@@ -132,6 +132,7 @@ const changeView = (item) => {
           multiple
           :limit="1"
           :on-exceed="handleExceed"
+          :before-upload="handleBeforeUpload"
         >
           <el-button type="primary">Click to upload</el-button>
           <template #tip>
