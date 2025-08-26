@@ -17,3 +17,27 @@ export function getProjectListByLeaderId(data) {
     params: data,
   })
 }
+
+export function getProjectDetail(data) {
+  return request({
+    url: `${className}/getProjectDetail`,
+    method: 'get',
+    params: data,
+  })
+}
+
+export function getProjectListByDepartmentLeader(data) {
+  return request({
+    url: `${className}/getProjectListByDepartmentLeader`,
+    method: 'get',
+    params: data,
+  })
+}
+
+export function updateProject(data) {
+  return request({
+    url: `${className}/upDateProjectApprovalInfo`,
+    method: 'put',
+    data,
+  })
+}

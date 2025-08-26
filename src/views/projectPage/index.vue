@@ -80,11 +80,14 @@ const handleExceed = () => {
   ElMessage.error('最多上传1个文件')
 }
 
-let projectInfo = ref({})
-const changeView = (type) => {
+let approver = ref(false)
+const changeView = async (type, item, isApprover) => {
   if (type === 1) {
     View.value = projectList
   } else {
+    console.log(isApprover)
+    await getProjectInfo(item.projectId)
+    approver.value = isApprover
     View.value = projectPage
   }
 }
@@ -92,6 +95,19 @@ const changeView = (type) => {
 const handleBeforeUpload = (file) => {
   console.log('Uploading file:', file)
   return true
+}
+
+import { getProjectDetail } from '@/api/project.js'
+
+let projectInfo = ref({})
+const projectPageRef = ref(null)
+const getProjectInfo = async (id) => {
+  let data = {
+    id,
+  }
+  await getProjectDetail(data).then((res) => {
+    projectInfo.value = res.data
+  })
 }
 </script>
 <template>
@@ -104,7 +120,9 @@ const handleBeforeUpload = (file) => {
     :is="View"
     :projectType="projectType"
     :projectInfo="projectInfo"
+    :isApprover="approver"
     @changeView="changeView"
+    :ref="projectPageRef"
   ></component>
   <el-dialog v-model="createDialog" title="创建项目" width="500" :before-close="handleClose">
     <el-form :model="createForm" :rules="rules" ref="formRef" label-width="120px">

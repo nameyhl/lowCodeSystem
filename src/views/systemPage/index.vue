@@ -91,7 +91,7 @@ const clickChildren = (path) => {
 
 .childBody {
   width: 50%;
-  height: calc(100% - 20px);
+  min-height: calc(100% - 20px);
   margin: 0 auto;
   background-color: #fff;
   padding: 10px;

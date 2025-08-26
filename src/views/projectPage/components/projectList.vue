@@ -1,22 +1,30 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onBeforeUnmount } from 'vue'
 
 import userStore from '@/stores/modules/user'
 const user = userStore().user
 
-import { getProjectListByLeaderId } from '@/api/project.js'
+import { getProjectListByLeaderId, getProjectListByDepartmentLeader } from '@/api/project.js'
 
 const projectList = ref([])
 const projectType = ref(1)
 
+let isApprover = ref(false)
 const getProjectList = () => {
-  console.log(123)
-  console.log(projectType.value)
+  isApprover.value = false
   if (projectType.value === 3) {
     getProjectListByLeaderId({
       leaderId: user.id,
     }).then((res) => {
       projectList.value = res.data
+    })
+  }
+  if (projectType.value === 4) {
+    getProjectListByDepartmentLeader({
+      id: user.id,
+    }).then((res) => {
+      projectList.value = res.data
+      isApprover.value = true
     })
   }
 }
@@ -54,8 +62,9 @@ let getProcess = (status) => {
   return '未知状态'
 }
 const emit = defineEmits(['changeView'])
-const openDetail = () => {
-  emit('changeView', 2)
+const openDetail = (item) => {
+  console.log(isApprover.value)
+  emit('changeView', 2, item, isApprover.value)
 }
 </script>
 <template>
@@ -64,17 +73,12 @@ const openDetail = () => {
       <el-tab-pane label="我的项目" :name="1"> </el-tab-pane>
       <el-tab-pane label="我负责的项目" :name="2"> </el-tab-pane>
       <el-tab-pane label="我创建的项目" :name="3"> </el-tab-pane>
+      <el-tab-pane label="需要我审核的项目" :name="4" v-if="user.isLeader"></el-tab-pane>
     </el-tabs>
-    <component
-      :is="View"
-      :projectType="projectType"
-      :projectInfo="projectInfo"
-      @changeView="changeView"
-    ></component>
   </div>
   <div class="projectList">
     <div class="projectItem" v-for="item in projectList" @click="openDetail(item)">
-      <div class="projectName">{{ item.name }}</div>
+      <div class="projectName">{{ item.projectName }}</div>
       <div class="projectStatus">
         <div class="title">当前项目进度：</div>
         <div class="status">{{ getProcess(item.status) }}</div>
