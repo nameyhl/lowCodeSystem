@@ -28,14 +28,14 @@ let process = ref([
   {
     title: '部门审批',
     startTime: projectInfo.value.projectCreateTime,
-    desc: projectInfo.value.step1Message,
+    desc: projectInfo.value.step1Msg,
     endTime: projectInfo.value.step1EndTime,
     submitUser: projectInfo.value.departmentLeaderName,
   },
   {
     title: '公司负责人审批',
     startTime: projectInfo.value.step1EndTime,
-    desc: projectInfo.value.step2Message,
+    desc: projectInfo.value.step2Msg,
     endTime: projectInfo.value.step2EndTime,
     submitUser: projectInfo.value.frimLeaderName,
   },
