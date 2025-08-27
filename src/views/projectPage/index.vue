@@ -55,8 +55,8 @@ const submitForm = async () => {
         let data = {
           ...createForm.value,
           leaderId: user.id,
-          filePath: fileList.value[0].response.data.url,
-          fileName: fileList.value[0].response.data.name,
+          filePath: fileList.value[0].response.data.fileUrl,
+          fileName: fileList.value[0].response.data.fileName,
         }
         await addProject(data)
           .then((res) => {
@@ -86,7 +86,7 @@ const changeView = async (type, item, isApprover) => {
     View.value = projectList
   } else {
     console.log(isApprover)
-    await getProjectInfo(item.projectId)
+    await getProjectInfo(item.id)
     approver.value = isApprover
     View.value = projectPage
   }

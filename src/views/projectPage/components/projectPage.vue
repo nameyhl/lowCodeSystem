@@ -1,6 +1,7 @@
 <script setup>
 import { ElMessageBox, ElInput } from 'element-plus'
 import { computed, ref, h } from 'vue'
+import { View, Hide } from '@element-plus/icons-vue'
 
 const props = defineProps({
   projectInfo: {
@@ -23,27 +24,46 @@ let process = ref([
     title: '项目提交',
     startTime: projectInfo.value.projectCreateTime,
     endTime: projectInfo.value.projectCreateTime,
+    processStatus: 1,
     submitUser: projectInfo.value.leaderName,
   },
   {
     title: '部门审批',
     startTime: projectInfo.value.projectCreateTime,
     desc: projectInfo.value.step1Msg,
+    processStatus: projectInfo.value.step1Status,
     endTime: projectInfo.value.step1EndTime,
     submitUser: projectInfo.value.departmentLeaderName,
   },
   {
     title: '公司负责人审批',
     startTime: projectInfo.value.step1EndTime,
+    processStatus: projectInfo.value.step2Status,
     desc: projectInfo.value.step2Msg,
     endTime: projectInfo.value.step2EndTime,
     submitUser: projectInfo.value.frimLeaderName,
   },
   {
+    processStatus: projectInfo.value.step3Status,
     title: '项目完成',
     startTime: projectInfo.value.step2EndTime,
   },
 ])
+
+const getStatus = (status) => {
+  if (status === 0) {
+    return '未到达'
+  }
+  if (status === 1) {
+    return '已通过'
+  }
+  if (status === 2) {
+    return '已驳回'
+  }
+  if (status === 3) {
+    return '待审批'
+  }
+}
 let active = ref(projectInfo.value.stepNum)
 
 let getProcess = (status) => {
@@ -90,7 +110,7 @@ let message = ref('')
 // 审批
 const handleApprove = (status) => {
   message.value = ''
-  let boxTitle = status === 'pass' ? '审批建议' : '不合格情况'
+  let boxTitle = status === 'pass' ? '审批建议' : '驳回原因'
   ElMessageBox({
     customClass: 'custom-message-box',
 
@@ -117,13 +137,17 @@ const handleApprove = (status) => {
         id: projectInfo.value.projectId,
         stepNum: projectInfo.value.stepNum,
       }
-      console.log(data)
-
       await updateProject(data).then((res) => console.log(res))
+      handleClick()
     })
     .catch(() => {
       console.log('取消')
     })
+}
+
+let isShowCode = ref(false)
+const showCode = () => {
+  isShowCode.value = !isShowCode.value
 }
 </script>
 <template>
@@ -148,7 +172,11 @@ const handleApprove = (status) => {
             <el-row :gutters="20">
               <el-col :span="12">
                 <div class="title">项目编码：</div>
-                <div class="desc">{{ projectInfo.projectCode }}</div>
+                <div class="desc">
+                  {{ isShowCode ? projectInfo.projectCode : '****' }}
+                  <el-icon @click="showCode" v-if="isShowCode"><View /></el-icon>
+                  <el-icon @click="showCode" v-else><Hide /></el-icon>
+                </div>
               </el-col>
               <el-col :span="12">
                 <div class="title">项目创建时间：</div>
@@ -171,7 +199,12 @@ const handleApprove = (status) => {
           <div class="projectProcess">
             <div style="height: 300px; max-width: 600px">
               <el-steps direction="vertical" :active="active">
-                <el-step v-for="item in process" :title="item.title" :key="item.title">
+                <el-step
+                  v-for="item in process"
+                  :title="item.title"
+                  :key="item.title"
+                  :class="{ reject: item.processStatus === 2 }"
+                >
                   <template #description>
                     <div class="leftBox">
                       <div class="time">提交时间：{{ item.startTime }}</div>
@@ -179,7 +212,10 @@ const handleApprove = (status) => {
                       <div class="time" v-if="item.endTime">结束时间：{{ item.endTime }}</div>
                     </div>
                     <div class="rightBox">
-                      <div class="desc" v-if="item.desc">审批建议：{{ item.desc }}</div>
+                      <div class="desc" v-if="item.desc">
+                        {{ item.processStatus != 2 ? '审批建议：' : '驳回原因：' }}{{ item.desc }}
+                      </div>
+                      <div class="status">{{ getStatus(item.processStatus) }}</div>
                     </div>
                   </template>
                 </el-step>
@@ -192,12 +228,14 @@ const handleApprove = (status) => {
             <div class="desc">{{ projectInfo.msg }}</div>
           </div>
         </el-collapse-item>
-        <el-collapse-item title="项目附件" name="4"> </el-collapse-item>
+        <el-collapse-item title="项目附件" name="4">
+          <div class="fileName">{{ projectInfo.fileName }}</div>
+        </el-collapse-item>
       </el-collapse>
     </div>
     <div class="footer">
       <el-button v-if="isApprover" type="primary" @click="handleApprove('pass')">通过</el-button>
-      <el-button v-if="isApprover" type="danger" @click="handleApprove('reject')">拒绝</el-button>
+      <el-button v-if="isApprover" type="danger" @click="handleApprove('reject')">驳回</el-button>
     </div>
   </div>
 </template>
@@ -259,13 +297,13 @@ const handleApprove = (status) => {
   .rightBox {
     height: 100%;
     .desc {
-      height: 100%;
+      height: 50%;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .time {
-      height: 100%;
+    .status {
+      height: 50%;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -279,5 +317,22 @@ const handleApprove = (status) => {
       font-size: 16px !important;
     }
   }
+}
+:deep(.reject) .el-step__head {
+  color: #ff4d4f !important;
+  border-color: #ff4d4f !important;
+}
+
+:deep(.reject) .el-step__title {
+  color: #ff4d4f !important;
+}
+
+:deep(.reject) .el-step__icon {
+  background-color: #ff4d4f !important;
+  color: white !important;
+}
+
+:deep(.reject) .el-step__description {
+  color: #ff4d4f !important;
 }
 </style>

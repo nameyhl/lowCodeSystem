@@ -31,7 +31,6 @@ const getFrim = async () => {
 
 getFrim()
 
-import { defineEmits } from 'vue'
 const emit = defineEmits(['submit', 'close'])
 
 const formRef = ref(null)
@@ -57,7 +56,12 @@ const close = () => {
             <template v-if="frimList.length === 0">
               <el-option label="暂无数据，请添加公司后创建部门" value="" disabled></el-option>
             </template>
-            <el-option v-for="item in frimList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            <el-option
+              v-for="item in frimList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -65,7 +69,14 @@ const close = () => {
     <el-row>
       <el-col :span="24">
         <el-form-item prop="msg" label="部门描述:">
-          <el-input v-model="form.msg" maxlength="500" placeholder="请简述部门信息" :row="3" show-word-limit type="textarea" />
+          <el-input
+            v-model="form.msg"
+            maxlength="500"
+            placeholder="请简述部门信息"
+            :row="3"
+            show-word-limit
+            type="textarea"
+          />
         </el-form-item>
       </el-col>
     </el-row>

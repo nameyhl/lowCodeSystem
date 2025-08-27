@@ -26,9 +26,9 @@ export function getProjectDetail(data) {
   })
 }
 
-export function getProjectListByDepartmentLeader(data) {
+export function getProjectListByLeader(data) {
   return request({
-    url: `${className}/getProjectListByDepartmentLeader`,
+    url: `${className}/getProjectListByLeader`,
     method: 'get',
     params: data,
   })

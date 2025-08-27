@@ -4,7 +4,7 @@ import { ref, watch, onBeforeUnmount } from 'vue'
 import userStore from '@/stores/modules/user'
 const user = userStore().user
 
-import { getProjectListByLeaderId, getProjectListByDepartmentLeader } from '@/api/project.js'
+import { getProjectListByLeaderId, getProjectListByLeader } from '@/api/project.js'
 
 const projectList = ref([])
 const projectType = ref(1)
@@ -20,8 +20,9 @@ const getProjectList = () => {
     })
   }
   if (projectType.value === 4) {
-    getProjectListByDepartmentLeader({
+    getProjectListByLeader({
       id: user.id,
+      level: user.isLeader,
     }).then((res) => {
       projectList.value = res.data
       isApprover.value = true
@@ -71,14 +72,14 @@ const openDetail = (item) => {
   <div class="headBar">
     <el-tabs v-model="projectType" class="demo-tabs" @tab-click="handleClick">
       <el-tab-pane label="我的项目" :name="1"> </el-tab-pane>
-      <el-tab-pane label="我负责的项目" :name="2"> </el-tab-pane>
+      <el-tab-pane label="我参与的项目" :name="2"> </el-tab-pane>
       <el-tab-pane label="我创建的项目" :name="3"> </el-tab-pane>
       <el-tab-pane label="需要我审核的项目" :name="4" v-if="user.isLeader"></el-tab-pane>
     </el-tabs>
   </div>
   <div class="projectList">
     <div class="projectItem" v-for="item in projectList" @click="openDetail(item)">
-      <div class="projectName">{{ item.projectName }}</div>
+      <div class="projectName">{{ item.name }}</div>
       <div class="projectStatus">
         <div class="title">当前项目进度：</div>
         <div class="status">{{ getProcess(item.status) }}</div>

@@ -10,9 +10,10 @@ export function uploadFile(data) {
   })
 }
 
-export function downloadFile(fileName) {
+export function getFileStream(fileName) {
   return request({
     url: `/${classNmae}/stream/${fileName}`,
     method: 'get',
+    responseType: 'blob',
   })
 }
