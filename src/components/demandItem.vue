@@ -14,6 +14,14 @@ const editDemand = () => {
 const closeDemand = () => {
   console.log('关闭')
 }
+
+const cancel = () => {
+  isEdit.value = false
+}
+
+const submit = () => {
+  isEdit.value = false
+}
 </script>
 <template>
   <div class="chackBody" v-if="!isEdit">
@@ -33,6 +41,12 @@ const closeDemand = () => {
   <div v-else>
     <el-input v-model="demandeObj.demandName" placeholder="请输入需求名称" />
     <el-input v-model="demandeObj.demandContent" type="textarea" placeholder="请输入需求内容" />
+    <div class="footer">
+      <div>
+        <el-button type="primary" @click="submit">确定</el-button>
+        <el-button type="danger" @click="cancel">取消</el-button>
+      </div>
+    </div>
   </div>
 </template>
 <style lang="less" scoped></style>
