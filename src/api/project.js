@@ -41,3 +41,11 @@ export function updateProject(data) {
     data,
   })
 }
+
+export function getProjectListByLevel(data) {
+  return request({
+    url: `${className}/getProjectByLevel`,
+    method: 'get',
+    params: data,
+  })
+}

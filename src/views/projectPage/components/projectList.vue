@@ -2,12 +2,15 @@
 import { ref, watch, onBeforeUnmount } from 'vue'
 
 import userStore from '@/stores/modules/user'
+import projectStore from '@/stores/modules/project'
 const user = userStore().user
+const project = projectStore()
+console.log(project)
 
-import { getProjectListByLeaderId, getProjectListByLeader } from '@/api/project.js'
+import { getProjectListByLeaderId, getProjectListByLevel } from '@/api/project.js'
 
 const projectList = ref([])
-const projectType = ref(1)
+const projectType = ref(3)
 
 let isApprover = ref(false)
 const getProjectList = () => {
@@ -20,7 +23,7 @@ const getProjectList = () => {
     })
   }
   if (projectType.value === 4) {
-    getProjectListByLeader({
+    getProjectListByLevel({
       id: user.id,
       level: user.isLeader,
     }).then((res) => {
@@ -30,75 +33,59 @@ const getProjectList = () => {
   }
 }
 
+getProjectList()
+
 watch(projectType, () => {
   projectList.value = []
   getProjectList()
 })
 
-let getProcess = (status) => {
-  if (status === 0) {
-    return '已提交，待审批'
+const emit = defineEmits(['changeView', 'openAdd'])
+
+const openDetail = async (item) => {
+  let data = {
+    id: item.id,
   }
-  if (status === 1) {
-    return '已审批，待开始'
-  }
-  if (status === 2) {
-    return '需求分析中'
-  }
-  if (status === 3) {
-    return '设计中'
-  }
-  if (status === 4) {
-    return '开发中'
-  }
-  if (status === 5) {
-    return '测试中'
-  }
-  if (status === 6) {
-    return '已完成'
-  }
-  if (status === 7) {
-    return '已取消'
-  }
-  return '未知状态'
+  await getProjectDetail(data).then((res) => {
+    let isApprover = false
+    let projectInfo = res.data
+    // 当前点击项目是否是需要当前用户审批
+    if (user.isLeader == 'department' && projectInfo.stepNum == 1 && projectInfo.step1Status != 1) {
+      isApprover = true
+    }
+    if (user.isLeader == 'frim' && projectInfo.step2Status != 1 && projectInfo.stepNum == 2) {
+      isApprover = true
+    }
+    project.setProjectInfo(projectInfo)
+    project.setIsApprover(isApprover)
+  })
+  emit('changeView', 2)
 }
-const emit = defineEmits(['changeView'])
-const openDetail = (item) => {
-  console.log(isApprover.value)
-  emit('changeView', 2, item, isApprover.value)
+
+import { getProjectDetail } from '@/api/project.js'
+
+import ProjectItem from '@/components/projectItem/index.vue'
+
+import Operate from '@/components/operate/index.vue'
+
+const openCreate = () => {
+  emit('openAdd')
 }
 </script>
 <template>
+  <div class="head">
+    <Operate :showDelete="false" @add="openCreate">
+      <template #addName>创建项目</template>
+    </Operate>
+  </div>
   <div class="headBar">
     <el-tabs v-model="projectType" class="demo-tabs" @tab-click="handleClick">
-      <el-tab-pane label="我的项目" :name="1"> </el-tab-pane>
-      <el-tab-pane label="我参与的项目" :name="2"> </el-tab-pane>
-      <el-tab-pane label="我创建的项目" :name="3"> </el-tab-pane>
-      <el-tab-pane label="需要我审核的项目" :name="4" v-if="user.isLeader"></el-tab-pane>
+      <el-tab-pane label="我创建的项目" :name="3"></el-tab-pane>
+      <el-tab-pane label="我审核的项目" :name="4" v-if="user.isLeader"></el-tab-pane>
     </el-tabs>
   </div>
   <div class="projectList">
-    <div class="projectItem" v-for="item in projectList" @click="openDetail(item)">
-      <div class="projectName">{{ item.name }}</div>
-      <div class="projectStatus">
-        <div class="title">当前项目进度：</div>
-        <div class="status">{{ getProcess(item.status) }}</div>
-      </div>
-      <div class="projectTime">
-        <div class="createTime">
-          <div class="title">创建时间：</div>
-          <div class="time">{{ item.createTime }}</div>
-        </div>
-        <div class="endTime">
-          <div class="title">预期结束时间：</div>
-          <div class="time">{{ item.endTime }}</div>
-        </div>
-      </div>
-      <div class="projectLeader">
-        <div class="title">项目负责人：</div>
-        {{ item.leaderName }}
-      </div>
-    </div>
+    <ProjectItem v-for="item in projectList" @click="openDetail(item)" :item="item"> </ProjectItem>
   </div>
 </template>
 <style lang="less" scoped>
@@ -106,56 +93,19 @@ const openDetail = (item) => {
   height: 50px;
 }
 .projectList {
-  height: calc(100% - 90px);
-  display: flex;
-  flex-wrap: wrap;
-  overflow: auto;
-
-  .projectItem {
-    width: 15rem;
-    height: 106px;
-    font-size: 14px;
-    border: 2px solid #ff0f00;
-    margin: 10px;
-    padding: 0 3px 10px;
-    cursor: pointer;
-
-    &:hover {
-      border: 4px solid #007bff;
-      margin: 8px;
-    }
-    div :not(:first-child) {
-      height: 20px;
-      line-height: 20px;
-    }
-    .title {
-      font-size: 14px;
-      font-weight: bold;
-    }
-    .projectName {
-      height: 30px;
-      line-height: 30px;
-      font-size: 16px;
-      font-weight: bold;
-      text-align: center;
-    }
-    .projectStatus {
-      display: flex;
-    }
-    .projectTime {
-      padding-left: 2rem;
-
-      .createTime {
-        display: flex;
-      }
-      .endTime {
-        display: flex;
-      }
-    }
-    .projectLeader {
-      display: flex;
-      justify-content: flex-end;
-    }
-  }
+  min-height: 50px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+.title {
+  height: 50px;
+  line-height: 50px;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: @ruby;
+  color: @header-text;
+  padding-left: 50px;
+  border-radius: 15px;
 }
 </style>

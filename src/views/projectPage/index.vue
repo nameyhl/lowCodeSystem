@@ -8,15 +8,9 @@ let View = ref(projectList)
 import projectList from './components/projectList.vue'
 import projectPage from './components/projectPage.vue'
 
-const handleClick = (tab) => {
-  View.value = projectList
-}
-
-import Operate from '@/components/operate/index.vue'
 import { ElMessage } from 'element-plus'
-
 let createDialog = ref(false)
-const openCreate = () => {
+const openAdd = () => {
   createDialog.value = true
 }
 
@@ -85,8 +79,6 @@ const changeView = async (type, item, isApprover) => {
   if (type === 1) {
     View.value = projectList
   } else {
-    console.log(isApprover)
-    await getProjectInfo(item.id)
     approver.value = isApprover
     View.value = projectPage
   }
@@ -96,32 +88,13 @@ const handleBeforeUpload = (file) => {
   console.log('Uploading file:', file)
   return true
 }
-
-import { getProjectDetail } from '@/api/project.js'
-
-let projectInfo = ref({})
-const projectPageRef = ref(null)
-const getProjectInfo = async (id) => {
-  let data = {
-    id,
-  }
-  await getProjectDetail(data).then((res) => {
-    projectInfo.value = res.data
-  })
-}
 </script>
 <template>
-  <div class="head">
-    <Operate :showDelete="false" @add="openCreate">
-      <template #addName>创建项目</template>
-    </Operate>
-  </div>
   <component
     :is="View"
     :projectType="projectType"
-    :projectInfo="projectInfo"
-    :isApprover="approver"
     @changeView="changeView"
+    @openAdd="openAdd"
     :ref="projectPageRef"
   ></component>
   <el-dialog v-model="createDialog" title="创建项目" width="500" :before-close="handleClose">
@@ -130,7 +103,13 @@ const getProjectInfo = async (id) => {
         <el-input v-model="createForm.name" placeholder="请输入项目名称" />
       </el-form-item>
       <el-form-item label="项目描述" prop="msg">
-        <el-input v-model="createForm.msg" placeholder="请输入项目描述" />
+        <el-input
+          v-model="createForm.msg"
+          type="textarea"
+          :max="200"
+          show-word-limit
+          placeholder="请输入项目描述"
+        />
       </el-form-item>
       <el-form-item label="预期结束时间" prop="endTime">
         <el-date-picker
