@@ -12,8 +12,6 @@ export const loadComponent = (loader, options = {}) => {
     loader,
     delay: 200,
     timeout: 30000,
-    errorComponent: () => import('../components/errorComponet.vue'),
-    loadingComponent: () => import('../components/loadingComponent.vue'),
     ...options,
   })
 }

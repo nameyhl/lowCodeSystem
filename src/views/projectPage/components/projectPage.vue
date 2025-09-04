@@ -101,6 +101,12 @@ let stepList = ref([
     }
   }
 }
+.projectStep {
+  height: 50px;
+}
+.projectStepBody {
+  height: calc(100%);
+}
 :deep(.el-collapse-item__title) {
   font-size: 16px;
   font-weight: 500;

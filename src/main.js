@@ -15,6 +15,10 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
+// 注册全局方法
+import utils from './utils/index.js'
+app.config.globalProperties.$utils = utils
+
 app.use(ElementPlus, {
   locale: zhCn,
 })
@@ -22,4 +26,3 @@ app.use(pinia)
 await setupRouter(app).then(() => {
   app.mount('#app')
 })
-

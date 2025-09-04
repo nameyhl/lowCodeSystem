@@ -90,6 +90,7 @@ const clickChildren = (path) => {
 }
 
 .childBody {
+  position: relative;
   width: 50%;
   min-height: calc(100% - 20px);
   margin: 0 auto;

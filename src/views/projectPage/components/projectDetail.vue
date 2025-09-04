@@ -212,7 +212,10 @@ const showCode = () => {
                     </div>
                     <div class="rightBox">
                       <div class="desc" v-if="item.desc">
-                        {{ item.processStatus != 2 ? '审批建议：' : '驳回原因：' }}{{ item.desc }}
+                        {{ item.processStatus != 2 ? '审批建议：' : '驳回原因：' }}
+                        <el-tooltip :content="item.desc" placement="top">
+                          {{ item.desc }}
+                        </el-tooltip>
                       </div>
                       <div class="status">{{ getStatus(item.processStatus) }}</div>
                     </div>
@@ -282,10 +285,12 @@ const showCode = () => {
   font-weight: 500;
 }
 :deep(.el-step__description) {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 10px;
+  display: flex;
+  .leftBox {
+    width: 50%;
+  }
   .rightBox {
+    width: 50%;
     height: 100%;
     .desc {
       height: 50%;
