@@ -10,7 +10,7 @@ let demandList = ref([])
 
 const getDemand = async () => {
   let data = {
-    id: projectInfo.projectId,
+    id: projectInfo.id,
   }
   let res = await getDemandList(data)
   demandList.value = res.data
@@ -65,7 +65,10 @@ const overDemand = async () => {
         :showDelete="userInfo.id == projectInfo.leaderId"
       ></demandItem>
     </div>
-    <div class="containerFooter" v-if="userInfo.id == projectInfo.leaderId">
+    <div
+      class="containerFooter"
+      v-if="userInfo.id == projectInfo.leaderId && projectInfo.status == 1"
+    >
       <el-button type="primary" @click="overDemand">评审结束</el-button>
     </div>
   </div>

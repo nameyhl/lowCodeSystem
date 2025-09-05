@@ -1,3 +1,4 @@
+import { getProjectById } from '@/api/project'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -26,11 +27,18 @@ const projectStore = defineStore('project', () => {
     return isApprover.value
   }
 
+  const fetchProjectInfo = async (projectId) => {
+    getProjectById({ id: projectId }).then((res) => {
+      projectInfo.value = res.data
+    })
+  }
+
   return {
     projectInfo,
     setProjectInfo,
     getProjectInfo,
     removeProjectInfo,
+    fetchProjectInfo,
     isApprover,
     setIsApprover,
     getIsApprover,

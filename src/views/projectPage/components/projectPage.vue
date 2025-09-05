@@ -1,14 +1,12 @@
 <script setup>
-import { defineAsyncComponent, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ref } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 const emit = defineEmits(['changeView'])
 const handleClick = () => {
   emit('changeView', 1)
 }
 import projectStore from '@/stores/modules/project'
 let projectInfo = projectStore().projectInfo
-let projectStatus = projectInfo.projectStatus
-console.log(projectStatus)
 
 import { loadComponent } from '@/utils/loadComponet'
 
@@ -16,7 +14,7 @@ const active = ref(0)
 let View = ref(loadComponent(() => import('./projectDetail.vue')))
 const clickStep = (index) => {
   // 判断项目进行到哪一步
-  if (projectStatus < index) {
+  if (projectInfo.status < index) {
     ElMessage.error('项目未到当前步骤')
     return
   }
@@ -62,11 +60,37 @@ let stepList = ref([
     click: clickStep,
   },
 ])
+
+import { deleteProjectById } from '@/api/project'
+
+const deleteProject = () => {
+  ElMessageBox.confirm(`确定删除项目${projectInfo.name}吗？`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(async () => {
+    let data = {
+      id: projectInfo.id,
+    }
+    console.log(data)
+    await deleteProjectById(data)
+      .then((res) => {
+        ElMessage.success('删除成功')
+        handleClick()
+      })
+      .catch(() => {
+        ElMessage.error('删除失败')
+      })
+  })
+}
 </script>
 <template>
   <div>
     <div class="top">
       <div class="goBack" @click="handleClick"><< 返回项目列表</div>
+      <div class="right">
+        <el-button type="danger" @click="deleteProject">删除项目</el-button>
+      </div>
     </div>
     <div class="projectStep">
       <el-steps class="mb-4" :space="200" :active="active" simple>
@@ -76,7 +100,7 @@ let stepList = ref([
           :key="item.title"
           :title="item.title"
           :icon="item.icon"
-          :class="{ notAllowed: projectStatus < index }"
+          :class="{ notAllowed: projectInfo.status < index }"
           @click="item.click(index)"
         />
       </el-steps>
@@ -90,6 +114,8 @@ let stepList = ref([
 </template>
 <style lang="less" scoped>
 .top {
+  display: flex;
+  justify-content: space-between;
   height: 50px;
   line-height: 50px;
   .goBack {

@@ -1,44 +1,73 @@
 <script setup>
 import { ElMessageBox, ElInput } from 'element-plus'
-import { computed, ref, h } from 'vue'
+import { ref, h } from 'vue'
 import { View, Hide } from '@element-plus/icons-vue'
 
 import projectStore from '@/stores/modules/project'
+import userStore from '@/stores/modules/user'
+let user = userStore().user
 let project = projectStore()
+let process = ref([])
+let active = ref(0)
 
-const isApprover = ref(project.isApprover)
-let projectInfo = ref(project.projectInfo)
+let projectId = ref(project.projectInfo.id)
+let projectInfo = ref({})
+let isApprover = ref(false)
 
-let process = ref([
-  {
-    title: '项目提交',
-    startTime: projectInfo.value.projectCreateTime,
-    endTime: projectInfo.value.projectCreateTime,
-    processStatus: 1,
-    submitUser: projectInfo.value.leaderName,
-  },
-  {
-    title: '部门审批',
-    startTime: projectInfo.value.projectCreateTime,
-    desc: projectInfo.value.step1Msg,
-    processStatus: projectInfo.value.step1Status,
-    endTime: projectInfo.value.step1EndTime,
-    submitUser: projectInfo.value.departmentLeaderName,
-  },
-  {
-    title: '公司负责人审批',
-    startTime: projectInfo.value.step1EndTime,
-    processStatus: projectInfo.value.step2Status,
-    desc: projectInfo.value.step2Msg,
-    endTime: projectInfo.value.step2EndTime,
-    submitUser: projectInfo.value.frimLeaderName,
-  },
-  {
-    processStatus: projectInfo.value.step3Status,
-    title: '项目完成',
-    startTime: projectInfo.value.step2EndTime,
-  },
-])
+const getProjectDetailApprove = async () => {
+  await getProjectDetail({ id: projectId.value }).then((res) => {
+    projectInfo.value = res.data
+    process.value = [
+      {
+        title: '项目提交',
+        startTime: projectInfo.value.projectCreateTime,
+        endTime: projectInfo.value.projectCreateTime,
+        processStatus: 1,
+        submitUser: projectInfo.value.leaderName,
+      },
+      {
+        title: '部门审批',
+        startTime: projectInfo.value.projectCreateTime,
+        desc: projectInfo.value.step1Msg,
+        processStatus: projectInfo.value.step1Status,
+        endTime: projectInfo.value.step1EndTime,
+        submitUser: projectInfo.value.departmentLeaderName,
+      },
+      {
+        title: '公司负责人审批',
+        startTime: projectInfo.value.step1EndTime,
+        processStatus: projectInfo.value.step2Status,
+        desc: projectInfo.value.step2Msg,
+        endTime: projectInfo.value.step2EndTime,
+        submitUser: projectInfo.value.frimLeaderName,
+      },
+      {
+        processStatus: projectInfo.value.step3Status,
+        title: '项目完成',
+        startTime: projectInfo.value.step2EndTime,
+      },
+    ]
+    active.value = projectInfo.value.stepNum
+
+    // 当前点击项目是否是需要当前用户审批
+    if (
+      user.isLeader == 'department' &&
+      projectInfo.value.stepNum == 1 &&
+      projectInfo.value.step1Status != 1
+    ) {
+      isApprover.value = true
+    }
+    if (
+      user.isLeader == 'frim' &&
+      projectInfo.value.step2Status != 1 &&
+      projectInfo.value.stepNum == 2
+    ) {
+      isApprover.value = true
+    }
+  })
+}
+
+getProjectDetailApprove()
 
 const getStatus = (status) => {
   if (status === 0) {
@@ -54,7 +83,6 @@ const getStatus = (status) => {
     return '待审批'
   }
 }
-let active = ref(projectInfo.value.stepNum)
 
 let getProcess = (status) => {
   if (status === 0) {
@@ -84,17 +112,12 @@ let getProcess = (status) => {
   return '未知状态'
 }
 
-const emit = defineEmits(['changeView'])
-const handleClick = () => {
-  emit('changeView', 1)
-}
-
 let activeNames = ref(['1', '2', '3', '4'])
 const handleChange = (val) => {
   console.log(val)
 }
 
-import { updateProject } from '@/api/project'
+import { getProjectDetail, updateProject } from '@/api/project'
 
 let message = ref('')
 // 审批
@@ -103,7 +126,6 @@ const handleApprove = (status) => {
   let boxTitle = status === 'pass' ? '审批建议' : '驳回原因'
   ElMessageBox({
     customClass: 'custom-message-box',
-
     title: boxTitle,
     // Should pass a function if VNode contains dynamic props
     message: () =>
@@ -131,8 +153,13 @@ const handleApprove = (status) => {
         id: projectInfo.value.projectId,
         stepNum: projectInfo.value.stepNum,
       }
-      await updateProject(data).then((res) => console.log(res))
-      handleClick()
+      await updateProject(data).then((res) => {
+        getProjectDetailApprove()
+        // 刷新projectStore
+        if (res.data === 'changeStatus') {
+          project.fetchProjectInfo(projectInfo.value.projectId)
+        }
+      })
     })
     .catch(() => {
       console.log('取消')

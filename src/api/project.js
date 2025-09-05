@@ -10,9 +10,25 @@ export function addProject(data) {
   })
 }
 
+export function deleteProjectById(data) {
+  return request({
+    url: `${className}/deleteProject`,
+    method: 'delete',
+    params: data,
+  })
+}
+
 export function getProjectListByLeaderId(data) {
   return request({
     url: `${className}/getProjectListByLeaderId`,
+    method: 'get',
+    params: data,
+  })
+}
+
+export function getProjectById(data) {
+  return request({
+    url: `${className}/getProjectById`,
     method: 'get',
     params: data,
   })

@@ -25,3 +25,11 @@ export function updateDemand(data) {
     data,
   })
 }
+
+export function getDemandListGroupByStatus(data) {
+  return request({
+    url: `${className}/getDemandListGroupByStatus`,
+    method: 'get',
+    params: data,
+  })
+}
