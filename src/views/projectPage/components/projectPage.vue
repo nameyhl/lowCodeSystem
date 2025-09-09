@@ -1,20 +1,29 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 const emit = defineEmits(['changeView'])
 const handleClick = () => {
   emit('changeView', 1)
 }
 import projectStore from '@/stores/modules/project'
-let projectInfo = projectStore().projectInfo
+const project = projectStore()
+let projectInfo = computed(() => {
+  return project.projectInfo
+})
+
+let approveInfo = computed(() => {
+  return project.approve
+})
 
 import { loadComponent } from '@/utils/loadComponet'
 
 const active = ref(0)
 let View = ref(loadComponent(() => import('./projectDetail.vue')))
 const clickStep = (index) => {
+  console.log(projectInfo.value.status, index)
+
   // 判断项目进行到哪一步
-  if (projectInfo.status < index) {
+  if (projectInfo.value.status < index) {
     ElMessage.error('项目未到当前步骤')
     return
   }

@@ -1,6 +1,6 @@
 <script setup>
-import { ElMessageBox, ElInput } from 'element-plus'
-import { ref, h } from 'vue'
+import { ElMessageBox, ElInput, ElMessage } from 'element-plus'
+import { ref, h, computed, watch } from 'vue'
 import { View, Hide } from '@element-plus/icons-vue'
 
 import projectStore from '@/stores/modules/project'
@@ -9,65 +9,69 @@ let user = userStore().user
 let project = projectStore()
 let process = ref([])
 let active = ref(0)
-
-let projectId = ref(project.projectInfo.id)
-let projectInfo = ref({})
 let isApprover = ref(false)
 
-const getProjectDetailApprove = async () => {
-  await getProjectDetail({ id: projectId.value }).then((res) => {
-    projectInfo.value = res.data
-    process.value = [
-      {
-        title: '项目提交',
-        startTime: projectInfo.value.projectCreateTime,
-        endTime: projectInfo.value.projectCreateTime,
-        processStatus: 1,
-        submitUser: projectInfo.value.leaderName,
-      },
-      {
-        title: '部门审批',
-        startTime: projectInfo.value.projectCreateTime,
-        desc: projectInfo.value.step1Msg,
-        processStatus: projectInfo.value.step1Status,
-        endTime: projectInfo.value.step1EndTime,
-        submitUser: projectInfo.value.departmentLeaderName,
-      },
-      {
-        title: '公司负责人审批',
-        startTime: projectInfo.value.step1EndTime,
-        processStatus: projectInfo.value.step2Status,
-        desc: projectInfo.value.step2Msg,
-        endTime: projectInfo.value.step2EndTime,
-        submitUser: projectInfo.value.frimLeaderName,
-      },
-      {
-        processStatus: projectInfo.value.step3Status,
-        title: '项目完成',
-        startTime: projectInfo.value.step2EndTime,
-      },
-    ]
-    active.value = projectInfo.value.stepNum
-
-    // 当前点击项目是否是需要当前用户审批
-    if (
-      user.isLeader == 'department' &&
+let projectInfo = computed(() => {
+  return project.approve
+})
+watch(projectInfo, (newVal, oldVal) => {
+  getAllData()
+})
+let getAllData = () => {
+  active.value = projectInfo.value.stepNum
+  console.log(
+    user.isLeader == 'department' &&
       projectInfo.value.stepNum == 1 &&
-      projectInfo.value.step1Status != 1
-    ) {
-      isApprover.value = true
-    }
-    if (
-      user.isLeader == 'frim' &&
-      projectInfo.value.step2Status != 1 &&
-      projectInfo.value.stepNum == 2
-    ) {
-      isApprover.value = true
-    }
-  })
-}
+      projectInfo.value.step1Status != 1,
+  )
 
-getProjectDetailApprove()
+  process.value = [
+    {
+      title: '项目提交',
+      startTime: projectInfo.value.projectCreateTime,
+      endTime: projectInfo.value.projectCreateTime,
+      processStatus: 1,
+      submitUser: projectInfo.value.leaderName,
+    },
+    {
+      title: '部门审批',
+      startTime: projectInfo.value.projectCreateTime,
+      desc: projectInfo.value.step1Msg,
+      processStatus: projectInfo.value.step1Status,
+      endTime: projectInfo.value.step1EndTime,
+      submitUser: projectInfo.value.departmentLeaderName,
+    },
+    {
+      title: '公司负责人审批',
+      startTime: projectInfo.value.step1EndTime,
+      processStatus: projectInfo.value.step2Status,
+      desc: projectInfo.value.step2Msg,
+      endTime: projectInfo.value.step2EndTime,
+      submitUser: projectInfo.value.frimLeaderName,
+    },
+    {
+      processStatus: projectInfo.value.step3Status,
+      title: '项目完成',
+      startTime: projectInfo.value.step2EndTime,
+    },
+  ]
+  // 当前点击项目是否是需要当前用户审批
+  if (
+    user.isLeader == 'department' &&
+    projectInfo.value.stepNum == 1 &&
+    projectInfo.value.step1Status != 1
+  ) {
+    isApprover.value = true
+  }
+  if (
+    user.isLeader == 'frim' &&
+    projectInfo.value.step2Status != 1 &&
+    projectInfo.value.stepNum == 2
+  ) {
+    isApprover.value = true
+  }
+}
+getAllData()
 
 const getStatus = (status) => {
   if (status === 0) {
@@ -117,7 +121,7 @@ const handleChange = (val) => {
   console.log(val)
 }
 
-import { getProjectDetail, updateProject } from '@/api/project'
+import { updateProject } from '@/api/project'
 
 let message = ref('')
 // 审批
@@ -139,7 +143,7 @@ const handleApprove = (status) => {
         minlength: 10,
         maxlength: 200,
         showWordLimit: true,
-        style: 'width: 100%',
+        style: { width: '400px' },
       }),
   })
     .then(async () => {
@@ -154,11 +158,8 @@ const handleApprove = (status) => {
         stepNum: projectInfo.value.stepNum,
       }
       await updateProject(data).then((res) => {
-        getProjectDetailApprove()
-        // 刷新projectStore
-        if (res.data === 'changeStatus') {
-          project.fetchProjectInfo(projectInfo.value.projectId)
-        }
+        project.fetchProjectInfo(projectInfo.value.projectId)
+        project.fetchApprove(projectInfo.value.projectId)
       })
     })
     .catch(() => {

@@ -33,3 +33,11 @@ export function getDemandListGroupByStatus(data) {
     params: data,
   })
 }
+
+export function updateDemandStatus(data) {
+  return request({
+    url: `${className}/updateDemandStatus`,
+    method: 'put',
+    data,
+  })
+}

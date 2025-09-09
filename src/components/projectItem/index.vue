@@ -18,24 +18,18 @@ let item = ref(props.item)
 
 let getProcess = (status) => {
   if (status === 0) {
-    return '已提交，待审批'
+    return '审批中'
   }
   if (status === 1) {
-    return '已审批，待开始'
-  }
-  if (status === 2) {
     return '需求分析中'
   }
+  if (status === 2) {
+    return '设计开发中'
+  }
   if (status === 3) {
-    return '设计中'
-  }
-  if (status === 4) {
-    return '开发中'
-  }
-  if (status === 5) {
     return '测试中'
   }
-  if (status === 6) {
+  if (status === 4) {
     return '已完成'
   }
   if (status === 7) {

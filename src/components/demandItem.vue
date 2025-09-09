@@ -21,10 +21,10 @@ let demande = ref({
 })
 
 let demandStatus = ref(false)
-if (demande.value.status === 1) {
-  demandStatus.value = true
-} else {
+if (demande.value.status === 0) {
   demandStatus.value = false
+} else {
+  demandStatus.value = true
 }
 
 let isEdit = ref(false)
@@ -93,6 +93,29 @@ const closeModel = () => {
 const deleteDemand = () => {
   console.log('delete')
 }
+
+const getStatus = (status) => {
+  switch (status) {
+    case 0:
+      return '已关闭'
+    case 1:
+      return '未开发'
+    case 2:
+      return '开发中'
+    case 3:
+      return '已驳回'
+    case 4:
+      return '未测试'
+    case 5:
+      return '测试中'
+    case 6:
+      return '测试未通过'
+    case 7:
+      return '已完成'
+    default:
+      return '未知状态'
+  }
+}
 </script>
 <template>
   <!-- 原位置占位元素 -->
@@ -129,8 +152,8 @@ const deleteDemand = () => {
         <div class="item_line">
           <div class="label">项目状态：</div>
           <div class="head">
-            <span :class="{ running: demandeObj.status === 1, close: demandeObj.status !== 1 }">{{
-              demandeObj.status === 1 ? '启动中' : '已关闭'
+            <span :class="{ running: demandeObj.status !== 0, close: demandeObj.status === 0 }">{{
+              getStatus(demandeObj.status)
             }}</span>
           </div>
         </div>
@@ -138,6 +161,12 @@ const deleteDemand = () => {
           <div class="label">修改时间：</div>
           <div class="head">
             <span>{{ demandeObj.updateTime ? demandeObj.updateTime : '未修改' }}</span>
+          </div>
+        </div>
+        <div class="item_line" v-if="demandeObj.status === 3">
+          <div class="label">驳回原因：</div>
+          <div class="content">
+            <span>{{ demandeObj.devReject }}</span>
           </div>
         </div>
         <div class="item_line">
@@ -169,7 +198,7 @@ const deleteDemand = () => {
         <div class="item_line">
           <div class="label">项目状态：</div>
           <div class="head">
-            <el-switch v-model="demandStatus" active-text="启动" inactive-text="关闭" />
+            <el-switch v-model="demandStatus" inactive-text="关闭" active-text="启动" />
           </div>
         </div>
         <div class="item_line">
@@ -194,7 +223,7 @@ const deleteDemand = () => {
         <div>
           <el-button type="primary" @click="editDemand">修改</el-button>
           <el-button type="danger" @click="closeDemand(demandeObj.status)">{{
-            demandeObj.status === 1 ? '关闭' : '启动'
+            demandeObj.status === 0 ? '启动' : '关闭'
           }}</el-button>
         </div>
       </div>
@@ -218,8 +247,8 @@ const deleteDemand = () => {
       <span>{{ demandeObj.name }}</span>
     </div>
     <div class="head">
-      <span :class="{ running: demandeObj.status === 1, close: demandeObj.status !== 1 }">{{
-        demandeObj.status === 1 ? '启动中' : '已关闭'
+      <span :class="{ running: demandeObj.status !== 0, close: demandeObj.status === 0 }">{{
+        getStatus(demandeObj.status)
       }}</span>
     </div>
     <div class="content">

@@ -1,22 +1,19 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import projectStore from '@/stores/modules/project'
 import useStore from '@/stores/modules/user'
 let userInfo = useStore().user
-let projectInfo = projectStore().projectInfo
+let project = projectStore()
 
-import { addDemand, getDemandList } from '@/api/demand'
-let demandList = ref([])
+let projectInfo = computed(() => {
+  return project.projectInfo
+})
 
-const getDemand = async () => {
-  let data = {
-    id: projectInfo.id,
-  }
-  let res = await getDemandList(data)
-  demandList.value = res.data
-}
+import { addDemand } from '@/api/demand'
 
-getDemand()
+let demandList = computed(() => {
+  return project.demand
+})
 
 let addFrom = ref({
   name: '',
@@ -32,10 +29,12 @@ const openAdd = () => {
 const handleSubmit = async () => {
   let data = {
     ...addFrom.value,
-    projectId: projectInfo.projectId,
+    projectId: projectInfo.value.id,
   }
+
   await addDemand(data)
-  getDemand()
+  project.fetchDemand(projectInfo.value.id)
+  addFormVisiable.value = false
 }
 
 import demandItem from '@/components/demandItem.vue'

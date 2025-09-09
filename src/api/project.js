@@ -73,3 +73,11 @@ export function updateProjectStatus(data) {
     data,
   })
 }
+
+export function updateProjectAdress(data) {
+  return request({
+    url: `${className}/updateProjectAdress`,
+    method: 'put',
+    data,
+  })
+}

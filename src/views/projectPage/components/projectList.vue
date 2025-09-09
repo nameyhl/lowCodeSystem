@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onBeforeUnmount } from 'vue'
+import { ref, watch } from 'vue'
 
 import { ElMessage } from 'element-plus'
 
@@ -109,6 +109,9 @@ const emit = defineEmits(['changeView', 'openAdd'])
 
 const openDetail = async (item) => {
   project.setProjectInfo(item)
+  await project.fetchDemand(item.id)
+  await project.fetchApprove(item.id)
+  await project.fetchProjectInfo(item.id)
   emit('changeView', 2)
 }
 
