@@ -90,6 +90,7 @@ const rejectDev = async (row) => {
     }
   })
 }
+
 const chackDemand = (row) => {
   ElMessageBox({
     customClass: 'custom-message-box',
@@ -108,6 +109,16 @@ const chackReject = (row) => {
     message: () => h('div', {}, `驳回理由：${row.devReject}`),
   }).then(() => {
     console.log('查看驳回理由')
+  })
+}
+
+const chackTestReject = (row) => {
+  ElMessageBox({
+    customClass: 'custom-message-box',
+    title: '测试驳回理由',
+    message: () => h('div', {}, `测试驳回理由：${row.testReject}`),
+  }).then(() => {
+    console.log('查看测试驳回理由')
   })
 }
 const overDev = async (row) => {
@@ -330,7 +341,7 @@ let nopassColumns = [
       {
         label: '查看',
         type: 'success',
-        click: chackDemand,
+        click: chackTestReject,
       },
     ],
   },
@@ -652,11 +663,14 @@ const startTest = async () => {
 
 :deep(.el-collapse-icon-position-right .el-collapse-item__header) {
   padding: 0 8px;
-  background: red;
+  background: @primary-red;
   color: #fff;
 }
 .footer {
   padding-top: 10px;
   text-align: center;
+}
+:deep(.el-popper.is-dark) {
+  display: none;
 }
 </style>
