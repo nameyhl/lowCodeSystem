@@ -115,12 +115,7 @@ watch(projectType, () => {
 const emit = defineEmits(['changeView', 'openAdd'])
 
 const openDetail = async (item) => {
-  project.setProjectInfo(item)
-  await project.fetchDemand(item.id)
-  await project.fetchApprove(item.id)
-  await project.fetchProjectInfo(item.id)
-  await project.fetchFile(item.id)
-  emit('changeView', 2)
+  emit('changeView', 2, item)
 }
 
 import ProjectItem from '@/components/projectItem/index.vue'

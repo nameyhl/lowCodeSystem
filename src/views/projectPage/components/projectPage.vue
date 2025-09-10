@@ -18,7 +18,9 @@ import { loadComponent } from '@/utils/loadComponet'
 const active = ref(0)
 let View = ref(loadComponent(() => import('./projectDetail.vue')))
 const clickStep = (index) => {
-  console.log(projectInfo.value.status, index)
+  if (active.value == index) {
+    return
+  }
 
   // 判断项目进行到哪一步
   if (projectInfo.value.status < index) {

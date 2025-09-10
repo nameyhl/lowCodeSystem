@@ -70,7 +70,7 @@ const clickChildren = (path) => {
 <style lang="less" scoped>
 .pageBody {
   width: 50%;
-  height: 500px;
+  min-height: 100%;
   margin: 0 auto;
   background-color: #fff;
 

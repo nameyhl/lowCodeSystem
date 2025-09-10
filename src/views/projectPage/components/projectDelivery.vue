@@ -19,23 +19,19 @@ console.log(file)
 
 // 开发驳回需求
 let devRejectDemand = computed(() => {
-  return demandByStatus.value.reject.length
+  return demandByStatus.value.reject
 })
 // 测试未通过需求
 let testRejectDemand = computed(() => {
-  return demandByStatus.value.nopass.length
+  return demandByStatus.value.nopass
 })
 // 测试完成需求
 let passDemand = computed(() => {
-  return demandByStatus.value.pass.length
-})
-// 关闭需求
-let closeDemand = computed(() => {
-  return demandByStatus.value.close.length
+  return demandByStatus.value.pass
 })
 // 未开发需求
 let noDevDemand = computed(() => {
-  return demandByStatus.value.close.concat(demandByStatus.value.undeveloped).length
+  return demandByStatus.value.close.concat(demandByStatus.value.undeveloped)
 })
 
 import titleTag from '@/components/titleTag.vue'
@@ -48,16 +44,47 @@ let showCode = () => {
 import * as echart from 'echarts'
 let demandeChart = ref(null)
 
+const getStatus = (status) => {
+  switch (status) {
+    case 0:
+      return '已关闭'
+    case 1:
+      return '未开发'
+    case 2:
+      return '开发中'
+    case 3:
+      return '已驳回'
+    case 4:
+      return '未测试'
+    case 5:
+      return '测试中'
+    case 6:
+      return '测试未通过'
+    case 7:
+      return '已完成'
+    default:
+      return '未知状态'
+  }
+}
+
 const innitChart = () => {
   const myChart = echart.init(demandeChart.value)
   myChart.setOption({
     title: {
       text: '需求柱状图',
     },
-    tooltip: {},
+    tooltip: {
+      formatter: (params) => {
+        let str = params.name + '<br>'
+        params.data.data.forEach((item) => {
+          str += item.name + '：' + getStatus(item.status) + '<br>'
+        })
+        return str
+      },
+    },
     legend: {},
     xAxis: {
-      data: ['开发驳回', '测试未通过', '测试通过', '关闭', '未开发'],
+      data: ['开发驳回', '测试未通过', '测试通过', '未开发'],
     },
     yAxis: {
       type: 'value',
@@ -73,11 +100,10 @@ const innitChart = () => {
         name: '需求状态',
         type: 'bar',
         data: [
-          devRejectDemand.value,
-          testRejectDemand.value,
-          passDemand.value,
-          closeDemand.value,
-          noDevDemand.value,
+          { value: devRejectDemand.value.length, data: devRejectDemand.value },
+          { value: testRejectDemand.value.length, data: testRejectDemand.value },
+          { value: passDemand.value.length, data: passDemand.value },
+          { value: noDevDemand.value.length, data: noDevDemand.value },
         ],
       },
     ],
