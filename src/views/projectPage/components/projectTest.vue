@@ -286,14 +286,20 @@ let rejectTestColumns = [
 ]
 
 const testOver = () => {
-  updateProjectStatus({
-    id: projectInfo.value.id,
-    status: projectInfo.value.status + 1,
-  }).then((res) => {
-    project.fetchProjectInfo(projectInfo.value.id)
-    ElMessage({
-      message: '测试完成',
-      type: 'success',
+  ElMessageBox({
+    title: '提示',
+    message: '确定测试完成吗？',
+    type: 'warning',
+  }).then(() => {
+    updateProjectStatus({
+      id: projectInfo.value.id,
+      status: projectInfo.value.status + 1,
+    }).then((res) => {
+      project.fetchProjectInfo(projectInfo.value.id)
+      ElMessage({
+        message: '测试完成',
+        type: 'success',
+      })
     })
   })
 }
@@ -433,7 +439,7 @@ const testOver = () => {
       </el-table>
     </el-collapse-item>
   </el-collapse>
-  <div class="footer">
+  <div class="footer" v-if="projectInfo.status === 3 && user.id == projectInfo.leaderId">
     <el-button type="primary" @click="testOver">测试完成</el-button>
   </div>
 </template>

@@ -2,7 +2,9 @@
 import { computed, ref, h, watch } from 'vue'
 import { ElMessage, ElMessageBox, ElInput } from 'element-plus'
 import projectStore from '@/stores/modules/project'
+import userStore from '@/stores/modules/user'
 let project = projectStore()
+let user = userStore().user
 
 let projectInfo = computed(() => {
   return project.projectInfo
@@ -391,15 +393,62 @@ const handleAddAddress = async (type, status) => {
   }
 }
 
+let toTestDialogVisible = ref(false)
+let fileList = ref([])
+const handleError = (error) => {
+  console.error('上传失败:', error)
+  ElMessage.error(`上传失败: ${error.message}`)
+}
+
+const handleExceed = () => {
+  fileList.value = []
+}
+
+const handleBeforeUpload = (file) => {
+  let fileName = file.name
+  let nameArr = fileName.split('.')
+  let suffix = nameArr[nameArr.length - 1]
+  suffix = suffix.toLowerCase()
+  if (suffix != 'pdf') {
+    ElMessage.error('请上传pdf文件')
+    return false
+  }
+  return true
+}
+
+const handleSuccess = (res) => {
+  fileList.value.push({
+    name: res.data.fileName,
+    path: res.data.fileUrl,
+  })
+}
+
 import { updateProjectStatus } from '@/api/project'
 const startTest = async () => {
+  toTestDialogVisible.value = true
+}
+
+const submitFile = async () => {
+  if (fileList.value.length === 0) {
+    ElMessage.error('请上传测试文件')
+    return
+  }
   let data = {
     id: projectInfo.value.id,
     status: projectInfo.value.status + 1,
+    fileName: fileList.value[0].name,
+    filePath: fileList.value[0].path,
   }
   await updateProjectStatus(data).then(() => {
     project.fetchProjectInfo(projectInfo.value.id)
+    project.fetchFile(projectInfo.value.id)
+    ElMessage.success('测试开始')
   })
+}
+
+const closeTestDialog = () => {
+  toTestDialogVisible.value = false
+  fileList.value = []
 }
 </script>
 <template>
@@ -633,8 +682,43 @@ const startTest = async () => {
       </el-collapse-item>
     </el-collapse>
     <div class="footer">
-      <el-button type="primary" @click="startTest">开始测试</el-button>
+      <el-button
+        type="primary"
+        @click="startTest"
+        v-if="projectInfo.status === 2 && user.id == projectInfo.leaderId"
+        >开始测试</el-button
+      >
     </div>
+    <el-dialog
+      title="需求文档"
+      v-model="toTestDialogVisible"
+      width="500px"
+      :before-close="closeTestDialog"
+    >
+      <el-upload
+        class="upload-demo"
+        :headers="{ Authorization: 'Bearer ' + user.token }"
+        :on-success="handleSuccess"
+        :on-error="handleError"
+        :on-exceed="handleExceed"
+        :before-upload="handleBeforeUpload"
+        :limit="1"
+        drag
+        action="api/file/upload"
+        multiple
+      >
+        <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+        <div class="el-upload__text">拖动文件或 <em>点击上传</em></div>
+        <template #tip>
+          <div class="el-upload__tip">只允许上传pdf文件</div>
+        </template>
+      </el-upload>
+
+      <template #footer>
+        <el-button @click="closeDemand">取消</el-button>
+        <el-button type="primary" @click="submitFile">提交</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 <style lang="less" scoped>

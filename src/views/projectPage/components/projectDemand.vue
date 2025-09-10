@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import projectStore from '@/stores/modules/project'
 import useStore from '@/stores/modules/user'
-let userInfo = useStore().user
+let user = useStore().user
 let project = projectStore()
 
 let projectInfo = computed(() => {
@@ -21,37 +21,112 @@ let addFrom = ref({
   endTime: '',
 })
 
+let rules = {
+  name: [{ required: true, message: '请输入需求名称', trigger: 'blur' }],
+  design: [{ required: true, message: '请输入需求设计', trigger: 'blur' }],
+  endTime: [{ required: true, message: '请选择需求结束时间', trigger: 'blur' }],
+}
+
 let addFormVisiable = ref(false)
+
+let formRef = ref(null)
 const openAdd = () => {
   addFormVisiable.value = true
 }
 
 const handleSubmit = async () => {
-  let data = {
-    ...addFrom.value,
-    projectId: projectInfo.value.id,
-  }
+  if (!formRef.value) return
+  await formRef.value.validate(async (valid) => {
+    if (valid) {
+      let data = {
+        ...addFrom.value,
+        projectId: projectInfo.value.id,
+      }
+      await addDemand(data)
+      project.fetchDemand(projectInfo.value.id)
+      addFormVisiable.value = false
+      addFrom.value = {
+        name: '',
+        design: '',
+        endTime: '',
+      }
+    }
+  })
+}
 
-  await addDemand(data)
-  project.fetchDemand(projectInfo.value.id)
+const handleClose = () => {
   addFormVisiable.value = false
+  addFrom.value = {
+    name: '',
+    design: '',
+    endTime: '',
+  }
 }
 
 import demandItem from '@/components/demandItem.vue'
 
-import { updateProjectStatus } from '@/api/project'
-const overDemand = async () => {
-  let data = {
-    id: projectInfo.projectId,
-    status: 2,
+let fileList = ref([])
+
+const handleExceed = () => {
+  fileList.value = []
+}
+
+let overDemandVisiable = ref(false)
+const handleBeforeUpload = (file) => {
+  let fileName = file.name
+  let nameArr = fileName.split('.')
+  let suffix = nameArr[nameArr.length - 1]
+  suffix = suffix.toLowerCase()
+  if (suffix != 'pdf') {
+    ElMessage.error('请上传pdf文件')
+    return false
   }
-  await updateProjectStatus(data)
+  return true
+}
+import { updateProjectStatus } from '@/api/project'
+import { ElMessage } from 'element-plus'
+const overDemand = async () => {
+  overDemandVisiable.value = true
+}
+const closeDemand = async () => {
+  overDemandVisiable.value = false
+  fileList.value = []
+}
+const submitFile = async () => {
+  console.log(fileList.value)
+  if (fileList.value.length == 0) {
+    ElMessage.error('请上传文件')
+    return
+  } else {
+    let data = {
+      id: projectInfo.value.id,
+      status: projectInfo.value.status + 1,
+      filePath: fileList.value[0].path,
+      fileName: fileList.value[0].name,
+    }
+    await updateProjectStatus(data).then(() => {
+      project.fetchProjectInfo(projectInfo.value.id)
+      project.fetchFile(projectInfo.value.id)
+      ElMessage.success('上传成功')
+      closeDemand()
+    })
+  }
+}
+const handleError = (error) => {
+  console.error('上传失败:', error)
+  ElMessage.error(`上传失败: ${error.message}`)
+}
+const handleSuccess = (res) => {
+  fileList.value.push({
+    name: res.data.fileName,
+    path: res.data.fileUrl,
+  })
 }
 </script>
 <template>
   <div class="demandeContainer">
     <div class="top">
-      <div class="button">
+      <div class="button" v-if="user.id == projectInfo.leaderId">
         <el-button class="addButton" @click="openAdd">新增需求</el-button>
       </div>
     </div>
@@ -61,18 +136,15 @@ const overDemand = async () => {
         v-for="item in demandList"
         :key="item.id"
         :demandeObj="item"
-        :showDelete="userInfo.id == projectInfo.leaderId"
+        :showDelete="user.id == projectInfo.leaderId"
       ></demandItem>
     </div>
-    <div
-      class="containerFooter"
-      v-if="userInfo.id == projectInfo.leaderId && projectInfo.status == 1"
-    >
+    <div class="containerFooter" v-if="user.id == projectInfo.leaderId && projectInfo.status == 1">
       <el-button type="primary" @click="overDemand">评审结束</el-button>
     </div>
   </div>
 
-  <el-dialog title="新增需求" v-model="addFormVisiable" width="500px">
+  <el-dialog title="新增需求" v-model="addFormVisiable" width="500px" :before-close="handleClose">
     <div class="formBody">
       <el-form :model="addFrom" :rules="rules" ref="formRef" label-width="120px">
         <el-form-item label="需求名称:" prop="name">
@@ -88,6 +160,8 @@ const overDemand = async () => {
             v-model="addFrom.design"
             autocomplete="off"
             style="width: 220px"
+            type="textarea"
+            rows="4"
             placeholder="请输入需求设计"
           />
         </el-form-item>
@@ -97,7 +171,39 @@ const overDemand = async () => {
       </el-form>
     </div>
     <template #footer>
-      <el-button type="primary" @click="handleSubmit">确定</el-button>
+      <el-button @click="handleClose">取消</el-button>
+      <el-button type="primary" @click="handleSubmit">提交</el-button>
+    </template>
+  </el-dialog>
+
+  <el-dialog
+    title="需求文档"
+    v-model="overDemandVisiable"
+    width="500px"
+    :before-close="closeDemand"
+  >
+    <el-upload
+      class="upload-demo"
+      :headers="{ Authorization: 'Bearer ' + user.token }"
+      :on-success="handleSuccess"
+      :on-error="handleError"
+      :on-exceed="handleExceed"
+      :before-upload="handleBeforeUpload"
+      :limit="1"
+      drag
+      action="api/file/upload"
+      multiple
+    >
+      <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+      <div class="el-upload__text">拖动文件或 <em>点击上传</em></div>
+      <template #tip>
+        <div class="el-upload__tip">只允许上传pdf文件</div>
+      </template>
+    </el-upload>
+
+    <template #footer>
+      <el-button @click="closeDemand">取消</el-button>
+      <el-button type="primary" @click="submitFile">提交</el-button>
     </template>
   </el-dialog>
 </template>

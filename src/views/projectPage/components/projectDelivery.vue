@@ -10,6 +10,11 @@ let demandByStatus = computed(() => {
   return project.demandByStatus
 })
 
+let file = computed(() => {
+  return project.file[0]
+})
+console.log(file)
+
 // 开发驳回需求
 let devRejectDemand = computed(() => {
   return demandByStatus.value.reject.length
@@ -26,8 +31,10 @@ let passDemand = computed(() => {
 let closeDemand = computed(() => {
   return demandByStatus.value.close.length
 })
-
-console.log(devRejectDemand.value, testRejectDemand.value, passDemand.value, closeDemand.value)
+// 未开发需求
+let noDevDemand = computed(() => {
+  return demandByStatus.value.close.concat(demandByStatus.value.undeveloped).length
+})
 
 import titleTag from '@/components/titleTag.vue'
 
@@ -48,7 +55,7 @@ const innitChart = () => {
     tooltip: {},
     legend: {},
     xAxis: {
-      data: ['开发驳回', '测试未通过', '测试通过', '关闭'],
+      data: ['开发驳回', '测试未通过', '测试通过', '关闭', '未开发'],
     },
     yAxis: {
       type: 'value',
@@ -63,11 +70,44 @@ const innitChart = () => {
       {
         name: '需求状态',
         type: 'bar',
-        data: [devRejectDemand.value, testRejectDemand.value, passDemand.value, closeDemand.value],
+        data: [
+          devRejectDemand.value,
+          testRejectDemand.value,
+          passDemand.value,
+          closeDemand.value,
+          noDevDemand.value,
+        ],
       },
     ],
   })
   myChart.resize()
+}
+
+import { getFileStream } from '@/api/file'
+const chackFile = async (path) => {
+  const res = await getFileStream(path)
+  const blob = new Blob([res], { type: 'application/pdf' })
+  const url = URL.createObjectURL(blob)
+  window.open(url)
+}
+
+const exportFile = async (path, fileName) => {
+  const res = await getFileStream(path)
+  const blob = new Blob([res], { type: 'application/pdf' })
+  const url = URL.createObjectURL(blob)
+  // 创建隐藏的下载链接
+  const link = document.createElement('a')
+  link.href = url
+  link.download = fileName || `file_${Date.now()}`
+  link.style.display = 'none'
+
+  // 触发下载
+  document.body.appendChild(link)
+  link.click()
+
+  // 清理资源
+  URL.revokeObjectURL(url)
+  document.body.removeChild(link)
 }
 
 onMounted(() => {
@@ -139,6 +179,47 @@ onMounted(() => {
         </el-col>
       </el-row>
     </div>
+    <div class="file">
+      <titleTag>
+        <div>文件信息</div>
+      </titleTag>
+      <div class="fileBody">
+        <div class="list">
+          <div class="listTitle">项目文件：</div>
+          <div class="listBody">
+            <span @click="chackFile(file.filePath)">{{ file.fileName }}</span>
+          </div>
+          <div class="exportButton">
+            <el-button link type="primary" @click="exportFile(file.filePath, file.fileName)"
+              >导出</el-button
+            >
+          </div>
+        </div>
+        <div class="list">
+          <div class="listTitle">需求文档：</div>
+
+          <div class="listBody">
+            <span @click="chackFile(file.demandFilePath)">{{ file.demandFileName }}</span>
+          </div>
+          <div class="exportButton">
+            <el-button link type="primary" @click="exportFile(file.filePath, file.fileName)"
+              >导出</el-button
+            >
+          </div>
+        </div>
+        <div class="list">
+          <div class="listTitle">开发文档：</div>
+          <div class="listBody">
+            <span @click="chackFile(file.devFilePath)">{{ file.devFileName }}</span>
+          </div>
+          <div class="exportButton">
+            <el-button link type="primary" @click="exportFile(file.filePath, file.fileName)"
+              >导出</el-button
+            >
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="chartBody">
       <titleTag>
         <div>需求图表</div>
@@ -172,5 +253,35 @@ onMounted(() => {
 .chart {
   width: 100%;
   height: 400px;
+}
+.file {
+  margin: 10px 0;
+  height: 100%;
+  .fileBody {
+    margin: 0 2rem;
+
+    .list {
+      height: 30px;
+      line-height: 30px;
+      display: flex;
+      .listTitle {
+        width: 100px;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .listBody {
+        width: 40%;
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        span:hover {
+          color: #ff0000;
+          cursor: pointer;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
 }
 </style>

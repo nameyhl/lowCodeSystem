@@ -10,10 +10,8 @@ const project = projectStore()
 let projectInfo = computed(() => {
   return project.projectInfo
 })
-
-let approveInfo = computed(() => {
-  return project.approve
-})
+import userStore from '@/stores/modules/user'
+let user = userStore().user
 
 import { loadComponent } from '@/utils/loadComponet'
 
@@ -98,7 +96,9 @@ const deleteProject = () => {
     <div class="top">
       <div class="goBack" @click="handleClick"><< 返回项目列表</div>
       <div class="right">
-        <el-button type="danger" @click="deleteProject">删除项目</el-button>
+        <el-button type="danger" @click="deleteProject" v-if="user.id == projectInfo.leaderId"
+          >删除项目</el-button
+        >
       </div>
     </div>
     <div class="projectStep">

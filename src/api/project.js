@@ -81,3 +81,11 @@ export function updateProjectAdress(data) {
     data,
   })
 }
+
+export function getFile(data) {
+  return request({
+    url: `${className}/getFile`,
+    method: 'get',
+    params: data,
+  })
+}

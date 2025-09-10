@@ -119,6 +119,7 @@ const openDetail = async (item) => {
   await project.fetchDemand(item.id)
   await project.fetchApprove(item.id)
   await project.fetchProjectInfo(item.id)
+  await project.fetchFile(item.id)
   emit('changeView', 2)
 }
 
@@ -180,9 +181,9 @@ const openCreate = () => {
           :on-exceed="handleExceed"
           :before-upload="handleBeforeUpload"
         >
-          <el-button type="primary">Click to upload</el-button>
+          <el-button type="primary">点击上传</el-button>
           <template #tip>
-            <div class="el-upload__tip">jpg/png files with a size less than 500KB.</div>
+            <div class="el-upload__tip">只能上传pdf文件</div>
           </template>
         </el-upload>
       </el-form-item>

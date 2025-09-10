@@ -19,12 +19,6 @@ watch(projectInfo, (newVal, oldVal) => {
 })
 let getAllData = () => {
   active.value = projectInfo.value.stepNum
-  console.log(
-    user.isLeader == 'department' &&
-      projectInfo.value.stepNum == 1 &&
-      projectInfo.value.step1Status != 1,
-  )
-
   process.value = [
     {
       title: '项目提交',
@@ -56,20 +50,14 @@ let getAllData = () => {
     },
   ]
   // 当前点击项目是否是需要当前用户审批
-  if (
-    user.isLeader == 'department' &&
-    projectInfo.value.stepNum == 1 &&
-    projectInfo.value.step1Status != 1
-  ) {
-    isApprover.value = true
-  }
-  if (
-    user.isLeader == 'frim' &&
-    projectInfo.value.step2Status != 1 &&
-    projectInfo.value.stepNum == 2
-  ) {
-    isApprover.value = true
-  }
+
+  isApprover.value =
+    (user.isLeader == 'department' &&
+      projectInfo.value.stepNum == 1 &&
+      projectInfo.value.step1Status != 1) ||
+    (user.isLeader == 'frim' &&
+      projectInfo.value.step2Status != 1 &&
+      projectInfo.value.stepNum == 2)
 }
 getAllData()
 
@@ -182,6 +170,24 @@ let chackFile = async (path) => {
     window.open(url)
   })
 }
+const exportFile = async (path, fileName) => {
+  const res = await getFileStream(path)
+  const blob = new Blob([res], { type: 'application/pdf' })
+  const url = URL.createObjectURL(blob)
+  // 创建隐藏的下载链接
+  const link = document.createElement('a')
+  link.href = url
+  link.download = fileName || `file_${Date.now()}`
+  link.style.display = 'none'
+
+  // 触发下载
+  document.body.appendChild(link)
+  link.click()
+
+  // 清理资源
+  URL.revokeObjectURL(url)
+  document.body.removeChild(link)
+}
 </script>
 <template>
   <div>
@@ -231,8 +237,20 @@ let chackFile = async (path) => {
           </div>
         </el-collapse-item>
         <el-collapse-item title="项目附件" name="4">
-          <div class="fileName" @click="chackFile(projectInfo.filePath)">
-            {{ projectInfo.fileName }}
+          <div class="fileBody">
+            <div class="fileName">
+              <span @click="chackFile(projectInfo.filePath)">
+                {{ projectInfo.fileName }}
+              </span>
+            </div>
+            <div class="exportButton">
+              <el-button
+                link
+                type="primary"
+                @click="exportFile(projectInfo.filePath, projectInfo.fileName)"
+                >导出</el-button
+              >
+            </div>
           </div>
         </el-collapse-item>
         <el-collapse-item title="项目进度" name="2">
@@ -286,6 +304,18 @@ let chackFile = async (path) => {
       color: @link-hover;
     }
   }
+}
+.fileBody {
+  .fileName {
+    width: 70%;
+    font-size: 14px;
+    span:hover {
+      color: @link-hover;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+  display: flex;
 }
 .projectDetial {
   width: 100%;

@@ -1,5 +1,5 @@
 import { getDemandList } from '@/api/demand'
-import { getProjectById, getProjectDetail } from '@/api/project'
+import { getProjectById, getProjectDetail, getFile } from '@/api/project'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -67,6 +67,15 @@ const projectStore = defineStore('project', () => {
     return isApprover.value
   }
 
+  // 项目文件
+  let file = ref([])
+  const setFile = (data) => {
+    file.value = data
+  }
+  const getFileList = () => {
+    return file.value
+  }
+
   const fetchProjectInfo = async (projectId) => {
     return new Promise(async (resolve, reject) => {
       getProjectById({ id: projectId })
@@ -110,6 +119,21 @@ const projectStore = defineStore('project', () => {
     })
   }
 
+  const fetchFile = async (projectId) => {
+    return new Promise(async (resolve, reject) => {
+      await getFile({
+        id: projectId,
+      })
+        .then((res) => {
+          file.value = res.data
+          resolve(res.data)
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
+  }
+
   return {
     projectInfo,
     setProjectInfo,
@@ -128,6 +152,10 @@ const projectStore = defineStore('project', () => {
     isApprover,
     setIsApprover,
     getIsApprover,
+    file,
+    getFileList,
+    setFile,
+    fetchFile,
   }
 })
 
