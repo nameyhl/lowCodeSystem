@@ -67,6 +67,13 @@ const submitForm = async () => {
 }
 const handleBeforeUpload = (file) => {
   console.log('Uploading file:', file)
+  let nameArr = file.name.split('.')
+  let suffix = nameArr[nameArr.length - 1]
+  if (suffix != 'pdf') {
+    ElMessage.error('请上传pdf文件')
+    return false
+  }
+  ElMessage.success('上传成功')
   return true
 }
 
@@ -165,6 +172,7 @@ const openCreate = () => {
         <el-upload
           v-model:file-list="fileList"
           class="upload-demo"
+          :accept="['.pdf']"
           action="api/file/upload"
           :headers="{ Authorization: 'Bearer ' + user.token }"
           multiple

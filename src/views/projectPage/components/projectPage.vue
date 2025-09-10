@@ -73,13 +73,13 @@ let stepList = ref([
 import { deleteProjectById } from '@/api/project'
 
 const deleteProject = () => {
-  ElMessageBox.confirm(`确定删除项目${projectInfo.name}吗？`, '提示', {
+  ElMessageBox.confirm(`确定删除项目${projectInfo.value.name}吗？`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
   }).then(async () => {
     let data = {
-      id: projectInfo.id,
+      id: projectInfo.value.id,
     }
     console.log(data)
     await deleteProjectById(data)

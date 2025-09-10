@@ -171,6 +171,17 @@ let isShowCode = ref(false)
 const showCode = () => {
   isShowCode.value = !isShowCode.value
 }
+import { getFileStream } from '@/api/file'
+
+let chackFile = async (path) => {
+  getFileStream(path).then(async (res) => {
+    const blob = new Blob([res], { type: 'application/pdf' })
+    console.log(blob)
+    const url = URL.createObjectURL(blob)
+    // 通过url访问文件
+    window.open(url)
+  })
+}
 </script>
 <template>
   <div>
@@ -220,7 +231,9 @@ const showCode = () => {
           </div>
         </el-collapse-item>
         <el-collapse-item title="项目附件" name="4">
-          <div class="fileName">{{ projectInfo.fileName }}</div>
+          <div class="fileName" @click="chackFile(projectInfo.filePath)">
+            {{ projectInfo.fileName }}
+          </div>
         </el-collapse-item>
         <el-collapse-item title="项目进度" name="2">
           <div class="projectProcess">
