@@ -63,7 +63,6 @@ let getProcess = (status) => {
 </template>
 <style>
 .projectItem {
-  width: 15rem;
   height: 106px;
   font-size: 14px;
   border: 2px solid #ff0f00;
