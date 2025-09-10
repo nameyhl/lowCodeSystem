@@ -2,9 +2,11 @@
 import { ref, computed, onMounted } from 'vue'
 import projectStore from '@/stores/modules/project'
 const project = projectStore()
-let projectInfo = project.projectInfo
+let projectInfo = computed(() => {
+  return project.projectInfo
+})
 import userStore from '@/stores/modules/user'
-const user = userStore()
+const user = userStore().user
 
 let demandByStatus = computed(() => {
   return project.demandByStatus
@@ -108,6 +110,25 @@ const exportFile = async (path, fileName) => {
   // 清理资源
   URL.revokeObjectURL(url)
   document.body.removeChild(link)
+}
+
+import { updateProjectStatus } from '@/api/project'
+import { ElMessageBox } from 'element-plus'
+
+const emits = defineEmits(['projectOver'])
+const projectOver = async () => {
+  ElMessageBox.confirm('确定项目交付吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(async () => {
+    await updateProjectStatus({
+      id: projectInfo.value.id,
+      status: projectInfo.value.status + 1,
+    }).then((res) => {
+      emits('projectOver')
+    })
+  })
 }
 
 onMounted(() => {
@@ -227,6 +248,9 @@ onMounted(() => {
       <div ref="demandeChart" class="chart"></div>
     </div>
   </div>
+  <div class="footer" v-if="user.id == projectInfo.leaderId && projectInfo.status === 4">
+    <el-button type="primary" @click="projectOver">完成交付</el-button>
+  </div>
 </template>
 <style>
 .projectInfoBody {
@@ -283,5 +307,8 @@ onMounted(() => {
       }
     }
   }
+}
+.footer {
+  text-align: center;
 }
 </style>

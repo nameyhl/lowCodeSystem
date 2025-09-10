@@ -30,10 +30,10 @@ let getProcess = (status) => {
     return '测试中'
   }
   if (status === 4) {
-    return '已完成'
+    return '待交付'
   }
-  if (status === 7) {
-    return '已取消'
+  if (status === 5) {
+    return '已完成'
   }
   return '未知状态'
 }

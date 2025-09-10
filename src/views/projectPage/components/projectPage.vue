@@ -116,7 +116,7 @@ const deleteProject = () => {
     </div>
     <div class="projectStepBody">
       <keep-alive :max="3">
-        <component :is="View"></component>
+        <component :is="View" @projectOver="handleClick"></component>
       </keep-alive>
     </div>
   </div>
