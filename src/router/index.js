@@ -1,18 +1,23 @@
 // router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
+import { ref } from 'vue'
+
 // import Layout from "@/views/Layout.vue"
 // import { getRouteList } from '@/api/route'
 
+let model = ref(sessionStorage.getItem('model'))
+
+let showRoutes = []
 // 菜单展示的路由
-const showRoutes = [
-  {
+if (model.value === 'PC') {
+  showRoutes.push({
     path: '/addRoute',
     name: '路由管理',
     level: -1,
     component: () => import('@/views/addRoute/index.vue'),
     children: [],
-  },
-]
+  })
+}
 const outeRoutes = []
 
 // 基础路由
@@ -39,7 +44,7 @@ const constantRoutes = [
     path: '/outHome',
     name: 'outHome',
     component: () => import('@/views/outHome/index.vue'),
-    children: outeRoutes
+    children: outeRoutes,
   },
   {
     path: '/home',
@@ -91,7 +96,7 @@ const initializeRouter = () => {
       // 对子路由排序
       let routes = sortRoutesByLevel(res.data.tree)
       const dynamicRoutes = formatRoutes(routes || [])
-      dynamicRoutes.forEach(route => {
+      dynamicRoutes.forEach((route) => {
         if (route.name === '系统管理') {
           router.addRoute('home', route)
         } else if (route.name === '系统页面') {
@@ -136,10 +141,9 @@ export const setupRouter = async (app) => {
 
 // 路由拦截器
 router.beforeEach((to, from, next) => {
-  if (localStorage.getItem("token") || to.path === '/login') {
+  if (localStorage.getItem('token') || to.path === '/login') {
     next()
   } else {
     next('/login')
   }
-
 })

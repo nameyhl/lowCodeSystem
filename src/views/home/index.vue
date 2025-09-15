@@ -37,13 +37,13 @@ const getShowRoutes = async () => {
   }
   await getRoutes(data).then((res) => {
     let route = sortRoutesByLevel(res.data)
-    routes.value = [
-      ...route,
-      {
-        router: 'addRoute',
-        name: '新增路由',
-      },
-    ]
+    routes.value = route
+    if (windowType.value === 'PC') {
+      routes.value.push({
+        path: '/addRoute',
+        name: '路由管理',
+      })
+    }
   })
 }
 
