@@ -15,6 +15,8 @@ let searchFrom = ref({
   departmentId: '',
 })
 
+let model = ref(sessionStorage.getItem('model'))
+
 let columns = ref([
   {
     prop: 'name',
@@ -191,7 +193,7 @@ const deleteOne = (data) => {
   <Operate @add="openAdd('add')" :showDelete="false">
     <template #addName> 添加职位 </template>
     <template #searchFrom>
-      <el-form :inline="true" :model="searchFrom">
+      <el-form :inline="model === 'PC'" :model="searchFrom">
         <el-form-item label="职位名称">
           <el-input
             v-model="searchFrom.name"
@@ -247,9 +249,11 @@ const deleteOne = (data) => {
       v-model:current-page="page"
       v-model:page-size="size"
       :page-sizes="[10, 20, 30, 40]"
-      layout="total, sizes, prev, pager, next, jumper"
+      :size="model === 'PC' ? 'medium' : 'small'"
+      layout="total,sizes, prev, pager, next"
       :total="total"
       @size-change="handleSizeChange"
+      :pager-count="5"
       @current-change="handleCurrentChange"
     />
   </div>
@@ -264,4 +268,12 @@ const deleteOne = (data) => {
     </component>
   </el-dialog>
 </template>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+@import './less/mobile.less';
+@media (min-width: 1024px) {
+  @import './less/desktop.less';
+}
+@media (min-width: 768px) {
+  @import './less/tablet.less';
+}
+</style>

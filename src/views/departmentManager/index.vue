@@ -18,10 +18,12 @@ import {
 
 let tableLoading = ref(true)
 
+let model = ref(sessionStorage.getItem('model'))
+
 // 分页
 let page = ref(1)
 let size = ref(10)
-let totle = ref(0)
+let total = ref(0)
 
 let searchForm = ref({
   name: '',
@@ -39,7 +41,7 @@ const getDepartement = async () => {
   await getDepartmentList(params).then((res) => {
     departmentList.value = res.data.data
     tableLoading.value = false
-    totle.value = res.data.total
+    total.value = res.data.total
   })
 }
 getDepartement()
@@ -180,14 +182,12 @@ const getFrim = async () => {
 }
 
 getFrim()
-
-const search = () => {}
 </script>
 <template>
   <Operate @add="openAdd" :showDelete="false">
     <template #addName>添加部门</template>
     <template #searchFrom>
-      <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+      <el-form :inline="model === 'PC'" :model="searchForm" class="demo-form-inline">
         <el-form-item label="部门名称" prop="name">
           <el-input
             v-model="searchForm.name"
@@ -246,8 +246,10 @@ const search = () => {}
       v-model:current-page="page"
       v-model:page-size="size"
       :page-sizes="[10, 20, 30, 40]"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="totle"
+      layout="total, sizes, prev, pager, next"
+      :total="total"
+      :pager-count="5"
+      :size="model === 'PC' ? 'medium' : 'small'"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
@@ -262,4 +264,12 @@ const search = () => {}
     ></component>
   </el-dialog>
 </template>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+@import './less/mobile.less';
+@media (min-width: 1024px) {
+  @import './less/desktop.less';
+}
+@media (min-width: 768px) {
+  @import './less/tablet.less';
+}
+</style>

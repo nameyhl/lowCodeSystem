@@ -15,6 +15,17 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
+// 获取当前窗口大小，判断是pc机还是平板，还是手机
+let width = window.innerWidth
+let model = 'PC'
+if (width < 768) {
+  model = 'mobile'
+} else if (width < 1024) {
+  model = 'tablet'
+}
+
+sessionStorage.setItem('model', model)
+
 // 注册全局方法
 import utils from './utils/index.js'
 app.config.globalProperties.$utils = utils

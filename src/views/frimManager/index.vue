@@ -194,9 +194,11 @@ const chackFrim = (row) => {
       v-model:current-page="page"
       v-model:page-size="size"
       :page-sizes="[10, 20, 30, 40]"
-      layout="total, sizes, prev, pager, next, jumper"
+      :size="model === 'PC' ? 'medium' : 'small'"
+      layout="total,sizes, prev, pager, next"
       :total="total"
       @size-change="handleSizeChange"
+      :pager-count="5"
       @current-change="handleCurrentChange"
     />
   </div>
@@ -211,4 +213,12 @@ const chackFrim = (row) => {
     ></component>
   </el-dialog>
 </template>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+@import './less/mobile.less';
+@media (min-width: 1024px) {
+  @import './less/desktop.less';
+}
+@media (min-width: 768px) {
+  @import './less/tablet.less';
+}
+</style>

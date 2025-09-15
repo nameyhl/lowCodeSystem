@@ -9,6 +9,8 @@ import Operate from '@/components/operate/index.vue'
 
 const addDialogVisible = ref(false)
 
+let model = ref(sessionStorage.getItem('model'))
+
 let View = ref(AddFrom)
 
 let userInfo = ref({
@@ -254,7 +256,7 @@ const search = async () => {
   <Operate @add="addEmployee" :showDelete="false">
     <template #addName>添加用户</template>
     <template #searchFrom>
-      <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+      <el-form :inline="model === 'PC'" :model="searchForm" class="demo-form-inline">
         <el-form-item label="用户名">
           <el-input
             v-model="searchForm.username"
@@ -320,9 +322,11 @@ const search = async () => {
       v-model:current-page="page"
       v-model:page-size="size"
       :page-sizes="[10, 20, 30, 40]"
-      layout="total, sizes, prev, pager, next, jumper"
+      :size="model === 'PC' ? 'medium' : 'small'"
+      layout="total,sizes, prev, pager, next"
       :total="total"
       @size-change="handleSizeChange"
+      :pager-count="5"
       @current-change="handleCurrentChange"
     />
   </div>

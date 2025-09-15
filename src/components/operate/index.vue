@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 const props = defineProps({
   showAdd: {
     type: Boolean,
@@ -8,6 +9,11 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+})
+
+let model = ref('PC')
+onMounted(() => {
+  model.value = sessionStorage.getItem('model')
 })
 
 const emit = defineEmits(['add', 'delete'])
@@ -25,13 +31,13 @@ const addObj = () => {
       <slot name="searchFrom"></slot>
     </div>
     <div class="operateBox">
-      <el-button class="addButton" @click="addObj" v-if="showAdd">
+      <el-button class="addButton" @click="addObj" v-if="showAdd && model === 'PC'">
         <el-icon>
           <component is="Plus" />
         </el-icon>
         <slot name="addName"></slot>
       </el-button>
-      <el-button class="deleteButton" @click="deleteObj" v-if="showDelete">
+      <el-button class="deleteButton" @click="deleteObj" v-if="showDelete && model === 'PC'">
         <el-icon>
           <component is="Delete" />
         </el-icon>
@@ -41,17 +47,11 @@ const addObj = () => {
   </div>
 </template>
 <style lang="less" scoped>
-.searchBody {
-  display: flex;
-  justify-content: space-between;
-
-  .searchBox {
-    width: 80%;
-  }
-  .operateBox {
-    width: 20%;
-    display: flex;
-    justify-content: flex-end;
-  }
+@import './less/mobile.less';
+@media (min-width: 1024px) {
+  @import './less/desktop.less';
+}
+@media (min-width: 768px) {
+  @import './less/tablet.less';
 }
 </style>

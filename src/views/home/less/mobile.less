@@ -1,0 +1,55 @@
+// 手机端
+.container {
+  width: calc(100vw);
+  height: calc(100vh);
+
+  .el-main {
+    padding: 0;
+
+    .viewBody {
+      background-color: @white;
+      min-height: calc(100% - 20px);
+      padding: 10px;
+    }
+    .viewBodyWithoutTag {
+      background-color: @white;
+      min-height: calc(100% - 20px);
+      padding: 10px;
+    }
+  }
+
+  .header-bg {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    line-height: 50px;
+    margin-bottom: 5px;
+
+    .headerTitle {
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .userInfo {
+      height: 50px;
+      line-height: 50px;
+      color: @white;
+      cursor: pointer;
+    }
+  }
+  .headerMenu {
+    height: 50px;
+    padding: 0px;
+    margin-bottom: 5px;
+    .el-menu {
+      height: 100%;
+    }
+  }
+}
+
+:deep(.el-dropdown-menu__item) {
+  &:hover {
+    background-color: @primary-red;
+    color: @white;
+  }
+}
