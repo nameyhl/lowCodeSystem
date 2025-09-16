@@ -140,6 +140,8 @@ const openCreate = () => {
   </div>
   <div class="projectList">
     <ProjectItem v-for="item in projectList" @click="openDetail(item)" :item="item"> </ProjectItem>
+    <ProjectItem v-for="item in projectList" @click="openDetail(item)" :item="item"> </ProjectItem>
+    <ProjectItem v-for="item in projectList" @click="openDetail(item)" :item="item"> </ProjectItem>
   </div>
   <el-dialog v-model="createDialog" title="创建项目" width="500" :before-close="handleClose">
     <el-form :model="createForm" :rules="rules" ref="formRef" label-width="120px">
@@ -192,23 +194,11 @@ const openCreate = () => {
   </el-dialog>
 </template>
 <style lang="less" scoped>
-.headBar {
-  height: 50px;
+@import '../less/list/mobile.less';
+@media (min-width: 1024px) {
+  @import '../less/list/desktop.less';
 }
-.projectList {
-  min-height: 50px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 20px;
-}
-.title {
-  height: 50px;
-  line-height: 50px;
-  font-size: 18px;
-  font-weight: 600;
-  background-color: @ruby;
-  color: @header-text;
-  padding-left: 50px;
-  border-radius: 15px;
+@media (min-width: 768px) {
+  @import '../less/list/tablet.less';
 }
 </style>

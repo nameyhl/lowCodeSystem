@@ -1,0 +1,35 @@
+.pageBody {
+  width: 50%;
+  min-height: 100%;
+  margin: 0 auto;
+  background-color: #fff;
+
+  .children {
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
+
+    .childrenItem {
+      width: 100%;
+      text-align: center;
+      // 超出隐藏
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      &:hover {
+        color: #409eff;
+      }
+    }
+  }
+}
+
+.childBody {
+  position: relative;
+  width: 50%;
+  min-height: calc(100% - 20px);
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 10px;
+}

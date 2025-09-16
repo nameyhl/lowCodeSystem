@@ -39,7 +39,7 @@ watch(
 )
 
 const clickChildren = (path) => {
-  window.open(path)
+  router.push(path)
 }
 </script>
 <template>
@@ -68,33 +68,11 @@ const clickChildren = (path) => {
   </div>
 </template>
 <style lang="less" scoped>
-.pageBody {
-  width: 50%;
-  min-height: 100%;
-  margin: 0 auto;
-  background-color: #fff;
-
-  .children {
-    margin-top: 50px;
-    display: flex;
-
-    .childrenItem {
-      width: 20%;
-      text-align: center;
-      cursor: pointer;
-      &:hover {
-        color: #409eff;
-      }
-    }
-  }
+@import './less/mobile.less';
+@media (min-width: 1024px) {
+  @import './less/desktop.less';
 }
-
-.childBody {
-  position: relative;
-  width: 50%;
-  min-height: calc(100% - 20px);
-  margin: 0 auto;
-  background-color: #fff;
-  padding: 10px;
+@media (min-width: 768px) {
+  @import './less/tablet.less';
 }
 </style>

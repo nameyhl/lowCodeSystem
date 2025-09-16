@@ -1,5 +1,8 @@
 <script setup>
 import { computed, ref, h } from 'vue'
+
+const model = ref(sessionStorage.getItem('model') || 'PC')
+
 import projectStore from '@/stores/modules/project'
 let project = projectStore()
 import userStore from '@/stores/modules/user'
@@ -158,6 +161,7 @@ let noTestColumns = [
   },
   {
     label: '操作',
+    fixed: model.value == 'PC' ? '' : 'right',
     btnList: [
       {
         label: '测试',
@@ -197,6 +201,8 @@ let testingColumns = [
   },
   {
     label: '操作',
+    fixed: model.value == 'PC' ? '' : 'right',
+
     btnList: [
       {
         label: '查看',
@@ -241,6 +247,8 @@ let passTestColumns = [
   },
   {
     label: '操作',
+    fixed: model == 'PC' ? '' : 'right',
+
     btnList: [
       {
         label: '查看',
@@ -275,6 +283,7 @@ let rejectTestColumns = [
   },
   {
     label: '操作',
+    fixed: model.value == 'PC' ? '' : 'right',
     btnList: [
       {
         label: '查看',
@@ -317,6 +326,7 @@ const testOver = () => {
           :type="item?.type"
           :prop="item.prop"
           :label="item.label"
+          :fixed="item?.fixed"
         >
           <template #default="scope">
             <template v-if="item.prop === 'endTime'">
@@ -331,6 +341,7 @@ const testOver = () => {
                 :type="btn.type"
                 link
                 @click="btn.click(scope.row)"
+                :fixed="item?.fixed"
               >
                 {{ btn.label }}
               </el-button>
@@ -350,6 +361,7 @@ const testOver = () => {
           :type="item?.type"
           :prop="item.prop"
           :label="item.label"
+          :fixed="item?.fixed"
         >
           <template #default="scope">
             <template v-if="item.prop === 'endTime'">
@@ -383,6 +395,7 @@ const testOver = () => {
           :type="item?.type"
           :prop="item.prop"
           :label="item.label"
+          :fixed="item?.fixed"
         >
           <template #default="scope">
             <template v-if="item.prop === 'endTime'">
@@ -416,6 +429,7 @@ const testOver = () => {
           :type="item?.type"
           :prop="item.prop"
           :label="item.label"
+          :fixed="item?.fixed"
         >
           <template #default="scope">
             <template v-if="item.prop === 'endTime'">

@@ -3,6 +3,8 @@ import { ElMessageBox, ElInput, ElMessage } from 'element-plus'
 import { ref, h, computed, watch } from 'vue'
 import { View, Hide } from '@element-plus/icons-vue'
 
+const model = ref(sessionStorage.getItem('model'))
+
 import projectStore from '@/stores/modules/project'
 import userStore from '@/stores/modules/user'
 let user = userStore().user
@@ -196,17 +198,17 @@ const exportFile = async (path, fileName) => {
         <el-collapse-item title="项目信息" name="1">
           <div class="projectInfo">
             <el-row :gutters="20">
-              <el-col :span="12">
+              <el-col :span="model == 'PC' ? 12 : 24">
                 <div class="title">项目名称：</div>
                 <div class="desc">{{ projectInfo.projectName }}</div>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="model == 'PC' ? 12 : 24">
                 <div class="title">项目预期结束时间：</div>
                 <div class="desc">{{ projectInfo.ProjectEndTime }}</div>
               </el-col>
             </el-row>
             <el-row :gutters="20">
-              <el-col :span="12">
+              <el-col :span="model == 'PC' ? 12 : 24">
                 <div class="title">项目编码：</div>
                 <div class="desc">
                   {{ isShowCode ? projectInfo.projectCode : '****' }}
@@ -214,17 +216,17 @@ const exportFile = async (path, fileName) => {
                   <el-icon @click="showCode" v-else><Hide /></el-icon>
                 </div>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="model == 'PC' ? 12 : 24">
                 <div class="title">项目创建时间：</div>
                 <div class="desc">{{ projectInfo.projectCreateTime }}</div>
               </el-col>
             </el-row>
             <el-row :gutters="20">
-              <el-col :span="12">
+              <el-col :span="model == 'PC' ? 12 : 24">
                 <div class="title">项目状态：</div>
                 <div class="desc">{{ getProcess(projectInfo.projectStatus) }}</div>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="model == 'PC' ? 12 : 24">
                 <div class="title">项目负责人：</div>
                 <div class="desc">{{ projectInfo.leaderName }}</div>
               </el-col>

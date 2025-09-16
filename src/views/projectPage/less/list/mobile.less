@@ -1,0 +1,26 @@
+.headBar {
+  height: 50px;
+}
+.projectList {
+  min-height: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media (min-width: 460px) {
+  .projectList {
+    justify-content: space-between;
+  }
+}
+
+.title {
+  height: 50px;
+  line-height: 50px;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: @ruby;
+  color: @header-text;
+  padding-left: 50px;
+  border-radius: 15px;
+}

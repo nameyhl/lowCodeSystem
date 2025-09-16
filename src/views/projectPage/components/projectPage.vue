@@ -54,7 +54,7 @@ let stepList = ref([
     click: clickStep,
   },
   {
-    title: '设计/开发',
+    title: '设计开发',
     icon: 'Picture',
     click: clickStep,
   },
@@ -104,7 +104,7 @@ const deleteProject = () => {
       </div>
     </div>
     <div class="projectStep">
-      <el-steps class="mb-4" :space="200" :active="active" simple>
+      <el-steps class="mb-4" :active="active" simple>
         <el-step
           v-for="(item, index) in stepList"
           class="stepItem"
@@ -139,7 +139,9 @@ const deleteProject = () => {
   }
 }
 .projectStep {
-  height: 50px;
+  :deep(.el-step__icon) {
+    display: none;
+  }
 }
 .projectStepBody {
   height: calc(100%);

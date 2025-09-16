@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+
+const model = ref(sessionStorage.getItem('model') || 'PC')
 import projectStore from '@/stores/modules/project'
 const project = projectStore()
 let projectInfo = computed(() => {
@@ -15,7 +17,6 @@ let demandByStatus = computed(() => {
 let file = computed(() => {
   return project.file[0]
 })
-console.log(file)
 
 // 开发驳回需求
 let devRejectDemand = computed(() => {
@@ -168,28 +169,22 @@ onMounted(() => {
     </titleTag>
     <div class="projectInfoBody">
       <el-row :gutters="20">
-        <el-col :span="6">
+        <el-col :span="model == 'PC' ? 12 : 24">
           <div class="head">项目名称：</div>
-        </el-col>
-        <el-col :span="6">
           <div class="label">
             <span>{{ projectInfo.name }}</span>
           </div>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="model == 'PC' ? 12 : 24">
           <div class="head">项目领导：</div>
-        </el-col>
-        <el-col :span="6">
           <div class="label">
             <span>{{ projectInfo.leaderName }}</span>
           </div>
         </el-col>
       </el-row>
       <el-row :gutters="20">
-        <el-col :span="6">
+        <el-col :span="model == 'PC' ? 12 : 24">
           <div class="head">项目编码：</div>
-        </el-col>
-        <el-col :span="6">
           <div class="label">
             <span
               >{{ isShowCode ? projectInfo.code : '****' }}
@@ -198,32 +193,28 @@ onMounted(() => {
             ></span>
           </div>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="model == 'PC' ? 12 : 24">
           <div class="head">项目创建时间：</div>
-        </el-col>
-        <el-col :span="6">
           <div class="label">
             <span>{{ projectInfo.createTime }}</span>
           </div>
         </el-col>
       </el-row>
       <el-row :gutters="20">
-        <el-col :span="6">
+        <el-col :span="model == 'PC' ? 12 : 24">
           <div class="head">项目前端地址：</div>
-        </el-col>
-        <el-col :span="6">
+
           <div class="label">
             <span>{{ projectInfo.frontCodeAddress }}</span>
           </div>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="model == 'PC' ? 12 : 24">
           <div class="head">项目后端地址：</div>
-        </el-col>
-        <el-col :span="6">
           <div class="label">
             <span>{{ projectInfo.backCodeAddress }}</span>
           </div>
         </el-col>
+        <el-col :span="model == 'PC' ? 12 : 24"> </el-col>
       </el-row>
     </div>
     <div class="file">
@@ -281,21 +272,29 @@ onMounted(() => {
 <style>
 .projectInfoBody {
   margin: 10px 20px;
-  border-top: 1px solid #e4e7ed;
   text-align: center;
   .el-row {
-    height: 30px;
     line-height: 30px;
-    border-bottom: 1px solid #e4e7ed;
+    border-top: 1px solid #e4e7ed;
     border-right: 1px solid #e4e7ed;
     .el-col {
-      border-left: 1px solid #e4e7ed;
+      display: flex;
+      div {
+        border-left: 1px solid #e4e7ed;
+        border-bottom: 1px solid #e4e7ed;
+      }
       .head {
+        width: 50%;
         font-weight: bold;
         font-size: 16px;
       }
       .label {
+        width: 50%;
         font-size: 14px;
+        /* 超出隐藏 */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }

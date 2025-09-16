@@ -63,10 +63,11 @@ let getProcess = (status) => {
 </template>
 <style>
 .projectItem {
+  min-width: 13rem;
   height: 106px;
   font-size: 14px;
   border: 2px solid #ff0f00;
-  margin: 10px;
+  margin: 10px 0;
   padding: 0 3px 10px;
   cursor: pointer;
 

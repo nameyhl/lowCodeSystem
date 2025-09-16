@@ -1,6 +1,9 @@
 <script setup>
 import { computed, ref, h, watch } from 'vue'
 import { ElMessage, ElMessageBox, ElInput } from 'element-plus'
+
+const model = ref(sessionStorage.getItem('model') || 'PC')
+
 import projectStore from '@/stores/modules/project'
 import userStore from '@/stores/modules/user'
 let project = projectStore()
@@ -175,6 +178,7 @@ let undevelopedColumns = [
   },
   {
     label: '操作',
+    fixed: model.value == 'PC' ? '' : 'right',
     btnlist: [
       {
         label: '查看',
@@ -221,6 +225,7 @@ let developingColumns = [
   },
   {
     label: '操作',
+    fixed: model.value == 'PC' ? '' : 'right',
     btnlist: [
       {
         label: '查看',
@@ -262,6 +267,7 @@ let rejectColumns = [
   },
   {
     label: '操作',
+    fixed: model.value == 'PC' ? '' : 'right',
     btnlist: [
       {
         label: '查看',
@@ -303,6 +309,7 @@ let noTestColumns = [
   },
   {
     label: '操作',
+    fixed: model.value == 'PC' ? '' : 'right',
     btnlist: [
       {
         label: '查看',
@@ -339,6 +346,7 @@ let nopassColumns = [
   },
   {
     label: '操作',
+    fixed: model.value == 'PC' ? '' : 'right',
     btnlist: [
       {
         label: '查看',
@@ -525,6 +533,7 @@ const closeTestDialog = () => {
             :sortable="item?.sortable"
             :type="item?.type"
             :prop="item.prop"
+            :fixed="item?.fixed"
             :label="item.label"
           >
             <template #default="scope">
@@ -558,6 +567,7 @@ const closeTestDialog = () => {
             :sortable="item?.sortable"
             :type="item?.type"
             :prop="item.prop"
+            :fixed="item?.fixed"
             :label="item.label"
           >
             <template #default="scope">
@@ -591,6 +601,7 @@ const closeTestDialog = () => {
             :sortable="item?.sortable"
             :type="item?.type"
             :prop="item.prop"
+            :fixed="item?.fixed"
             :label="item.label"
           >
             <template #default="scope">
@@ -624,6 +635,7 @@ const closeTestDialog = () => {
             :sortable="item?.sortable"
             :type="item?.type"
             :prop="item.prop"
+            :fixed="item?.fixed"
             :label="item.label"
           >
             <template #default="scope">
@@ -657,6 +669,7 @@ const closeTestDialog = () => {
             :sortable="item?.sortable"
             :type="item?.type"
             :prop="item.prop"
+            :fixed="item?.fixed"
             :label="item.label"
           >
             <template #default="scope">

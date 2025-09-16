@@ -36,18 +36,11 @@ const changeView = async (type, item) => {
   ></component>
 </template>
 <style lang="less" scoped>
-.head {
-  height: 50px;
+@import './less/index/mobile.less';
+@media (min-width: 1024px) {
+  @import './less/index/desktop.less';
 }
-
-.headBar {
-  height: calc(100% - 50px);
-}
-
-:deep(.el-tabs__content) {
-  visibility: hidden;
-}
-:deep(.el-tabs__header) {
-  margin: 0;
+@media (min-width: 768px) {
+  @import './less/index/tablet.less';
 }
 </style>
