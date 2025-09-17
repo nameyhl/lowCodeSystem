@@ -38,9 +38,9 @@ const getShowRoutes = async () => {
   await getRoutes(data).then((res) => {
     let route = sortRoutesByLevel(res.data)
     routes.value = route
-    if (windowType.value === 'PC') {
+    if (windowType.value !== 'mobile') {
       routes.value.push({
-        path: '/addRoute',
+        router: '/addRoute',
         name: '路由管理',
       })
     }
@@ -112,34 +112,20 @@ const logout = () => {
                     <span>{{ el.name }}</span>
                   </template>
                 </el-sub-menu>
-                <el-menu-item
-                  v-else
-                  @click="routerTo(el)"
-                  :class="chackMenu == el.router ? 'active' : ''"
-                >
+                <el-menu-item v-else @click="routerTo(el)" :class="chackMenu == el.router ? 'active' : ''">
                   {{ el.name }}
                 </el-menu-item>
               </template>
             </el-sub-menu>
-            <el-menu-item
-              v-else
-              @click="routerTo(item)"
-              :class="chackMenu == item.router ? 'active' : ''"
-            >
+            <el-menu-item v-else @click="routerTo(item)" :class="chackMenu == item.router ? 'active' : ''">
               {{ item.name }}
             </el-menu-item>
           </template>
         </el-menu>
       </el-aside>
       <el-header class="headerMenu" v-if="windowType == 'mobile'">
-        <el-menu
-          :default-openeds="openList"
-          ellipsis
-          class="el-menu-popper-demo"
-          mode="horizontal"
-          :popper-offset="16"
-          style="max-width: 600px"
-        >
+        <el-menu :default-openeds="openList" ellipsis class="el-menu-popper-demo" mode="horizontal" :popper-offset="16"
+          style="max-width: 600px">
           <template v-for="item in routes" :key="item.router">
             <el-sub-menu v-if="item.children" :index="item.router">
               <template #title>
@@ -151,20 +137,12 @@ const logout = () => {
                     <span>{{ el.name }}</span>
                   </template>
                 </el-sub-menu>
-                <el-menu-item
-                  v-else
-                  @click="routerTo(el)"
-                  :class="chackMenu == el.router ? 'active' : ''"
-                >
+                <el-menu-item v-else @click="routerTo(el)" :class="chackMenu == el.router ? 'active' : ''">
                   {{ el.name }}
                 </el-menu-item>
               </template>
             </el-sub-menu>
-            <el-menu-item
-              v-else
-              @click="routerTo(item)"
-              :class="chackMenu == item.router ? 'active' : ''"
-            >
+            <el-menu-item v-else @click="routerTo(item)" :class="chackMenu == item.router ? 'active' : ''">
               {{ item.name }}
             </el-menu-item>
           </template>
@@ -172,14 +150,8 @@ const logout = () => {
       </el-header>
       <el-main>
         <div class="breandcrumb" v-if="windowType == 'PC'">
-          <el-tag
-            closable
-            v-for="item in tagList"
-            @click="routerTo(item)"
-            :key="item.path"
-            @close="tagList.splice(tagList.indexOf(item), 1)"
-            type="danger"
-          >
+          <el-tag closable v-for="item in tagList" @click="routerTo(item)" :key="item.path"
+            @close="tagList.splice(tagList.indexOf(item), 1)" type="danger">
             {{ item.name }}
           </el-tag>
         </div>
@@ -195,6 +167,7 @@ const logout = () => {
 @media (min-width: 1024px) {
   @import './less/desktop.less';
 }
+
 @media (min-width: 768px) {
   @import './less/tablet.less';
 }
