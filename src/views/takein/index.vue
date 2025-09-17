@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { nextTick, onMounted, ref } from 'vue'
 import userStore from '@/stores/modules/user'
 let userInfo = userStore().user
 
@@ -33,33 +33,59 @@ const checkLocation = (position) => {
 
 import { takein } from '@/api/takein'
 
+let cesiumViewRef = ref(null)
+let cesiumView = ref(null)
+
 const getLocation = () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        console.log('当前位置：', position.coords.latitude, position.coords.longitude)
-        const distance = checkLocation(position)
-        if (distance < 100) {
-          console.log('打卡成功')
-          let data = {
-            userId: userInfo.id,
-            takeinTime: new Date(),
-          }
-          await takein(data)
-        }
-      },
-      (error) => {
-        console.error('获取位置失败：', error.message)
-      },
-    )
-  } else {
-    console.error('浏览器不支持定位')
+  return new Promise((resolve, reject) => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const distance = checkLocation(position)
+          resolve(position)
+
+          // if (distance < 100) {
+          //   console.log('打卡成功')
+          //   let data = {
+          //     userId: userInfo.id,
+          //     takeinTime: new Date(),
+          //   }
+          //   await takein(data)
+          // }
+        },
+        (error) => {
+          console.error('获取位置失败：', error.message)
+          reject('获取定位失败')
+        },
+        {
+          enableHighAccuracy: true, // 启用高精度定位
+          timeout: 10000, // 超时时间10秒
+          maximumAge: 3000, // 接受3秒内的缓存位置
+        },
+      )
+    } else {
+      reject('获取定位失败')
+    }
+  })
+}
+
+// 将cesium定位到当前位置
+const flyToCurrentLocation = async () => {
+  try {
+    const position = await getLocation()
+    if (cesiumViewRef.value) {
+      cesiumViewRef.value.flyTo(position)
+    }
+  } catch (error) {
+    console.error('定位失败：', error.message)
   }
 }
+
+flyToCurrentLocation()
 </script>
 <template>
-  <div class="cesiumView">
-    <CesiumView />
+  <div class="cesiumView" ref="cesiumView">
+    <CesiumView ref="cesiumViewRef" />
   </div>
   <el-button type="primary" @click="getLocation">获取当前定位</el-button>
 </template>
