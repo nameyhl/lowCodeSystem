@@ -82,19 +82,22 @@ let fileList = ref([])
 import { getProjectListByLeaderId, getProjectListByLevel } from '@/api/project.js'
 
 const projectList = ref([])
-const projectType = ref(3)
+
+const projectType = ref(sessionStorage.getItem('projectType') || '3')
+let loading = ref(false)
 
 let isApprover = ref(false)
 const getProjectList = () => {
   isApprover.value = false
-  if (projectType.value === 3) {
+  loading.value = true
+  if (projectType.value === '3') {
     getProjectListByLeaderId({
       leaderId: user.id,
     }).then((res) => {
       projectList.value = res.data
     })
   }
-  if (projectType.value === 4) {
+  if (projectType.value === '4') {
     getProjectListByLevel({
       id: user.id,
       level: user.isLeader,
@@ -103,12 +106,14 @@ const getProjectList = () => {
       isApprover.value = true
     })
   }
+  loading.value = false
 }
 
 getProjectList()
 
 watch(projectType, () => {
   projectList.value = []
+  sessionStorage.setItem('projectType', projectType.value)
   getProjectList()
 })
 
@@ -134,13 +139,11 @@ const openCreate = () => {
   </div>
   <div class="headBar">
     <el-tabs v-model="projectType" class="demo-tabs" @tab-click="handleClick">
-      <el-tab-pane label="我创建的项目" :name="3"></el-tab-pane>
-      <el-tab-pane label="我审核的项目" :name="4" v-if="user.isLeader"></el-tab-pane>
+      <el-tab-pane label="我创建的项目" :name="'3'"></el-tab-pane>
+      <el-tab-pane label="我审核的项目" :name="'4'" v-if="user.isLeader"></el-tab-pane>
     </el-tabs>
   </div>
-  <div class="projectList">
-    <ProjectItem v-for="item in projectList" @click="openDetail(item)" :item="item"> </ProjectItem>
-    <ProjectItem v-for="item in projectList" @click="openDetail(item)" :item="item"> </ProjectItem>
+  <div class="projectList" v-loading="loading">
     <ProjectItem v-for="item in projectList" @click="openDetail(item)" :item="item"> </ProjectItem>
   </div>
   <el-dialog v-model="createDialog" title="创建项目" width="500" :before-close="handleClose">

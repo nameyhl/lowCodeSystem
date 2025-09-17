@@ -39,7 +39,7 @@ watch(
 )
 
 const clickChildren = (path) => {
-  router.push(path)
+  window.open(path)
 }
 </script>
 <template>

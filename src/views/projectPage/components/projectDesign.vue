@@ -178,7 +178,7 @@ let undevelopedColumns = [
   },
   {
     label: '操作',
-    fixed: model.value == 'PC' ? '' : 'right',
+    fixed: 'right',
     btnlist: [
       {
         label: '查看',
@@ -225,7 +225,7 @@ let developingColumns = [
   },
   {
     label: '操作',
-    fixed: model.value == 'PC' ? '' : 'right',
+    fixed: 'right',
     btnlist: [
       {
         label: '查看',
@@ -267,7 +267,7 @@ let rejectColumns = [
   },
   {
     label: '操作',
-    fixed: model.value == 'PC' ? '' : 'right',
+    fixed: 'right',
     btnlist: [
       {
         label: '查看',
@@ -309,7 +309,7 @@ let noTestColumns = [
   },
   {
     label: '操作',
-    fixed: model.value == 'PC' ? '' : 'right',
+    fixed: 'right',
     btnlist: [
       {
         label: '查看',
@@ -346,7 +346,7 @@ let nopassColumns = [
   },
   {
     label: '操作',
-    fixed: model.value == 'PC' ? '' : 'right',
+    fixed: 'right',
     btnlist: [
       {
         label: '查看',

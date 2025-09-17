@@ -161,7 +161,7 @@ let noTestColumns = [
   },
   {
     label: '操作',
-    fixed: model.value == 'PC' ? '' : 'right',
+    fixed: 'right',
     btnList: [
       {
         label: '测试',
@@ -201,8 +201,7 @@ let testingColumns = [
   },
   {
     label: '操作',
-    fixed: model.value == 'PC' ? '' : 'right',
-
+    fixed: 'right',
     btnList: [
       {
         label: '查看',
@@ -247,8 +246,7 @@ let passTestColumns = [
   },
   {
     label: '操作',
-    fixed: model == 'PC' ? '' : 'right',
-
+    fixed: 'right',
     btnList: [
       {
         label: '查看',
@@ -283,7 +281,7 @@ let rejectTestColumns = [
   },
   {
     label: '操作',
-    fixed: model.value == 'PC' ? '' : 'right',
+    fixed: 'right',
     btnList: [
       {
         label: '查看',

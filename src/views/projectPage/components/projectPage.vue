@@ -156,4 +156,7 @@ const deleteProject = () => {
 .notAllowed {
   cursor: not-allowed;
 }
+:deep(.el-step__title.is-process) {
+  color: #ff0000;
+}
 </style>

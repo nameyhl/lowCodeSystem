@@ -257,7 +257,7 @@ const exportFile = async (path, fileName) => {
         </el-collapse-item>
         <el-collapse-item title="项目进度" name="2">
           <div class="projectProcess">
-            <div style="height: 300px; max-width: 600px">
+            <div style="max-width: 600px">
               <el-steps direction="vertical" :active="active">
                 <el-step
                   v-for="item in process"
