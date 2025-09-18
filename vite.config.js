@@ -36,6 +36,16 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/file/, ''),
       },
+      '/tdt': {
+        target: 'http://api.tianditu.gov.cn/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/tdt/, ''),
+      },
+      '/amap': {
+        target: 'https://restapi.amap.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/amap/, ''),
+      },
     },
   },
 })
