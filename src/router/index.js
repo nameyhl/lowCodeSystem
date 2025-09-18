@@ -9,7 +9,7 @@ let model = ref(sessionStorage.getItem('model'))
 
 let showRoutes = []
 // 菜单展示的路由
-if (model.value === 'PC') {
+if (model.value !== 'mobile') {
   showRoutes.push({
     path: '/addRoute',
     name: '路由管理',

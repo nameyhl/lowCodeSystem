@@ -3,8 +3,6 @@ import { nextTick, onMounted, ref } from 'vue'
 import userStore from '@/stores/modules/user'
 let userInfo = userStore().user
 
-import CesiumView from '@/components/cesiumView/index.vue'
-
 let location = ref({
   latitude: '30.7173',
   longitude: '104.0035',
@@ -95,6 +93,7 @@ flyToCurrentLocation()
 @media (min-width: 1024px) {
   @import './less/desktop.less';
 }
+
 @media (min-width: 768px) {
   @import './less/tablet.less';
 }
