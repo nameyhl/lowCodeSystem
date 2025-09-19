@@ -9,3 +9,11 @@ export function takein(data) {
     data,
   })
 }
+
+export function getTakeinList(data) {
+  return request({
+    url: `/${className}/getTakein`,
+    method: 'get',
+    params: data,
+  })
+}
