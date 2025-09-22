@@ -80,28 +80,22 @@ const getStatus = (status) => {
 
 let getProcess = (status) => {
   if (status === 0) {
-    return '已提交，待审批'
+    return '审批中'
   }
   if (status === 1) {
-    return '已审批，待开始'
-  }
-  if (status === 2) {
     return '需求分析中'
   }
+  if (status === 2) {
+    return '设计开发中'
+  }
   if (status === 3) {
-    return '设计中'
-  }
-  if (status === 4) {
-    return '开发中'
-  }
-  if (status === 5) {
     return '测试中'
   }
-  if (status === 6) {
-    return '已完成'
+  if (status === 4) {
+    return '待交付'
   }
-  if (status === 7) {
-    return '已取消'
+  if (status === 5) {
+    return '已完成'
   }
   return '未知状态'
 }
@@ -212,8 +206,12 @@ const exportFile = async (path, fileName) => {
                 <div class="title">项目编码：</div>
                 <div class="desc">
                   {{ isShowCode ? projectInfo.projectCode : '****' }}
-                  <el-icon @click="showCode" v-if="isShowCode"><View /></el-icon>
-                  <el-icon @click="showCode" v-else><Hide /></el-icon>
+                  <el-icon @click="showCode" v-if="isShowCode">
+                    <View />
+                  </el-icon>
+                  <el-icon @click="showCode" v-else>
+                    <Hide />
+                  </el-icon>
                 </div>
               </el-col>
               <el-col :span="model == 'PC' ? 12 : 24">
@@ -246,12 +244,8 @@ const exportFile = async (path, fileName) => {
               </span>
             </div>
             <div class="exportButton">
-              <el-button
-                link
-                type="primary"
-                @click="exportFile(projectInfo.filePath, projectInfo.fileName)"
-                >导出</el-button
-              >
+              <el-button link type="primary"
+                @click="exportFile(projectInfo.filePath, projectInfo.fileName)">导出</el-button>
             </div>
           </div>
         </el-collapse-item>
@@ -259,12 +253,8 @@ const exportFile = async (path, fileName) => {
           <div class="projectProcess">
             <div style="max-width: 600px">
               <el-steps direction="vertical" :active="active">
-                <el-step
-                  v-for="item in process"
-                  :title="item.title"
-                  :key="item.title"
-                  :class="{ reject: item.processStatus === 2 }"
-                >
+                <el-step v-for="item in process" :title="item.title" :key="item.title"
+                  :class="{ reject: item.processStatus === 2 }">
                   <template #description>
                     <div class="leftBox">
                       <div class="time">提交时间：{{ item.startTime }}</div>
@@ -298,29 +288,36 @@ const exportFile = async (path, fileName) => {
 .top {
   height: 50px;
   line-height: 50px;
+
   .goBack {
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
+
     &:hover {
       color: @link-hover;
     }
   }
 }
+
 .fileBody {
   .fileName {
     width: 70%;
     font-size: 14px;
+
     span:hover {
       color: @link-hover;
       text-decoration: underline;
       cursor: pointer;
     }
   }
+
   display: flex;
 }
+
 .projectDetial {
   width: 100%;
+
   .projectInfo {
     width: 80%;
     margin: 0 auto;
@@ -329,48 +326,59 @@ const exportFile = async (path, fileName) => {
   .projectInfo {
     border-bottom: 1px solid #000;
     border-right: 1px solid #000;
+
     .el-col {
       display: flex;
       height: 50px;
       line-height: 50px;
       text-align: center;
+
       div {
         border-top: 1px solid #000;
         border-left: 1px solid #000;
       }
+
       .title {
         width: 10rem;
         font-weight: bold;
       }
+
       .desc {
         width: 70%;
       }
     }
   }
 }
+
 .footer {
   width: 80%;
   margin: 10px auto 0 auto;
   text-align: center;
 }
+
 :deep(.el-collapse-item__title) {
   font-size: 16px;
   font-weight: 500;
 }
+
 :deep(.el-step__description) {
   display: flex;
+
   .leftBox {
     width: 50%;
   }
+
   .rightBox {
     width: 50%;
     height: 100%;
+
     .desc {
       height: 50%;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
     .status {
       height: 50%;
       overflow: hidden;
@@ -379,6 +387,7 @@ const exportFile = async (path, fileName) => {
     }
   }
 }
+
 :deep(.el-overlay) {
   :deep(.el-message-box) {
     .el-message-box__message {
@@ -387,6 +396,7 @@ const exportFile = async (path, fileName) => {
     }
   }
 }
+
 :deep(.reject) .el-step__head {
   color: #ff4d4f !important;
   border-color: #ff4d4f !important;

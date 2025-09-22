@@ -5,7 +5,8 @@ import { onUnmounted, ref } from 'vue'
 import userStore from '@/stores/modules/user'
 const user = userStore().user
 
-let location = [103.9969, 30.7155]
+// let location = [103.9969, 30.7155]
+let location = [104.10196, 30.7112]
 
 let AMapObj = null
 let mapObj = null
@@ -49,10 +50,7 @@ const getLocation = () => {
   if (!geolocation) {
     AMapObj.plugin(['AMap.Geolocation'], function () {
       geolocation = new AMapObj.Geolocation(options)
-      console.log(geolocation)
-
       mapObj.addControl(geolocation)
-
       // 启动定时定位
       startLocationInterval()
     })
@@ -128,6 +126,8 @@ const getDetailedAddress = (latLng) => {
 import { takein, getTakeinList } from '@/api/takein'
 const addTakein = async () => {
   if (position) {
+    console.log(position);
+
     let distance = AMapObj.GeometryUtil.distance(location, [position.lng, position.lat])
     try {
       let address = await getDetailedAddress([position.lng, position.lat])
@@ -138,7 +138,10 @@ const addTakein = async () => {
           address,
         }
         await takein(data)
+        getList()
         ElMessage.success('打卡成功')
+      } else {
+        ElMessage.error('距离公司距离太远，请靠近再打卡')
       }
     } catch (error) {
       ElMessage.error(error.message)
@@ -159,12 +162,14 @@ const getAMap = (AMap, map) => {
   getLocation()
 }
 
+let list = ref([])
 const getList = async () => {
   let data = {
     userId: user.id,
   }
   let res = await getTakeinList(data)
   console.log(res)
+  list.value = res.data
 }
 getList()
 onUnmounted(() => {
@@ -176,6 +181,14 @@ onUnmounted(() => {
     <MapView ref="mapViewRef" @sendAMap="getAMap" />
   </div>
   <div class="takeinButton" @click="addTakein">打卡</div>
+
+  <div class="takeinList">
+    <el-table :data="list" border style="width: 100%">
+      <el-table-column type="index" label="序号" width="80px" align="center" />
+      <el-table-column prop="takeinTime" label="打卡时间" align="center" />
+      <el-table-column prop="address" label="地址" align="center" />
+    </el-table>
+  </div>
 </template>
 <style lang="less">
 @import './less/mobile.less';

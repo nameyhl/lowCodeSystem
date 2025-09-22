@@ -47,9 +47,15 @@ const constantRoutes = [
     children: outeRoutes,
   },
   {
+    path: '/systemHome',
+    name: 'systemHome',
+    component: () => import('@/views/systemHome/index.vue'),
+  },
+  {
     path: '/home',
     name: 'home',
     component: () => import('@/views/home/index.vue'),
+    redirect: '/frimManager',
     children: showRoutes,
   },
   // 注意：这里不包含通配符404路由，将在动态路由加载后添加
@@ -77,14 +83,6 @@ const sortRoutesByLevel = (routes) => {
     return levelB - levelA
   })
 }
-const getFirstLevelRoute = (routes) => {
-  let res = {}
-  res = routes[0]
-  if (res.children && res.children.length == 0) {
-    return res
-  }
-  getFirstLevelRoute(res.children)
-}
 
 // 获取路由列表
 import { getRoutes } from '@/api/routes.js'
@@ -101,6 +99,8 @@ const initializeRouter = () => {
           router.addRoute('home', route)
         } else if (route.name === '系统页面') {
           router.addRoute('outHome', route)
+        } else if (route.name === '系统首页') {
+          router.addRoute('systemHome', route)
         }
       })
       dynamicRoutes.forEach((route) => {
@@ -135,12 +135,18 @@ const loadView = (view) => {
 
 // 立即执行异步路由初始化
 export const setupRouter = async (app) => {
-  await initializeRouter()
-  app.use(router)
+  await initializeRouter().then((res) => {
+    console.log(res);
+    app.use(router)
+  })
 }
+
+
 
 // 路由拦截器
 router.beforeEach((to, from, next) => {
+  console.log(constantRoutes);
+
   if (localStorage.getItem('token') || to.path === '/login') {
     next()
   } else {
