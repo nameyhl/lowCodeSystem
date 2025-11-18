@@ -258,31 +258,15 @@ const search = async () => {
     <template #searchFrom>
       <el-form :inline="model === 'PC'" :model="searchForm" class="demo-form-inline">
         <el-form-item label="用户名">
-          <el-input
-            v-model="searchForm.username"
-            placeholder="请输入用户名"
-            style="width: 200px"
-          ></el-input>
+          <el-input v-model="searchForm.username" placeholder="请输入用户名" style="width: 200px"></el-input>
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input
-            v-model="searchForm.name"
-            placeholder="请输入姓名"
-            style="width: 200px"
-          ></el-input>
+          <el-input v-model="searchForm.name" placeholder="请输入姓名" style="width: 200px"></el-input>
         </el-form-item>
         <el-form-item label="部门">
-          <el-select
-            v-model="searchForm.departmentId"
-            placeholder="请选择部门"
-            style="width: 200px"
-          >
-            <el-option
-              v-for="item in departmentList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
+          <el-select v-model="searchForm.departmentId" filterable placeholder="请选择部门" style="width: 200px">
+            <el-option v-for="item in departmentList" :key="item.value" :label="item.label"
+              :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -294,23 +278,14 @@ const search = async () => {
   <div class="tableBox">
     <el-table :data="userList" style="width: 100%" border>
       <el-table-column type="selection" width="55"> </el-table-column>
-      <el-table-column
-        v-for="item in columns"
-        :key="item.prop"
-        :prop="item.prop"
-        :label="item.label"
-      >
+      <el-table-column v-for="item in columns" :key="item.prop" :prop="item.prop" :label="item.label">
         <template #default="scoped">
           <div v-if="item.prop === 'age'" :style="{ color: scoped.row.age < 35 ? 'green' : 'red' }">
             {{ scoped.row.age }}
           </div>
           <div v-if="item.prop === 'action'">
-            <el-button type="primary" link size="mini" @click="updateEmployee(scoped.row)"
-              >修改</el-button
-            >
-            <el-button type="primary" link size="mini" @click="deleteEmployee(scoped.row)"
-              >删除</el-button
-            >
+            <el-button type="primary" link size="mini" @click="updateEmployee(scoped.row)">修改</el-button>
+            <el-button type="primary" link size="mini" @click="deleteEmployee(scoped.row)">删除</el-button>
           </div>
         </template>
       </el-table-column>
@@ -318,27 +293,14 @@ const search = async () => {
   </div>
 
   <div>
-    <el-pagination
-      v-model:current-page="page"
-      v-model:page-size="size"
-      :page-sizes="[10, 20, 30, 40]"
-      :size="model === 'PC' ? 'medium' : 'small'"
-      layout="total,sizes, prev, pager, next"
-      :total="total"
-      @size-change="handleSizeChange"
-      :pager-count="5"
-      @current-change="handleCurrentChange"
-    />
+    <el-pagination v-model:current-page="page" v-model:page-size="size" :page-sizes="[10, 20, 30, 40]"
+      :size="model === 'PC' ? 'medium' : 'small'" layout="total,sizes, prev, pager, next" :total="total"
+      @size-change="handleSizeChange" :pager-count="5" @current-change="handleCurrentChange" />
   </div>
 
   <!-- 新增弹框 -->
   <el-dialog v-model="addDialogVisible" title="新增" width="60%" :before-close="closeDialog">
-    <component
-      :is="View"
-      @close="closeDialog"
-      @submit="submitDialog"
-      :userInfo="userInfo"
-    ></component>
+    <component :is="View" @close="closeDialog" @submit="submitDialog" :userInfo="userInfo"></component>
   </el-dialog>
 </template>
 <style lang="less" scoped></style>
