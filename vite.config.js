@@ -6,7 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 const target = `http://localhost:3000`
 // const target = `http://192.168.1.20:3000`
-const filePath = `http://localhost:80`
+const filePath = `http://localhost:9090`
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -34,7 +34,7 @@ export default defineConfig({
       '/file': {
         target: filePath,
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/file/, ''),
+        // rewrite: (path) => path.replace(/^\/file/, ''),
       },
       '/tdt': {
         target: 'http://api.tianditu.gov.cn/',

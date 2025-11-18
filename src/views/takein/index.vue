@@ -27,6 +27,7 @@ const getLocation = () => {
   }
 
   const options = {
+    enableHighAccuracy: true, // 开启高精度定位
     showButton: false, // 隐藏默认定位按钮，我们自己控制
     showMarker: true,
     markerOptions: {

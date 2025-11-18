@@ -14,6 +14,8 @@ const props = defineProps({
 
 let form = ref(props.userInfo)
 
+console.log(form.value)
+
 import { getFrimList } from '@/api/frim'
 let frimList = ref([])
 const getFrims = async () => {
@@ -83,7 +85,23 @@ const emit = defineEmits(['submit', 'close'])
 const formRef = ref(null)
 
 const submit = () => {
+  form.value.avatar = imageUrl.value
   emit('submit', form.value, formRef.value, 'update')
+}
+
+import { computed } from 'vue'
+const token = computed(() => localStorage.getItem('token'))
+
+const imageUrl = ref(form.value.avatar)
+const handleAvatarSuccess = (res, file) => {
+  console.log(res, file)
+  imageUrl.value = res.data.fileUrl
+}
+const beforeAvatarUpload = (file) => {
+  if (!token.value) {
+    return false
+  }
+  return true
 }
 
 const close = () => {
@@ -92,6 +110,17 @@ const close = () => {
 </script>
 <template>
   <el-form :model="form" ref="formRef" :rules="rules" label-width="100px">
+    <el-upload
+      class="avatar-uploader"
+      action="/api/file/upload"
+      :show-file-list="false"
+      :on-success="handleAvatarSuccess"
+      :headers="{ Authorization: 'Bearer ' + token }"
+      :before-upload="beforeAvatarUpload"
+    >
+      <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+      <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+    </el-upload>
     <el-row>
       <el-col :span="12">
         <el-form-item prop="username" label="用户名">
@@ -112,8 +141,13 @@ const close = () => {
       </el-col>
       <el-col :span="12">
         <el-form-item prop="birth" label="生日">
-          <el-date-picker v-model="form.birth" type="datetime" format="YYYY-MM-DD" placeholder="选择日期"
-            style="width: 100%"></el-date-picker>
+          <el-date-picker
+            v-model="form.birth"
+            type="datetime"
+            format="YYYY-MM-DD"
+            placeholder="选择日期"
+            style="width: 100%"
+          ></el-date-picker>
         </el-form-item>
       </el-col>
     </el-row>
@@ -138,7 +172,12 @@ const close = () => {
       <el-col :span="12">
         <el-form-item prop="frimId" label="公司">
           <el-select v-model="form.frimId" placeholder="请选择公司" @change="frimChange">
-            <el-option v-for="item in frimList" :key="item.id" :value="item.value" :label="item.label"></el-option>
+            <el-option
+              v-for="item in frimList"
+              :key="item.id"
+              :value="item.value"
+              :label="item.label"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -146,15 +185,33 @@ const close = () => {
     <el-row>
       <el-col :span="12">
         <el-form-item prop="departmentId" label="部门" @change="departmentChange">
-          <el-select v-model="form.departmentId" placeholder="请选择部门" :disabled="form.frimId === ''">
-            <el-option v-for="item in deprotments" :key="item.id" :value="item.value" :label="item.label"></el-option>
+          <el-select
+            v-model="form.departmentId"
+            placeholder="请选择部门"
+            :disabled="form.frimId === ''"
+          >
+            <el-option
+              v-for="item in deprotments"
+              :key="item.id"
+              :value="item.value"
+              :label="item.label"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item prop="positionId" label="职位">
-          <el-select v-model="form.positionId" placeholder="请选择职位" :disabled="!form.departmentId">
-            <el-option v-for="item in positionList" :key="item.id" :value="item.id" :label="item.name"></el-option>
+          <el-select
+            v-model="form.positionId"
+            placeholder="请选择职位"
+            :disabled="!form.departmentId"
+          >
+            <el-option
+              v-for="item in positionList"
+              :key="item.id"
+              :value="item.id"
+              :label="item.name"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -173,5 +230,33 @@ const close = () => {
 
 .el-row {
   margin-bottom: 20px;
+}
+.avatar-uploader {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .el-upload {
+    border: 1px dashed var(--el-border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast);
+    &:hover {
+      border-color: var(--el-color-primary);
+    }
+  }
+  .el-icon.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    text-align: center;
+  }
 }
 </style>

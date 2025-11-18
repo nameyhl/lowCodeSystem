@@ -34,6 +34,6 @@ app.use(ElementPlus, {
   locale: zhCn,
 })
 app.use(pinia)
-await setupRouter(app).then(() => {
+setupRouter(app).then(() => {
   app.mount('#app')
 })
